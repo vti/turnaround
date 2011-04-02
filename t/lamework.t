@@ -17,5 +17,6 @@ ok $app->routes;
 
 ok(Lamework::Registry->get('app'));
 ok(Lamework::Registry->get('home'));
+ok(Lamework::Registry->get('routes'));
 
 1;

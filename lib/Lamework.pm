@@ -36,6 +36,8 @@ sub init {
 
     Lamework::Registry->set(app => $self, weaken => 1);
 
+    Lamework::Registry->set(routes => $self->routes);
+
     my $home = Lamework::Home->new($self->_detect_home);
     Lamework::Registry->set(home => $home);
 
