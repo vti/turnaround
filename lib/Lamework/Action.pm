@@ -143,14 +143,4 @@ sub render_not_found {
     return $self;
 }
 
-#sub render_file {
-#    my $self = shift;
-#    my ($template) = @_;
-#
-#    $self->{env}->{template} = $template;
-#    $self->{env}->{layout}   = 'layout';
-#
-#    return $self;
-#}
-
 1;
