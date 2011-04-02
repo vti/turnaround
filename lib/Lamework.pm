@@ -12,6 +12,7 @@ use String::CamelCase ();
 
 use Lamework::Config;
 use Lamework::Displayer;
+use Lamework::Renderer::Caml;
 use Lamework::Home;
 use Lamework::Registry;
 use Lamework::Routes;
@@ -36,10 +37,11 @@ sub init {
 
     Lamework::Registry->set(app => $self, weaken => 1);
 
-    Lamework::Registry->set(routes => $self->routes);
-
     my $home = Lamework::Home->new($self->_detect_home);
     Lamework::Registry->set(home => $home);
+
+    Lamework::Registry->set(routes => $self->routes);
+    Lamework::Registry->set(displayer => $self->displayer);
 
     my $app_name = String::CamelCase::decamelize($self->namespace);
     my $config_file = $home->catfile("$app_name.ini");
