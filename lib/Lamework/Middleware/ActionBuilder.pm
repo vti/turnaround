@@ -3,7 +3,7 @@ package Lamework::Middleware::ActionBuilder;
 use strict;
 use warnings;
 
-use base 'Plack::Middleware';
+use base 'Lamework::Middleware';
 
 use Class::Load       ();
 use String::CamelCase ();

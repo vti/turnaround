@@ -3,7 +3,7 @@ package Lamework::Middleware::ViewDisplayer;
 use strict;
 use warnings;
 
-use base 'Plack::Middleware';
+use base 'Lamework::Middleware';
 
 use String::CamelCase ();
 use Plack::MIME;
