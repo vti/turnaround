@@ -87,10 +87,10 @@ sub displayer {
 sub psgi_app {
     my $self = shift;
 
-    return $self->{psgi_app} ||= $self->_compile_psgi_app;
+    return $self->{psgi_app} ||= $self->compile_psgi_app;
 }
 
-sub _compile_psgi_app {
+sub compile_psgi_app {
     my $self = shift;
 
     my $app = sub {
@@ -107,13 +107,11 @@ sub _compile_psgi_app {
         enable 'SimpleLogger', level => $ENV{PLACK_ENV}
           && $ENV{PLACK_ENV} eq 'development' ? 'debug' : 'error';
 
-        enable '+Lamework::Middleware::RoutesDispatcher',
-          routes => $self->routes;
+        enable '+Lamework::Middleware::RoutesDispatcher';
 
         enable '+Lamework::Middleware::ActionBuilder';
 
-        enable '+Lamework::Middleware::ViewDisplayer',
-          renderer => $self->renderer;
+        enable '+Lamework::Middleware::ViewDisplayer';
 
         $app;
     };
