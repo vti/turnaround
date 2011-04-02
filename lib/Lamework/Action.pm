@@ -77,6 +77,7 @@ sub url_for {
         my $routes = Lamework::Registry->get('routes');
 
         my $path = $routes->build_path(@_);
+        $path =~ s{^/}{};
 
         $url = $self->req->base;
         $url->path($url->path . $path);
