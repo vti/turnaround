@@ -125,8 +125,10 @@ sub _detect_home {
     my $self = shift;
 
     my $home = $INC{$self->namespace . '.pm'};
-    $home = Cwd::realpath(
-        File::Spec->catfile(File::Basename::dirname($home), '..'));
+    if (defined $home) {
+        $home = Cwd::realpath(
+            File::Spec->catfile(File::Basename::dirname($home), '..'));
+    }
 
     return $home;
 }
