@@ -53,8 +53,9 @@ sub _template {
         my $match = $env->{'lamework.routes.match'};
         return unless $match;
 
-        $template = $self->_action_to_template($match->params->{action})
-          || $match->name;
+        my $action = $match->params->{action};
+        $template =
+          $action ? $self->_action_to_template($action) : $match->name;
     }
 
     return $template;

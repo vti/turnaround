@@ -80,7 +80,7 @@ sub displayer {
     $self->{displayer} ||= Lamework::Displayer->new(
         formats => {
             caml => Lamework::Renderer::Caml->new(
-                template_path => $self->home->catfile('templates')
+                templates_path => $self->home->catfile('templates')
             )
         }
     );

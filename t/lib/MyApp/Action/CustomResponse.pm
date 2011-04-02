@@ -9,7 +9,7 @@ sub run {
     my $self = shift;
 
     $self->res->code(200);
-    $self->res->body('Hello there!');
+    $self->res->body('Custom response!');
 }
 
 1;
