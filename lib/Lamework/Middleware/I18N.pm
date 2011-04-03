@@ -26,13 +26,6 @@ sub new {
         use base 'Locale::Maketext';
         1;
 
-    my $default_language = $self->{default_language};
-    eval <<"";
-        package $namespace\::I18N::$default_language;
-        use base '$namespace\::I18N';
-        our %Lexicon = (_AUTO => 1);
-        1;
-
     die $@ if $@;
 
     return $self;
@@ -101,8 +94,6 @@ sub detect_languages {
     closedir $dh;
 
     @files = map { s{\.pm$}{}; $_ } @files;
-
-    push @files, $self->{default_language};
 
     return @files;
 }

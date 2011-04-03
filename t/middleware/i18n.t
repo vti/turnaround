@@ -1,7 +1,12 @@
-package MyAppI18N::I18N::ru;
+package MyAppI18N::I18N::en;
 
-use strict;
-use warnings;
+use base 'MyAppI18N::I18N';
+
+our %Lexicon = (
+    _AUTO => 1
+);
+
+package MyAppI18N::I18N::ru;
 
 use base 'MyAppI18N::I18N';
 
