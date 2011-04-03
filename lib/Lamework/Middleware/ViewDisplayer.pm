@@ -5,8 +5,9 @@ use warnings;
 
 use base 'Lamework::Middleware';
 
-use String::CamelCase ();
+use Encode ();
 use Plack::MIME;
+use String::CamelCase ();
 
 use Lamework::Registry;
 
@@ -28,11 +29,16 @@ sub _display {
     return unless defined $template;
 
     my $displayer = Lamework::Registry->get('displayer');
-    my $vars      = $env->{'lamework.displayer.vars'} || {};
+    my $vars = $env->{'lamework.displayer.vars'} || {};
 
     my $body = $displayer->render_file($template, vars => $vars);
 
     my $content_type = Plack::MIME->mime_type(".html");
+
+    if (Encode::is_utf8($body)) {
+        $body = Encode::encode('UTF-8', $body);
+        $content_type .= '; encoding=utf-8';
+    }
 
     return [
         200,

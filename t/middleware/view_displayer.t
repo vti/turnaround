@@ -1,7 +1,8 @@
 use strict;
 use warnings;
+use utf8;
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 use Test::MockObject;
 
 use_ok('Lamework::Middleware::ViewDisplayer');
@@ -34,3 +35,14 @@ $env = {
 my $res = $middleware->call($env);
 is_deeply $res =>
   [200, ['Content-Length' => 5, 'Content-Type' => 'text/html'], ['there']];
+
+$env = {
+    'lamework.displayer.template' => 'template-utf8.caml',
+    'lamework.displayer.vars'     => {hello => 'привет'}
+};
+$res = $middleware->call($env);
+is_deeply $res => [
+    200,
+    ['Content-Length' => 12, 'Content-Type' => 'text/html; encoding=utf-8'],
+    [Encode::encode_utf8('привет')]
+];
