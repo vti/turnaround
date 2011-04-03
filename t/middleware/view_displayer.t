@@ -43,6 +43,6 @@ $env = {
 $res = $middleware->call($env);
 is_deeply $res => [
     200,
-    ['Content-Length' => 12, 'Content-Type' => 'text/html; encoding=utf-8'],
+    ['Content-Length' => 12, 'Content-Type' => 'text/html; charset=utf-8'],
     [Encode::encode_utf8('привет')]
 ];

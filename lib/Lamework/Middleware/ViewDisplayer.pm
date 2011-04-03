@@ -37,7 +37,7 @@ sub _display {
 
     if (Encode::is_utf8($body)) {
         $body = Encode::encode('UTF-8', $body);
-        $content_type .= '; encoding=utf-8';
+        $content_type .= '; charset=utf-8';
     }
 
     return [
