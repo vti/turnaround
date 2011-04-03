@@ -64,8 +64,9 @@ sub call {
     my $handle    = $class->get_handle(@languages);
     $handle->fail_with(sub { $_[1] });
 
-    $env->{'lamework.i18n.language'} = $handle->language_tag;
-    $env->{'lamework.i18n.maketext'} = sub {
+    $env->{'lamework.i18n.language'}  = $handle->language_tag;
+    $env->{'lamework.i18n.languages'} = [$self->available_languages];
+    $env->{'lamework.i18n.maketext'}  = sub {
         return Encode::decode_utf8($handle->maketext(@_));
     };
 
