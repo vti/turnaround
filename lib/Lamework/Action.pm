@@ -3,6 +3,8 @@ package Lamework::Action;
 use strict;
 use warnings;
 
+use Plack::App::File;
+
 use Scalar::Util qw(weaken);
 
 use Lamework::Logger;
@@ -140,6 +142,25 @@ sub render_not_found {
 
     $self->res->code(404);
     $self->render_file('not_found', @_);
+
+    return $self;
+}
+
+sub serve_file {
+    my $self = shift;
+    my ($path) = @_;
+
+    return $self->render_not_found unless -e $path;
+
+    return $self->render_forbidden unless -r $path;
+
+    my $app = Plack::App::File->new(file => $path);
+
+    my $res = $app->serve_path($self->env, $path);
+
+    $self->res->code($res->[0]);
+    $self->res->headers($res->[1]);
+    $self->res->body($res->[2]);
 
     return $self;
 }

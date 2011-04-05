@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 18;
+use Test::More tests => 22;
 
 use_ok('Lamework::Action');
 
@@ -64,5 +64,16 @@ $action = Lamework::Action->new(env => $env);
 $action->render_not_found;
 is $action->res->code => 404;
 is $action->res->body => 'Not Found!';
+
+$action = Lamework::Action->new(env => $env);
+$action->serve_file('unknown');
+is $action->res->code => 404;
+is $action->res->body => 'Not Found!';
+
+$action = Lamework::Action->new(env => $env);
+$action->serve_file('t/action/static.txt');
+is $action->res->code => 200;
+$action->res->body->read(my $buf, 1024);
+is $buf => "Static file!\n";
 
 1;
