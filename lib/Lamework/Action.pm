@@ -93,6 +93,14 @@ sub set_var {
     my ($key, $value) = @_;
 
     $self->{env}->{'lamework.displayer.vars'}->{$key} = $value;
+
+    return $self;
+}
+
+sub vars {
+    my $self = shift;
+
+    return $self->{env}->{'lamework.displayer.vars'};
 }
 
 sub set_template {
