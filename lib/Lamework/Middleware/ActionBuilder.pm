@@ -38,7 +38,11 @@ sub _action {
         Class::Load::load_class($class);
 
         $action = $class->new(env => $env);
-        $action->run;
+        my $retval = $action->run;
+
+        if (ref $retval eq 'CODE') {
+            $res = $retval;
+        }
 
         if ($action->res->code || defined $action->res->body) {
             $res = $self->_finalize_response($action->res);
