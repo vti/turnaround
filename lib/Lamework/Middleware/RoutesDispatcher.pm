@@ -20,11 +20,12 @@ sub _match {
     my $self = shift;
     my ($env) = @_;
 
-    my $path = $env->{PATH_INFO};
+    my $path   = $env->{PATH_INFO};
+    my $method = $env->{REQUEST_METHOD};
 
     my $routes = Lamework::Registry->get('routes');
 
-    my $m = $routes->match($path);
+    my $m = $routes->match($path, method => lc $method);
     return unless $m;
 
     $env->{'lamework.routes.match'} = $m;
