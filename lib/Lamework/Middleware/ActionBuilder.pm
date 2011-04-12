@@ -49,7 +49,8 @@ sub _action {
         }
     }
     catch {
-        die $_ unless $_ =~ m{^Can't locate [^ ]+ in \@INC }
+        $class =~ s{::}{/}g;
+        die $_ unless $_ =~ m{^Can't locate $class\.pm in \@INC }
     };
 
     return $res;
