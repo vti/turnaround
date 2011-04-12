@@ -9,6 +9,7 @@ use Encode ();
 use Plack::MIME;
 use String::CamelCase ();
 
+use Lamework::Util;
 use Lamework::Registry;
 
 sub call {
@@ -30,7 +31,7 @@ sub _display {
 
     my $displayer = Lamework::Registry->get('displayer');
 
-    my $args = $self->_args_from_env($env);
+    my $args = grep_hashref 'lamework.displayer.', $env;
 
     my $body = $displayer->render_file($template, %$args);
 
@@ -49,24 +50,6 @@ sub _display {
         ],
         [$body]
     ];
-}
-
-sub _args_from_env {
-    my $self = shift;
-    my ($env) = @_;
-
-    my $prefix = quotemeta 'lamework.displayer.';
-    my @keys = grep {m/^$prefix/} keys %$env;
-
-    my $args;
-    for my $key (@keys) {
-        my $value = $env->{$key};
-        $key =~ s/^$prefix//;
-
-        $args->{$key} = $value;
-    }
-
-    return $args;
 }
 
 sub _template {

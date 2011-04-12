@@ -7,6 +7,7 @@ use Plack::App::File;
 
 use Scalar::Util qw(weaken);
 
+use Lamework::Util;
 use Lamework::Logger;
 use Lamework::Registry;
 use Lamework::Request;
@@ -132,7 +133,9 @@ sub render_file {
 
     my $displayer = Lamework::Registry->get('displayer');
 
-    my $body = $displayer->render_file(@_);
+    my $args = grep_hashref 'lamework.displayer.', $self->env;
+
+    my $body = $displayer->render_file(%$args, @_);
 
     unless (defined $self->res->code) {
         $self->res->code(200);
