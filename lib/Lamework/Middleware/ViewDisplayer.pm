@@ -29,13 +29,10 @@ sub _display {
     return unless defined $template;
 
     my $displayer = Lamework::Registry->get('displayer');
-    my $vars = $env->{'lamework.displayer.vars'} || {};
 
-    my $body = $displayer->render_file($template, vars => $vars);
+    my $args = $self->_args_from_env($env);
 
-    if (my $layout = $env->{'lamework.displayer.layout'}) {
-        $body = $displayer->render_file($layout, vars => {content => $body});
-    }
+    my $body = $displayer->render_file($template, %$args);
 
     my $content_type = Plack::MIME->mime_type(".html");
 
@@ -52,6 +49,24 @@ sub _display {
         ],
         [$body]
     ];
+}
+
+sub _args_from_env {
+    my $self = shift;
+    my ($env) = @_;
+
+    my $prefix = quotemeta 'lamework.displayer.';
+    my @keys = grep {m/^$prefix/} keys %$env;
+
+    my $args;
+    for my $key (@keys) {
+        my $value = $env->{$key};
+        $key =~ s/^$prefix//;
+
+        $args->{$key} = $value;
+    }
+
+    return $args;
 }
 
 sub _template {
