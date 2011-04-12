@@ -33,10 +33,15 @@ sub _display {
 
     my $body = $displayer->render_file($template, vars => $vars);
 
+    if (my $layout = $env->{'lamework.displayer.layout'}) {
+        $body = $displayer->render_file($layout, vars => {content => $body});
+    }
+
     my $content_type = Plack::MIME->mime_type(".html");
 
     if (Encode::is_utf8($body)) {
         $body = Encode::encode('UTF-8', $body);
+
         $content_type .= '; charset=utf-8';
     }
 

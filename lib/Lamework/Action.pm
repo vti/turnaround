@@ -110,6 +110,13 @@ sub set_template {
     $self->{env}->{'lamework.displayer.template'} = $template;
 }
 
+sub set_layout {
+    my $self = shift;
+    my ($layout) = @_;
+
+    $self->{env}->{'lamework.displayer.layout'} = $layout;
+}
+
 sub redirect {
     my $self = shift;
     my (@args) = @_;
