@@ -27,7 +27,7 @@ sub render_file {
     my $body = $renderer->render_file($file, $args{vars} || {});
 
     if (defined(my $layout = delete $args{layout})) {
-        $body = $renderer->render_file($layout, {content => $body});
+        $body = $self->render_file($layout, vars => {content => $body});
     }
 
     return $body;

@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 22;
+use Test::More tests => 24;
 
 use_ok('Lamework::Action');
 
@@ -52,6 +52,11 @@ is $action->res->location => 'http://localhost/bar/';
 
 $action = Lamework::Action->new(env => $env);
 $action->render_file('template.caml');
+is $action->res->code => 200;
+is $action->res->body => 'Hello there!';
+
+$action = Lamework::Action->new(env => $env);
+$action->render_file('template', layout => 'layout');
 is $action->res->code => 200;
 is $action->res->body => 'Hello there!';
 
