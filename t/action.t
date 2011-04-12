@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 24;
+use Test::More tests => 26;
 
 use_ok('Lamework::Action');
 
@@ -58,7 +58,13 @@ is $action->res->body => 'Hello there!';
 $action = Lamework::Action->new(env => $env);
 $action->render_file('template', layout => 'layout');
 is $action->res->code => 200;
-is $action->res->body => 'Hello there!';
+is $action->res->body => "Before\nHello there!\nAfter";
+
+my $env_ = {%$env, 'lamework.displayer.layout' => 'layout'};
+$action = Lamework::Action->new(env => $env_);
+$action->render_file('template');
+is $action->res->code => 200;
+is $action->res->body => "Before\nHello there!\nAfter";
 
 $action = Lamework::Action->new(env => $env);
 $action->render_forbidden;
