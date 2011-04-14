@@ -46,10 +46,11 @@ sub init {
     my $app_name = String::CamelCase::decamelize($self->namespace);
     my $config_file = $home->catfile("$app_name.ini");
 
+    my $config = {};
     if (-f $config_file) {
-        my $config = Lamework::Config->new->load($config_file);
-        Lamework::Registry->set(config => $config);
+        $config = Lamework::Config->new->load($config_file);
     }
+    Lamework::Registry->set(config => $config);
 }
 
 sub startup { }
