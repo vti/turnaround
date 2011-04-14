@@ -6,6 +6,7 @@ use warnings;
 use Plack::App::File;
 
 use Scalar::Util qw(weaken);
+use Encode;
 
 use Lamework::Util;
 use Lamework::Logger;
@@ -140,6 +141,10 @@ sub render_file {
 
     unless (defined $self->res->code) {
         $self->res->code(200);
+    }
+
+    if (Encode::is_utf8($body)) {
+        $body = Encode::encode('UTF-8', $body);
     }
 
     $self->res->body($body);

@@ -1,9 +1,12 @@
 use strict;
 use warnings;
+use utf8;
 
-use Test::More tests => 26;
+use Test::More tests => 28;
 
 use_ok('Lamework::Action');
+
+use Encode ();
 
 use Lamework::Routes;
 use Lamework::Registry;
@@ -65,6 +68,11 @@ $action = Lamework::Action->new(env => $env_);
 $action->render_file('template');
 is $action->res->code => 200;
 is $action->res->body => "Before\nHello there!\nAfter";
+
+$action = Lamework::Action->new(env => $env);
+$action->render_file('template_utf8');
+is $action->res->code => 200;
+is $action->res->body => Encode::encode('UTF-8', "привет");
 
 $action = Lamework::Action->new(env => $env);
 $action->render_forbidden;
