@@ -16,8 +16,8 @@ test_psgi $app, sub {
     my $cb = shift;
 
     my $res = $cb->(GET '/');
-    is $res->content, 'http://localhost/en,en,en|ru';
+    is $res->content, 'http://localhost/en/,en,en|ru';
 
     $res = $cb->(GET '/ru');
-    is $res->content, 'http://localhost/ru,ru,en|ru';
+    is $res->content, 'http://localhost/ru/,ru,en|ru';
 };

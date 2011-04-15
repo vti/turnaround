@@ -64,7 +64,7 @@ sub call {
     };
 
     $env->{SCRIPT_NAME} =
-      ($env->{SCRIPT_NAME} || '') . '/' . $handle->language_tag;
+      ($env->{SCRIPT_NAME} || '') . '/' . $handle->language_tag . '/';
 
     return $self->app->($env);
 }
