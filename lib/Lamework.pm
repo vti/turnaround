@@ -104,10 +104,12 @@ sub compile_psgi_app {
         return [404, [], ['404 Not Found']];
     };
 
+    my $home = Lamework::Registry->get('home');
+
     builder {
         enable 'Static' => path =>
           qr{\.(?:js|css|jpe?g|gif|ico|png|html?|swf|txt)$},
-          root => "htdocs";
+          root => $home->catfile('htdocs');
 
         enable 'SimpleLogger', level => $ENV{PLACK_ENV}
           && $ENV{PLACK_ENV} eq 'development' ? 'debug' : 'error';
