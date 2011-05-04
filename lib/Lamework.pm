@@ -106,7 +106,7 @@ sub compile_psgi_app {
 
     builder {
         enable 'Static' => path =>
-          qr{\.(?:js|css|jpe?g|gif|png|html?|swf|ico)$},
+          qr{\.(?:js|css|jpe?g|gif|ico|png|html?|swf|txt)$},
           root => "htdocs";
 
         enable 'SimpleLogger', level => $ENV{PLACK_ENV}
