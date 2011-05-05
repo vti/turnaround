@@ -32,7 +32,7 @@ sub _display {
     my $displayer = Lamework::Registry->get('displayer');
 
     my $args = grep_hashref 'lamework.displayer.', $env;
-    $args = {%{$self->{default_args} || {}}, %$args};
+    $args = {%{$self->{default_args} || {}}, %{$args || {}}};
 
     my $body = $displayer->render_file($template, %$args);
 
