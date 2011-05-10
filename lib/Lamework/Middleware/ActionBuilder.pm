@@ -33,27 +33,25 @@ sub _action {
 
     my $class = $self->_build_class_name($action);
 
-    my $res;
-    try {
+    return try {
         Class::Load::load_class($class);
 
         $action = $class->new(env => $env);
         my $retval = $action->run;
 
         if (ref $retval eq 'CODE') {
-            $res = $retval;
+            return $retval;
         }
 
         if ($action->res->code || defined $action->res->body) {
-            $res = $self->_finalize_response($action->res);
+            return $action->res->finalize;
         }
     }
     catch {
         $class =~ s{::}{/}g;
-        die $_ unless $_ =~ m{^Can't locate $class\.pm in \@INC }
+        die $_ unless $_ =~ m{^Can't locate $class\.pm in \@INC };
+        return;
     };
-
-    return $res;
 }
 
 sub _build_class_name {
@@ -66,21 +64,6 @@ sub _build_class_name {
     my $namespace = $app->namespace;
 
     return "$namespace\::Action::$action";
-}
-
-sub _finalize_response {
-    my $self = shift;
-    my ($res) = @_;
-
-    unless (defined $res->content_length) {
-        $res->content_length(length $res->body);
-    }
-
-    unless ($res->content_type) {
-        $res->content_type('text/html');
-    }
-
-    return $res->finalize;
 }
 
 1;
