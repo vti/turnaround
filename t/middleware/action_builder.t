@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More tests => 6;
 use Test::MockObject;
 
 use_ok('Lamework::Middleware::ActionBuilder');
@@ -48,6 +48,11 @@ is_deeply $res => [
     200, ['Content-Length' => 16, 'Content-Type' => 'text/html'],
     ['Custom response!']
 ];
+
+$m = _build_match(action => sub { [200, [], ['Hello']] });
+$env = {'lamework.routes.match' => $m};
+$res = $middleware->call($env);
+is_deeply $res => [200, [], ['Hello']];
 
 sub _build_match {
     my (@args) = @_;

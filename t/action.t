@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use utf8;
 
-use Test::More tests => 28;
+use Test::More tests => 30;
 
 use_ok('Lamework::Action');
 
@@ -94,5 +94,12 @@ $action->serve_file('t/action/static.txt');
 is $action->res->code => 200;
 $action->res->body->read(my $buf, 1024);
 is $buf => "Static file!\n";
+
+$action = Lamework::Action->new(env => $env);
+eval { $action->run; };
+ok $@;
+
+$action = Lamework::Action->new(env => $env, cb => sub {'Hello'});
+is($action->run, 'Hello');
 
 1;

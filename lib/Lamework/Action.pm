@@ -25,6 +25,16 @@ sub new {
     return $self;
 }
 
+sub run {
+    my $self = shift;
+
+    if ($self->{cb}) {
+        return $self->{cb}->($self);
+    }
+
+    die "Method 'run' in action '" . ref($self) . "' must be overwritten";
+}
+
 sub log {
     my $self = shift;
 
