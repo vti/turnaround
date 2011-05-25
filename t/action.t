@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use utf8;
 
-use Test::More tests => 30;
+use Test::More tests => 31;
 
 use_ok('Lamework::Action');
 
@@ -45,13 +45,12 @@ is $action->url_for('/')                 => 'http://localhost/';
 is $action->url_for('/foo')              => 'http://localhost/foo';
 is $action->url_for('/bar/')             => 'http://localhost/bar/';
 
-$action->redirect('action', action => 'foo', id => 3);
-is $action->res->code     => 302;
-is $action->res->location => 'http://localhost/foo/3';
+eval { $action->redirect('action', action => 'foo', id => 3); };
+isa_ok($@, 'Lamework::HTTPException');
+is $@->location => 'http://localhost/foo/3';
 
-$action->redirect('/bar/');
-is $action->res->code     => 302;
-is $action->res->location => 'http://localhost/bar/';
+eval { $action->redirect('/bar/'); };
+is $@->location => 'http://localhost/bar/';
 
 $action = Lamework::Action->new(env => $env);
 $action->render_file('template.caml');
@@ -75,19 +74,21 @@ is $action->res->code => 200;
 is $action->res->body => Encode::encode('UTF-8', "привет");
 
 $action = Lamework::Action->new(env => $env);
-$action->render_forbidden;
-is $action->res->code => 403;
-is $action->res->body => 'Forbidden!';
+eval { $action->forbidden };
+isa_ok($@, 'Lamework::HTTPException');
+is $@->code      => 403;
+is $@->as_string => 'Forbidden!';
 
 $action = Lamework::Action->new(env => $env);
-$action->render_not_found;
-is $action->res->code => 404;
-is $action->res->body => 'Not Found!';
+eval { $action->not_found };
+isa_ok($@, 'Lamework::HTTPException');
+is $@->code      => 404;
+is $@->as_string => 'Not Found!';
 
 $action = Lamework::Action->new(env => $env);
-$action->serve_file('unknown');
-is $action->res->code => 404;
-is $action->res->body => 'Not Found!';
+eval { $action->serve_file('unknown'); };
+isa_ok($@, 'Lamework::HTTPException');
+is $@->code => 404;
 
 $action = Lamework::Action->new(env => $env);
 $action->serve_file('t/action/static.txt');

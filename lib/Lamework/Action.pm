@@ -6,13 +6,14 @@ use warnings;
 use Plack::App::File;
 
 use Scalar::Util qw(weaken);
-use Encode;
+use Encode ();
 
-use Lamework::Util;
+use Lamework::HTTPException;
 use Lamework::Logger;
 use Lamework::Registry;
 use Lamework::Request;
 use Lamework::Response;
+use Lamework::Util;
 
 sub new {
     my $class = shift;
@@ -129,16 +130,6 @@ sub set_layout {
     $self->{env}->{'lamework.displayer.layout'} = $layout;
 }
 
-sub redirect {
-    my $self = shift;
-    my (@args) = @_;
-
-    my $url = $self->url_for(@_);
-    $self->res->redirect($url);
-
-    return $self;
-}
-
 sub render_file {
     my $self = shift;
     my $file = shift;
@@ -162,31 +153,41 @@ sub render_file {
     return $self;
 }
 
-sub render_forbidden {
+sub forbidden {
     my $self = shift;
+    my ($message) = @_;
 
-    $self->res->code(403);
-    $self->render_file('forbidden', @_);
+    $message
+      ||= Lamework::Registry->get('displayer')->render_file('forbidden');
 
-    return $self;
+    Lamework::HTTPException->throw(403, message => $message);
 }
 
-sub render_not_found {
+sub not_found {
+    my $self = shift;
+    my ($message) = @_;
+
+    $message
+      ||= Lamework::Registry->get('displayer')->render_file('not_found');
+
+    Lamework::HTTPException->throw(404, message => $message)
+}
+
+sub redirect {
     my $self = shift;
 
-    $self->res->code(404);
-    $self->render_file('not_found', @_);
+    my $url = $self->url_for(@_);
 
-    return $self;
+    Lamework::HTTPException->throw(302, location => $url);
 }
 
 sub serve_file {
     my $self = shift;
     my ($path) = @_;
 
-    return $self->render_not_found unless -e $path;
+    return $self->not_found unless -e $path;
 
-    return $self->render_forbidden unless -r $path;
+    return $self->forbidden unless -r $path;
 
     my $app = Plack::App::File->new(file => $path);
 

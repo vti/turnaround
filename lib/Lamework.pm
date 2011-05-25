@@ -40,10 +40,10 @@ sub init {
     my $home = Lamework::Home->new($self->_detect_home);
     Lamework::Registry->set(home => $home);
 
-    Lamework::Registry->set(routes => $self->routes);
+    Lamework::Registry->set(routes    => $self->routes);
     Lamework::Registry->set(displayer => $self->displayer);
 
-    my $app_name = String::CamelCase::decamelize($self->namespace);
+    my $app_name    = String::CamelCase::decamelize($self->namespace);
     my $config_file = $home->catfile("$app_name.ini");
 
     my $config = {};
@@ -95,21 +95,26 @@ sub psgi_app {
     return $self->{psgi_app} ||= $self->compile_psgi_app;
 }
 
-sub compile_psgi_app {
+sub app {
     my $self = shift;
 
-    my $app = sub {
+    sub {
         my $env = shift;
 
-        return [404, [], ['404 Not Found']];
-    };
+        my $message = $self->displayer->render_file('not_found');
+        Lamework::HTTPException->throw(404, message => $message);
+      }
+}
 
-    my $home = Lamework::Registry->get('home');
+sub compile_psgi_app {
+    my $self = shift;
 
     builder {
         enable 'Static' => path =>
           qr{\.(?:js|css|jpe?g|gif|ico|png|html?|swf|txt)$},
-          root => $home->catfile('htdocs');
+          root => $self->home->catfile('htdocs');
+
+        enable 'HTTPExceptions';
 
         enable 'SimpleLogger', level => $ENV{PLACK_ENV}
           && $ENV{PLACK_ENV} eq 'development' ? 'debug' : 'error';
@@ -122,7 +127,7 @@ sub compile_psgi_app {
 
         enable 'ContentLength';
 
-        $app;
+        $self->app;
     };
 }
 
