@@ -120,6 +120,8 @@ sub compile_psgi_app {
 
         enable '+Lamework::Middleware::ViewDisplayer';
 
+        enable 'ContentLength';
+
         $app;
     };
 }

@@ -44,10 +44,8 @@ is $env->{'foo'} => 1;
 $m = _build_match(action => 'custom_response');
 $env = {'lamework.routes.match' => $m};
 my $res = $middleware->call($env);
-is_deeply $res => [
-    200, ['Content-Length' => 16, 'Content-Type' => 'text/html'],
-    ['Custom response!']
-];
+is_deeply $res =>
+  [200, ['Content-Type' => 'text/html'], ['Custom response!']];
 
 $m = _build_match(action => sub { [200, [], ['Hello']] });
 $env = {'lamework.routes.match' => $m};
