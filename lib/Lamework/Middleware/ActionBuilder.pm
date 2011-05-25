@@ -59,7 +59,7 @@ sub _action {
         return $action->res->finalize;
     }
 
-    return $action;
+    return;
 }
 
 sub _build_action {
