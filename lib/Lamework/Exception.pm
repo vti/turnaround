@@ -18,9 +18,23 @@ sub error { shift->{error} }
 
 sub throw {
     my $class = shift;
-    my ($error) = @_;
 
-    Carp::croak($class->new(error => $error));
+    if (@_ == 1) {
+        my $error = shift;
+
+        Carp::croak($class->new(error => $error));
+    }
+    else {
+        my %params = @_;
+
+        if ($params{class}) {
+            eval <<"EOF";
+package $params{class};
+use base 'Lamework::Exception';
+EOF
+            Carp::croak($params{class}->new(error => $params{error}));
+        }
+    }
 }
 
 1;
