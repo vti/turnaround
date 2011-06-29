@@ -65,7 +65,9 @@ sub _template {
 
         my $action = $match->params->{action};
         $template =
-          $action ? $self->_action_to_template($action) : $match->name;
+            $action && !ref $action
+          ? $self->_action_to_template($action)
+          : $match->name;
     }
 
     return $template;
@@ -74,6 +76,8 @@ sub _template {
 sub _action_to_template {
     my $self = shift;
     my ($action) = @_;
+
+    $action =~ s{::}{/}g;
 
     return String::CamelCase::decamelize($action);
 }
