@@ -27,6 +27,10 @@ sub throw {
     else {
         my %params = @_;
 
+        unless ($params{class} =~ s{\+}{}) {
+            $params{class} = "$class\::$params{class}";
+        }
+
         if ($params{class}) {
             eval <<"EOF";
 package $params{class};
