@@ -134,7 +134,10 @@ sub compile_psgi_app {
 sub _detect_home {
     my $self = shift;
 
-    my $home = $INC{$self->namespace . '.pm'};
+    my $namespace = $self->namespace;
+    $namespace =~ s{::}{/}g;
+
+    my $home = $INC{$namespace . '.pm'};
     if (defined $home) {
         $home = Cwd::realpath(
             File::Spec->catfile(File::Basename::dirname($home), '..'));
