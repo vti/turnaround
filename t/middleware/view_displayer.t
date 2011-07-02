@@ -24,20 +24,24 @@ my $middleware = Lamework::Middleware::ViewDisplayer->new(app => sub { });
 my $env = {};
 $middleware->call($env);
 
-$env = {'lamework.displayer.template' => 'unknown.caml'};
+$env = {'lamework.displayer' => {'template' => 'unknown.caml'}};
 eval { $middleware->call($env); };
 
 $env = {
-    'lamework.displayer.template' => 'template.caml',
-    'lamework.displayer.vars'     => {hello => 'there'}
+    'lamework.displayer' => {
+        'template' => 'template.caml',
+        'vars'     => {hello => 'there'}
+    }
 };
 is_deeply $middleware->call($env) =>
   [200, ['Content-Length' => 5, 'Content-Type' => 'text/html'], ['there']];
 
 $env = {
-    'lamework.displayer.layout'   => 'layout.caml',
-    'lamework.displayer.template' => 'template.caml',
-    'lamework.displayer.vars'     => {hello => 'there'}
+    'lamework.displayer' => {
+        'layout'   => 'layout.caml',
+        'template' => 'template.caml',
+        'vars'     => {hello => 'there'}
+    }
 };
 is_deeply $middleware->call($env) => [
     200,
@@ -46,8 +50,10 @@ is_deeply $middleware->call($env) => [
 ];
 
 $env = {
-    'lamework.displayer.template' => 'template-utf8.caml',
-    'lamework.displayer.vars'     => {hello => 'привет'}
+    'lamework.displayer' => {
+        'template' => 'template-utf8.caml',
+        'vars'     => {hello => 'привет'}
+    }
 };
 is_deeply $middleware->call($env) => [
     200,

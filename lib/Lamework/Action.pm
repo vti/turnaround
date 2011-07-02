@@ -13,7 +13,6 @@ use Lamework::Logger;
 use Lamework::Registry;
 use Lamework::Request;
 use Lamework::Response;
-use Lamework::Util;
 
 sub new {
     my $class = shift;
@@ -105,7 +104,7 @@ sub set_var {
     my $self = shift;
     my ($key, $value) = @_;
 
-    $self->{env}->{'lamework.displayer.vars'}->{$key} = $value;
+    $self->{env}->{'lamework.displayer'}->{'vars'}->{$key} = $value;
 
     return $self;
 }
@@ -113,7 +112,7 @@ sub set_var {
 sub vars {
     my $self = shift;
 
-    return $self->{env}->{'lamework.displayer.vars'};
+    return $self->{env}->{'lamework.displayer'}->{'vars'};
 }
 
 sub set_template {
@@ -136,7 +135,7 @@ sub render_file {
 
     my $displayer = Lamework::Registry->get('displayer');
 
-    my $args = grep_hashref 'lamework.displayer.', $self->env;
+    my $args = $self->env->{'lamework.displayer'};
 
     my $body = $displayer->render_file($file, %$args, @_);
 

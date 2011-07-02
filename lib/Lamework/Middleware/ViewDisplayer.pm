@@ -31,7 +31,7 @@ sub _display {
 
     my $displayer = Lamework::Registry->get('displayer');
 
-    my $args = grep_hashref 'lamework.displayer.', $env;
+    my $args = $env->{'lamework.displayer'};
     $args = {%{$self->{default_args} || {}}, %{$args || {}}};
 
     my $body = $displayer->render_file($template, %$args);
@@ -57,7 +57,7 @@ sub _template {
     my $self = shift;
     my ($env) = @_;
 
-    my $template = $env->{'lamework.displayer.template'};
+    my $template = $env->{'lamework.displayer'}->{'template'};
 
     if (!$template) {
         my $match = $env->{'lamework.routes.match'};
