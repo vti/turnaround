@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 require Carp;
+use Class::Load;
 
 sub new {
     my $class = shift;
@@ -32,13 +33,22 @@ sub throw {
         }
 
         if ($params{class}) {
-            eval <<"EOF";
-package $params{class};
-use base 'Lamework::Exception';
-EOF
+            $class->_create_class($params{class});
             Carp::croak($params{class}->new(error => $params{error}));
         }
     }
+}
+
+sub _create_class {
+    my $self = shift;
+    my ($class) = @_;
+
+    return if Class::Load::is_class_loaded($class);
+
+    eval <<"EOF";
+package $class;
+use base 'Lamework::Exception';
+EOF
 }
 
 1;
