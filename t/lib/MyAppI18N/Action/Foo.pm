@@ -9,7 +9,10 @@ sub run {
     my $languages = $self->env->{'lamework.i18n.languages'};
 
     $self->res->code(200);
-    $self->res->body(join ',' => $self->url_for('foo'), $language, join '|', @$languages);
+    $self->res->body(
+        join ',' => $self->url_for('foo'),
+        $language, join '|', sort @$languages
+    );
 }
 
 1;
