@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use utf8;
 
-use Test::More tests => 31;
+use Test::More tests => 33;
 
 use_ok('Lamework::Action');
 
@@ -102,5 +102,11 @@ ok $@;
 
 $action = Lamework::Action->new(env => $env, cb => sub {'Hello'});
 is($action->run, 'Hello');
+
+$action = Lamework::Action->new(env => $env);
+$action->set_var(foo => 'bar');
+is_deeply($action->vars, {foo => 'bar'});
+$action->set_var(foo => 'bar', bar => 'baz');
+is_deeply($action->vars, {foo => 'bar', bar => 'baz'});
 
 1;

@@ -102,9 +102,13 @@ sub url_for {
 
 sub set_var {
     my $self = shift;
-    my ($key, $value) = @_;
 
-    $self->{env}->{'lamework.displayer'}->{'vars'}->{$key} = $value;
+    for (my $i = 0; $i < @_; $i += 2) {
+        my $key   = $_[$i];
+        my $value = $_[$i + 1];
+
+        $self->{env}->{'lamework.displayer'}->{'vars'}->{$key} = $value;
+    }
 
     return $self;
 }
