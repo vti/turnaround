@@ -123,14 +123,14 @@ sub set_template {
     my $self = shift;
     my ($template) = @_;
 
-    $self->{env}->{'lamework.displayer.template'} = $template;
+    $self->{env}->{'lamework.displayer'}->{template} = $template;
 }
 
 sub set_layout {
     my $self = shift;
     my ($layout) = @_;
 
-    $self->{env}->{'lamework.displayer.layout'} = $layout;
+    $self->{env}->{'lamework.displayer'}->{layout} = $layout;
 }
 
 sub render_file {
