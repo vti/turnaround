@@ -30,7 +30,7 @@ sub _match {
     my $m = $routes->match($path, method => lc $method);
     return unless $m;
 
-    Lamework::Env->new($env)->set_captures(action => $m->params->{action});
+    Lamework::Env->new($env)->set_captures(%{$m->params});
 
     Lamework::Env->new($env)->set_match($m);
 
