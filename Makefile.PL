@@ -48,7 +48,6 @@ WriteMakefile(
         'Routes::Tiny'           => '0',
         'Scalar::Util'           => '0',
         'String::CamelCase'      => '0',
-        'Test::MockObject'       => '0',
         'Test::More'             => '0',
         'Text::Caml'             => '0',
         'Try::Tiny'              => '0',
