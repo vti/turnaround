@@ -60,10 +60,15 @@ sub _get_template {
     my $template = $env->{'lamework.displayer'}->{'template'};
 
     if (!$template) {
-        my $action = Lamework::Env->new($env)->captures->{action};
-        return unless defined $action;
+        my $env =  Lamework::Env->new($env);
 
-        $template = $self->_action_to_template($action);
+        if (defined(my $action = $env->captures->{action})) {
+            $template = $self->_action_to_template($action);
+        }
+        elsif (my $match = $env->match) {
+            return unless defined $match->name;
+            $template = $match->name;
+        }
     }
 
     return $template;
