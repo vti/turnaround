@@ -5,8 +5,6 @@ use warnings;
 
 use base 'Lamework::Base';
 
-use overload '{}' => sub { $_[0]->config }, fallback => 1;
-
 sub BUILD {
     my $self = shift;
 

@@ -5,7 +5,9 @@ use warnings;
 
 use base 'Lamework::Middleware';
 
+use Lamework::Env;
 use Lamework::Registry;
+use Lamework::Request;
 
 sub call {
     my $self = shift;
@@ -28,7 +30,11 @@ sub _match {
     my $m = $routes->match($path, method => lc $method);
     return unless $m;
 
-    $env->{'lamework.routes.match'} = $m;
+    Lamework::Env->new($env)->set_captures(action => $m->params->{action});
+
+    Lamework::Env->new($env)->set_match($m);
+
+    return $self;
 }
 
 1;

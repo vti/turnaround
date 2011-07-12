@@ -61,7 +61,7 @@ sub app {
 
         my $message =
           Lamework::Registry->get('displayer')->render_file('not_found');
-        Lamework::HTTPException->throw(404, message => $message);
+        Lamework::HTTPException->throw(404, $message);
       }
 }
 
@@ -78,13 +78,13 @@ sub compile_psgi_app {
         enable 'SimpleLogger', level => $ENV{PLACK_ENV}
           && $ENV{PLACK_ENV} eq 'development' ? 'debug' : 'error';
 
+        enable 'ContentLength';
+
         enable '+Lamework::Middleware::RoutesDispatcher';
 
         enable '+Lamework::Middleware::ActionBuilder';
 
         enable '+Lamework::Middleware::ViewDisplayer';
-
-        enable 'ContentLength';
 
         $self->app;
     };

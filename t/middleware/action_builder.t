@@ -1,14 +1,14 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
-use Test::MockObject;
+use Test::More tests => 5;
 
 use_ok('Lamework::Middleware::ActionBuilder');
 
 use lib 't/lib';
 
 use MyApp;
+use Lamework::Env;
 use Lamework::Registry;
 
 my $app = MyApp->new;
@@ -18,50 +18,25 @@ my $middleware = Lamework::Middleware::ActionBuilder->new(app => sub { });
 my $env = {};
 $middleware->call($env);
 
-my $m = _build_match();
-$env = {'lamework.routes.match' => $m};
+Lamework::Env->new($env)->set_captures();
 $middleware->call($env);
 
-$m = _build_match(action => 'unknown');
-$env = {'lamework.routes.match' => $m};
+Lamework::Env->new($env)->set_captures(action => 'unknown');
 $middleware->call($env);
 
-$m = _build_match(action => 'with_syntax_errors');
-$env = {'lamework.routes.match' => $m};
+Lamework::Env->new($env)->set_captures(action => 'with_syntax_errors');
 eval { $middleware->call($env); };
 ok $@;
 
-$m = _build_match(action => 'die_during_run');
-$env = {'lamework.routes.match' => $m};
+Lamework::Env->new($env)->set_captures(action => 'die_during_run');
 eval { $middleware->call($env); };
 like $@ => qr/^here/;
 
-$m = _build_match(action => 'foo');
-$env = {'lamework.routes.match' => $m};
+Lamework::Env->new($env)->set_captures(action => 'foo');
 $middleware->call($env);
 is $env->{'foo'} => 1;
 
-$m = _build_match(action => 'custom_response');
-$env = {'lamework.routes.match' => $m};
+Lamework::Env->new($env)->set_captures(action => 'custom_response');
 my $res = $middleware->call($env);
 is_deeply $res =>
   [200, ['Content-Type' => 'text/html'], ['Custom response!']];
-
-$m = _build_match(action => sub { [200, [], ['Hello']] });
-$env = {'lamework.routes.match' => $m};
-$res = $middleware->call($env);
-is_deeply $res => [200, [], ['Hello']];
-
-sub _build_match {
-    my (@args) = @_;
-
-    my $m = Test::MockObject->new;
-
-    $m->mock(
-        params => sub {
-            return {@args};
-        }
-    );
-
-    return $m;
-}

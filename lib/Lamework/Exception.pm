@@ -5,18 +5,21 @@ use warnings;
 
 use base 'Lamework::Base';
 
+use overload '""' => sub { $_[0]->to_string }, fallback => 1;
+
 require Carp;
 use Class::Load;
+use Encode ();
 
-sub error { $_[0]->{error} }
+sub message { $_[0]->{message} }
 
 sub throw {
     my $class = shift;
 
     if (@_ == 1) {
-        my $error = shift;
+        my $message = shift;
 
-        Carp::croak($class->new(error => $error));
+        Carp::croak($class->new(message => $message));
     }
     else {
         my %params = @_;
@@ -27,10 +30,13 @@ sub throw {
 
         if ($params{class}) {
             $class->_create_class($params{class});
-            Carp::croak($params{class}->new(error => $params{error}));
+            Carp::croak($params{class}->new(message => $params{message}));
         }
     }
 }
+
+sub to_string { &as_string }
+sub as_string { Encode::encode_utf8($_[0]->{message}) }
 
 sub _create_class {
     my $self = shift;

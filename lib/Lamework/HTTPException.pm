@@ -3,21 +3,25 @@ package Lamework::HTTPException;
 use strict;
 use warnings;
 
-use base 'Lamework::Base';
+use base 'Lamework::Exception';
 
 require Carp;
 
-sub code { shift->{code} }
+sub code { $_[0]->{code} }
 
-sub location { shift->{location} }
+sub location { $_[0]->{location} }
 
 sub throw {
     my $class = shift;
     my $code  = shift;
 
-    Carp::croak($class->new(code => $code, @_));
-}
+    my $message = '';
 
-sub as_string { shift->{message} }
+    if (@_ == 1) {
+        $message = shift;
+    }
+
+    Carp::croak($class->new(code => $code, message => $message, @_));
+}
 
 1;

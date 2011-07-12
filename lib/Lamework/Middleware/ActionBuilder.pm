@@ -9,7 +9,7 @@ use Class::Load       ();
 use String::CamelCase ();
 use Try::Tiny;
 
-use Lamework::Action;
+use Lamework::Env;
 use Lamework::Registry;
 
 sub new {
@@ -20,10 +20,6 @@ sub new {
         my $namespace = ref $app;
         "$namespace\::Action::";
     };
-
-    $self->{action_class} ||= 'Lamework::Action';
-
-    Class::Load::load_class($self->{action_class});
 
     return $self;
 }
@@ -42,18 +38,17 @@ sub _action {
     my $self = shift;
     my ($env) = @_;
 
-    my $m = $env->{'lamework.routes.match'};
-    return unless $m;
+    my $captures = Lamework::Env->new($env)->captures;
+    return unless $captures;
 
-    my $action = $m->params->{action};
+    my $action = $captures->{action};
     return unless defined $action;
 
     $action = $self->_build_action($action, $env);
     return unless defined $action;
 
     my $retval = $action->run;
-    return $retval if ref $retval eq 'CODE';
-    return $retval if ref $retval eq 'ARRAY';
+    return $retval if ref $retval eq 'CODE' || ref $retval eq 'ARRAY';
 
     if ($action->res->code || defined $action->res->body) {
         return $action->res->finalize;
@@ -65,10 +60,6 @@ sub _action {
 sub _build_action {
     my $self = shift;
     my ($action, $env) = @_;
-
-    if (ref $action eq 'CODE') {
-        return $self->{action_class}->new(env => $env, cb => $action);
-    }
 
     my $class = $self->_build_class_name($action);
 
@@ -83,7 +74,7 @@ sub _build_action {
         die $_ unless $_ =~ m{^Can't locate $class\.pm in \@INC };
 
         return;
-    }
+    };
 }
 
 sub _build_class_name {

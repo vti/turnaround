@@ -10,10 +10,7 @@ sub startup {
 
     my $routes = $self->registry->get('routes');
 
-    $routes->add_route('/auto', name => 'auto_rendering');
-    $routes->add_route('/custom_response',
-        defaults => {action => 'custom_response'});
-    $routes->add_route('/no_action', name => 'no_action');
+    $routes->add_route('/:action');
 }
 
 1;

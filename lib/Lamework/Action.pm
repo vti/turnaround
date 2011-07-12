@@ -3,72 +3,19 @@ package Lamework::Action;
 use strict;
 use warnings;
 
-use base 'Lamework::Base';
-
-use Plack::App::File;
-
-use Encode ();
-use Scalar::Util qw(weaken);
+use base 'Lamework::Action::Base';
 
 use Lamework::HTTPException;
 use Lamework::Logger;
 use Lamework::Registry;
-use Lamework::Request;
-use Lamework::Response;
-
-sub BUILD {
-    my $self = shift;
-
-    weaken $self->{env};
-
-    return $self;
-}
-
-sub run {
-    my $self = shift;
-
-    if ($self->{cb}) {
-        return $self->{cb}->($self);
-    }
-
-    die "Method 'run' in action '" . ref($self) . "' must be overwritten";
-}
 
 sub log {
     my $self = shift;
 
     $self->{logger}
-      ||= Lamework::Logger->new(logger => $self->{env}->{'psgix.logger'});
+      ||= Lamework::Logger->new(logger => $self->env->{'psgix.logger'});
 
     return $self->{logger};
-}
-
-sub captures {
-    my $self = shift;
-
-    return $self->{env}->{'lamework.routes.match'}->params;
-}
-
-sub env {
-    my $self = shift;
-
-    return $self->{env};
-}
-
-sub req {
-    my $self = shift;
-
-    $self->{req} ||= Lamework::Request->new($self->{env});
-
-    return $self->{req};
-}
-
-sub res {
-    my $self = shift;
-
-    $self->{res} ||= $self->req->new_response;
-
-    return $self->{res};
 }
 
 sub url_for {
@@ -106,7 +53,7 @@ sub set_var {
         my $key   = $_[$i];
         my $value = $_[$i + 1];
 
-        $self->{env}->{'lamework.displayer'}->{'vars'}->{$key} = $value;
+        $self->env->set_var($key => $value);
     }
 
     return $self;
@@ -115,42 +62,23 @@ sub set_var {
 sub vars {
     my $self = shift;
 
-    return $self->{env}->{'lamework.displayer'}->{'vars'};
+    return $self->env->vars;
 }
 
 sub set_template {
     my $self = shift;
     my ($template) = @_;
 
-    $self->{env}->{'lamework.displayer'}->{template} = $template;
+    $self->env->set_template($template);
+
+    return $self;
 }
 
 sub set_layout {
     my $self = shift;
     my ($layout) = @_;
 
-    $self->{env}->{'lamework.displayer'}->{layout} = $layout;
-}
-
-sub render_file {
-    my $self = shift;
-    my $file = shift;
-
-    my $displayer = Lamework::Registry->get('displayer');
-
-    my $args = $self->env->{'lamework.displayer'};
-
-    my $body = $displayer->render_file($file, %$args, @_);
-
-    unless (defined $self->res->code) {
-        $self->res->code(200);
-    }
-
-    if (Encode::is_utf8($body)) {
-        $body = Encode::encode('UTF-8', $body);
-    }
-
-    $self->res->body($body);
+    $self->env->set_layout($layout);
 
     return $self;
 }
@@ -162,7 +90,7 @@ sub forbidden {
     $message
       ||= Lamework::Registry->get('displayer')->render_file('forbidden');
 
-    Lamework::HTTPException->throw(403, message => $message);
+    Lamework::HTTPException->throw(403, $message);
 }
 
 sub not_found {
@@ -172,7 +100,7 @@ sub not_found {
     $message
       ||= Lamework::Registry->get('displayer')->render_file('not_found');
 
-    Lamework::HTTPException->throw(404, message => $message)
+    Lamework::HTTPException->throw(404, $message)
 }
 
 sub redirect {
@@ -181,25 +109,6 @@ sub redirect {
     my $url = $self->url_for(@_);
 
     Lamework::HTTPException->throw(302, location => $url);
-}
-
-sub serve_file {
-    my $self = shift;
-    my ($path) = @_;
-
-    return $self->not_found unless -e $path;
-
-    return $self->forbidden unless -r $path;
-
-    my $app = Plack::App::File->new(file => $path);
-
-    my $res = $app->serve_path($self->env, $path);
-
-    $self->res->code($res->[0]);
-    $self->res->headers($res->[1]);
-    $self->res->body($res->[2]);
-
-    return $self;
 }
 
 1;

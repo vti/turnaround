@@ -5,6 +5,7 @@ use Test::More tests => 6;
 
 use_ok('Lamework::Middleware::RoutesDispatcher');
 
+use Lamework::Env;
 use Lamework::Registry;
 use Lamework::Routes;
 
@@ -21,20 +22,20 @@ my $middleware = Lamework::Middleware::RoutesDispatcher->new(app => sub { });
 
 my $env = {PATH_INFO => '/'};
 $middleware->call($env);
-ok(not exists $env->{'lamework.routes.match'});
+ok(!Lamework::Env->new($env)->match);
 
 $env = {PATH_INFO => ''};
 $middleware->call($env);
-ok(not exists $env->{'lamework.routes.match'});
+ok(!Lamework::Env->new($env)->match);
 
 $env = {PATH_INFO => '/foo'};
 $middleware->call($env);
-ok($env->{'lamework.routes.match'});
+ok(Lamework::Env->new($env)->match);
 
 $env = {REQUEST_METHOD => 'GET', PATH_INFO => '/only_post'};
 $middleware->call($env);
-ok(!$env->{'lamework.routes.match'});
+ok(!Lamework::Env->new($env)->match);
 
 $env = {REQUEST_METHOD => 'POST', PATH_INFO => '/only_post'};
 $middleware->call($env);
-ok($env->{'lamework.routes.match'});
+ok(Lamework::Env->new($env)->match);

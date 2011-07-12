@@ -9,6 +9,7 @@ use Encode ();
 use Plack::MIME;
 use String::CamelCase ();
 
+use Lamework::Env;
 use Lamework::Registry;
 
 sub call {
@@ -25,7 +26,7 @@ sub _display {
     my $self = shift;
     my ($env) = @_;
 
-    my $template = $self->_template($env);
+    my $template = $self->_get_template($env);
     return unless defined $template;
 
     my $displayer = Lamework::Registry->get('displayer');
@@ -52,21 +53,17 @@ sub _display {
     ];
 }
 
-sub _template {
+sub _get_template {
     my $self = shift;
     my ($env) = @_;
 
     my $template = $env->{'lamework.displayer'}->{'template'};
 
     if (!$template) {
-        my $match = $env->{'lamework.routes.match'};
-        return unless $match;
+        my $action = Lamework::Env->new($env)->captures->{action};
+        return unless defined $action;
 
-        my $action = $match->params->{action};
-        $template =
-            $action && !ref $action
-          ? $self->_action_to_template($action)
-          : $match->name;
+        $template = $self->_action_to_template($action);
     }
 
     return $template;
