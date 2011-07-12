@@ -3,14 +3,7 @@ package Lamework::Renderer;
 use strict;
 use warnings;
 
-sub new {
-    my $class = shift;
-
-    my $self = {@_};
-    bless $self, $class;
-
-    return $self;
-}
+use base 'Lamework::Base';
 
 sub render_file { }
 

@@ -9,7 +9,6 @@ use Encode ();
 use Plack::MIME;
 use String::CamelCase ();
 
-use Lamework::Util;
 use Lamework::Registry;
 
 sub call {

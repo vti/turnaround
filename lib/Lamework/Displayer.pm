@@ -3,11 +3,21 @@ package Lamework::Displayer;
 use strict;
 use warnings;
 
-sub new {
-    my $class = shift;
+use base 'Lamework::Base';
 
-    my $self = {@_};
-    bless $self, $class;
+use Lamework::Registry;
+
+sub BUILD {
+    my $self = shift;
+
+    $self->{formats} ||= do {
+        require Lamework::Renderer::Caml;
+        {   caml => Lamework::Renderer::Caml->new(
+                templates_path =>
+                  Lamework::Registry->get('home')->catfile('templates')
+            )
+        };
+    };
 
     return $self;
 }
@@ -22,12 +32,14 @@ sub render_file {
         $file .= '.' . $self->_default_format;
     }
 
-    my $renderer = $self->_renderer($format);
+    my $renderer = $self->_get_renderer($format);
 
     my $body = $renderer->render_file($file, $args{vars} || {});
 
-    if (defined(my $layout = delete $args{layout})) {
-        $body = $self->render_file($layout, vars => {%{$args{vars} || {}}, content => $body});
+    if (defined(my $layout = $args{layout} || $self->{layout})) {
+        $body =
+          $self->render_file($layout,
+            vars => {%{$args{vars} || {}}, content => $body});
     }
 
     return $body;
@@ -38,7 +50,7 @@ sub render {
     my ($template, %args) = @_;
 
     my $format   = $args{format};
-    my $renderer = $self->_renderer($format);
+    my $renderer = $self->_get_renderer($format);
 
     return $renderer->render($template, $args{vars});
 }
@@ -59,7 +71,7 @@ sub _default_format {
     return $format;
 }
 
-sub _renderer {
+sub _get_renderer {
     my $self = shift;
     my ($format) = @_;
 

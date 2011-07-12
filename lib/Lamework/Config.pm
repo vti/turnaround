@@ -3,24 +3,33 @@ package Lamework::Config;
 use strict;
 use warnings;
 
-use Config::Tiny;
+use base 'Lamework::Base';
 
-sub new {
-    my $class = shift;
+use overload '{}' => sub { $_[0]->config }, fallback => 1;
 
-    my $self = {@_};
-    bless $self, $class;
+sub BUILD {
+    my $self = shift;
+
+    $self->{loader} ||= do {
+        require Lamework::Config::Ini;
+        Lamework::Config::Ini->new;
+    };
 
     return $self;
 }
 
+sub config {
+    my $self = shift;
+
+    $self->{config} ||= $self->{loader}->load;
+
+    return $self->{config};
+}
+
 sub load {
     my $self = shift;
-    my ($file) = @_;
 
-    die "Can't open config file '$file'" unless -f $file;
-
-    return Config::Tiny->read($file);
+    return $self->{loader}->load(@_);
 }
 
 1;

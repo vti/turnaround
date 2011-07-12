@@ -7,8 +7,7 @@ use_ok('Lamework::Config');
 
 my $config = Lamework::Config->new;
 
-eval { $config->load('unknown'); };
-like $@ => qr/Can't open config file /;
+is_deeply $config->load('unknown'), {};
 
 is_deeply($config->load('t/config/config.ini'),
     {_ => {hello => 'there'}, main => {foo => 'bar'}});

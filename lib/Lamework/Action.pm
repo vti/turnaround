@@ -3,10 +3,12 @@ package Lamework::Action;
 use strict;
 use warnings;
 
+use base 'Lamework::Base';
+
 use Plack::App::File;
 
-use Scalar::Util qw(weaken);
 use Encode ();
+use Scalar::Util qw(weaken);
 
 use Lamework::HTTPException;
 use Lamework::Logger;
@@ -14,11 +16,8 @@ use Lamework::Registry;
 use Lamework::Request;
 use Lamework::Response;
 
-sub new {
-    my $class = shift;
-
-    my $self = {@_};
-    bless $self, $class;
+sub BUILD {
+    my $self = shift;
 
     weaken $self->{env};
 

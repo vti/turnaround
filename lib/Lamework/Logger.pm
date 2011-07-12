@@ -3,11 +3,10 @@ package Lamework::Logger;
 use strict;
 use warnings;
 
-sub new {
-    my $class = shift;
+use base 'Lamework::Base';
 
-    my $self = {@_};
-    bless $self, $class;
+sub BUILD {
+    my $self = shift;
 
     $self->{logger} ||= sub { };
 

@@ -5,8 +5,6 @@ use warnings;
 
 use base 'Plack::Response';
 
-use Plack::Util ();
-
 sub finalize {
     my $self = shift;
 

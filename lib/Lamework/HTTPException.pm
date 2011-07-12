@@ -3,16 +3,9 @@ package Lamework::HTTPException;
 use strict;
 use warnings;
 
+use base 'Lamework::Base';
+
 require Carp;
-
-sub new {
-    my $class = shift;
-
-    my $self = {@_};
-    bless $self, $class;
-
-    return $self;
-}
 
 sub code { shift->{code} }
 

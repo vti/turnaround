@@ -7,6 +7,7 @@ use Scalar::Util qw(weaken);
 
 sub instance {
     my $class = shift;
+    $class = ref($class) if ref $class;
 
     no strict;
 

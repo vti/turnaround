@@ -8,7 +8,7 @@ use base 'Lamework';
 sub startup {
     my $self = shift;
 
-    my $routes = $self->routes;
+    my $routes = $self->registry->get('routes');
 
     $routes->add_route('/auto', name => 'auto_rendering');
     $routes->add_route('/custom_response',

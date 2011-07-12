@@ -7,7 +7,7 @@ use Plack::Builder;
 sub startup {
     my $self = shift;
 
-    $self->routes->add_route(
+    $self->registry->get('routes')->add_route(
         '/',
         name     => 'foo',
         defaults => {action => 'foo'}

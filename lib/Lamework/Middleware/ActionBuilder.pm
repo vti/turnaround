@@ -17,7 +17,7 @@ sub new {
 
     $self->{namespace} ||= do {
         my $app       = Lamework::Registry->get('app');
-        my $namespace = $app->namespace;
+        my $namespace = ref $app;
         "$namespace\::Action::";
     };
 
