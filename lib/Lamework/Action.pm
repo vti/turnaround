@@ -46,6 +46,8 @@ sub url_for {
     return $url;
 }
 
+sub captures { $_[0]->env->captures }
+
 sub set_var {
     my $self = shift;
 
