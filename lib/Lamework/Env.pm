@@ -53,4 +53,7 @@ sub set_var { $_[0]->vars->{$_[1]} = $_[2] }
 sub template { $_[0]->get('lamework.template') }
 sub set_template { $_[0]->set('lamework.template' => $_[1]) }
 
+sub layout { $_[0]->get('lamework.layout') }
+sub set_layout { $_[0]->set('lamework.layout' => $_[1]) }
+
 1;

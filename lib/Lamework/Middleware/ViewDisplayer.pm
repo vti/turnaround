@@ -26,15 +26,20 @@ sub _display {
     my $self = shift;
     my ($env) = @_;
 
+    $env = Lamework::Env->new($env);
+
     my $template = $self->_get_template($env);
     return unless defined $template;
 
     my $displayer = Lamework::Registry->get('displayer');
 
-    my $args = $env->{'lamework.displayer'};
-    $args = {%{$self->{default_args} || {}}, %{$args || {}}};
+    my @args = (
+        template => $env->template,
+        layout   => $env->layout,
+        vars     => $env->vars,
+    );
 
-    my $body = $displayer->render_file($template, %$args);
+    my $body = $displayer->render_file($template, @args);
 
     my $content_type = Plack::MIME->mime_type(".html");
 
@@ -57,7 +62,7 @@ sub _get_template {
     my $self = shift;
     my ($env) = @_;
 
-    my $template = $env->{'lamework.displayer'}->{'template'};
+    my $template = $env->template;
 
     if (!$template) {
         my $env =  Lamework::Env->new($env);
