@@ -11,10 +11,10 @@ use MyApp;
 
 my $app = MyApp->new;
 
-ok(Lamework::Registry->get('app'));
+ok($app->ioc->get_service('app'));
 
-ok(Lamework::Registry->get('home'));
-ok(Lamework::Registry->get('routes'));
-ok(Lamework::Registry->get('displayer'));
+ok($app->ioc->get_service('home'));
+ok($app->ioc->get_service('routes'));
+ok($app->ioc->get_service('displayer'));
 
 1;

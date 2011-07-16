@@ -9,9 +9,6 @@ use Encode ();
 use Plack::MIME;
 use String::CamelCase ();
 
-use Lamework::Env;
-use Lamework::Registry;
-
 sub call {
     my $self = shift;
     my ($env) = @_;
@@ -26,20 +23,14 @@ sub _display {
     my $self = shift;
     my ($env) = @_;
 
-    $env = Lamework::Env->new($env);
-
     my $template = $self->_get_template($env);
     return unless defined $template;
 
-    my $displayer = Lamework::Registry->get('displayer');
+    my $args = $env->{'lamework.displayer'} || {};
 
-    my @args = (
-        template => $env->template,
-        layout   => $env->layout,
-        vars     => $env->vars,
-    );
+    my $displayer = $env->{'lamework.ioc'}->get_service('displayer');
 
-    my $body = $displayer->render_file($template, @args);
+    my $body = $displayer->render_file($template, %$args);
 
     my $content_type = Plack::MIME->mime_type(".html");
 
@@ -62,30 +53,16 @@ sub _get_template {
     my $self = shift;
     my ($env) = @_;
 
-    my $template = $env->template;
+    my $template = $env->{'lamework.displayer'}->{template};
+    return $template if $template;
 
-    if (!$template) {
-        my $env =  Lamework::Env->new($env);
-
-        if (defined(my $action = $env->captures->{action})) {
-            $template = $self->_action_to_template($action);
-        }
-        elsif (my $match = $env->match) {
-            return unless defined $match->name;
-            $template = $match->name;
-        }
+    if (my $action = $env->{'lamework.captures'}->{action}) {
+        my $template = String::CamelCase::decamelize($action);
+        $template =~ s{::}{_}g;
+        return $template;
     }
 
-    return $template;
-}
-
-sub _action_to_template {
-    my $self = shift;
-    my ($action) = @_;
-
-    $action =~ s{::}{/}g;
-
-    return String::CamelCase::decamelize($action);
+    return;
 }
 
 1;

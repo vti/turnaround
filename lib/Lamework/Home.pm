@@ -13,8 +13,6 @@ use File::Basename ();
 use File::Spec ();
 use Scalar::Util qw(blessed);
 
-use Lamework::Registry;
-
 sub BUILD_ARGS {
     my $class = shift;
     my ($path) = @_;
@@ -41,7 +39,7 @@ sub catfile {
 sub _detect {
     my $self = shift;
 
-    my $namespace = ref Lamework::Registry->get('app');
+    my $namespace = ref $self->app;
     $namespace =~ s{::}{/}g;
 
     my $home = $INC{$namespace . '.pm'};

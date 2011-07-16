@@ -5,37 +5,46 @@ use Test::More tests => 6;
 
 use_ok('Lamework::Middleware::RoutesDispatcher');
 
-use Lamework::Env;
-use Lamework::Registry;
+use Lamework::IOC;
 use Lamework::Routes;
 
-my $routes = Lamework::Routes->new();
+my $routes = Lamework::Routes->new;
 $routes->add_route('/foo', defaults => {action => 'foo'});
 $routes->add_route(
     '/only_post',
     defaults => {action => 'bar'},
     method   => 'post'
 );
-Lamework::Registry->set('routes' => $routes);
+
+my $ioc = Lamework::IOC->new;
+$ioc->register(routes => $routes);
 
 my $middleware = Lamework::Middleware::RoutesDispatcher->new(app => sub { });
 
-my $env = {PATH_INFO => '/'};
+my $env = {PATH_INFO => '/', 'lamework.ioc' => $ioc};
 $middleware->call($env);
-ok(!Lamework::Env->new($env)->match);
+ok !$env->{'lamework.match'};
 
-$env = {PATH_INFO => ''};
+$env = {PATH_INFO => '', 'lamework.ioc' => $ioc};
 $middleware->call($env);
-ok(!Lamework::Env->new($env)->match);
+ok !$env->{'lamework.match'};
 
-$env = {PATH_INFO => '/foo'};
+$env = {PATH_INFO => '/foo', 'lamework.ioc' => $ioc};
 $middleware->call($env);
-ok(Lamework::Env->new($env)->match);
+ok $env->{'lamework.match'};
 
-$env = {REQUEST_METHOD => 'GET', PATH_INFO => '/only_post'};
+$env = {
+    REQUEST_METHOD => 'GET',
+    PATH_INFO      => '/only_post',
+    'lamework.ioc' => $ioc
+};
 $middleware->call($env);
-ok(!Lamework::Env->new($env)->match);
+ok !$env->{'lamework.match'};
 
-$env = {REQUEST_METHOD => 'POST', PATH_INFO => '/only_post'};
+$env = {
+    REQUEST_METHOD => 'POST',
+    PATH_INFO      => '/only_post',
+    'lamework.ioc' => $ioc
+};
 $middleware->call($env);
-ok(Lamework::Env->new($env)->match);
+ok $env->{'lamework.match'};

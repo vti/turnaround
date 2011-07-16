@@ -9,17 +9,13 @@ use Class::Load       ();
 use String::CamelCase ();
 use Try::Tiny;
 
-use Lamework::Env;
-use Lamework::Registry;
-
 sub new {
     my $self = shift->SUPER::new(@_);
 
-    $self->{namespace} ||= do {
-        my $app       = Lamework::Registry->get('app');
-        my $namespace = ref $app;
-        "$namespace\::Action::";
-    };
+    unless (defined $self->{namespace}) {
+        $self->{namespace} =
+          ref($self->{ioc}->get_service('app')) . '::Action::';
+    }
 
     return $self;
 }
@@ -38,7 +34,7 @@ sub _action {
     my $self = shift;
     my ($env) = @_;
 
-    my $captures = Lamework::Env->new($env)->captures;
+    my $captures = $env->{'lamework.captures'};
     return unless $captures;
 
     my $action = $captures->{action};

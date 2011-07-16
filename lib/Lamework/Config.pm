@@ -5,17 +5,6 @@ use warnings;
 
 use base 'Lamework::Base';
 
-sub BUILD {
-    my $self = shift;
-
-    $self->{loader} ||= do {
-        require Lamework::Config::Ini;
-        Lamework::Config::Ini->new;
-    };
-
-    return $self;
-}
-
 sub config {
     my $self = shift;
 

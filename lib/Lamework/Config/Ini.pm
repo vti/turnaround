@@ -8,17 +8,13 @@ use base 'Lamework::Base';
 use Config::Tiny;
 use String::CamelCase qw(decamelize);
 
-use Lamework::Registry;
-
 sub load {
     my $self = shift;
     my ($path) = @_;
 
     if (!defined $path) {
-        my $namespace = ref Lamework::Registry->get('app');
-        my $home = Lamework::Registry->get('home');
-
-        $path = $home->catfile(decamelize($namespace), '.ini');
+        my $namespace = ref $self->app;
+        $path = $self->home->catfile(decamelize($namespace), '.ini');
     }
 
     return {} unless -f $path;

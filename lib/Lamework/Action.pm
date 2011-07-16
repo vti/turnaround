@@ -7,7 +7,6 @@ use base 'Lamework::Action::Base';
 
 use Lamework::HTTPException;
 use Lamework::Logger;
-use Lamework::Registry;
 
 sub log {
     my $self = shift;
@@ -34,7 +33,7 @@ sub url_for {
         $url = $_[0];
     }
     else {
-        my $routes = Lamework::Registry->get('routes');
+        my $routes = $self->env->{'lamework.ioc'}->get_service('routes');
 
         my $path = $routes->build_path(@_);
         $path =~ s{^/}{};
@@ -55,7 +54,7 @@ sub set_var {
         my $key   = $_[$i];
         my $value = $_[$i + 1];
 
-        $self->env->set_var($key => $value);
+        $self->env->{'lamework.displayer'}->{vars}->{$key} = $value;
     }
 
     return $self;
@@ -64,14 +63,14 @@ sub set_var {
 sub vars {
     my $self = shift;
 
-    return $self->env->vars;
+    return $self->env->{'lamework.displayer'}->{vars};
 }
 
 sub set_template {
     my $self = shift;
     my ($template) = @_;
 
-    $self->env->set_template($template);
+    $self->env->{'lamework.displayer'}->{template} = $template;
 
     return $self;
 }
@@ -80,7 +79,7 @@ sub set_layout {
     my $self = shift;
     my ($layout) = @_;
 
-    $self->env->set_layout($layout);
+    $self->env->{'lamework.displayer'}->{layout} = $layout;
 
     return $self;
 }
@@ -89,8 +88,8 @@ sub forbidden {
     my $self = shift;
     my ($message) = @_;
 
-    $message
-      ||= Lamework::Registry->get('displayer')->render_file('forbidden');
+    $message ||= $self->env->{'lamework.ioc'}->get_service('displayer')
+      ->render_file('forbidden');
 
     Lamework::HTTPException->throw(403, $message);
 }
@@ -99,8 +98,8 @@ sub not_found {
     my $self = shift;
     my ($message) = @_;
 
-    $message
-      ||= Lamework::Registry->get('displayer')->render_file('not_found');
+    $message ||= $self->env->{'lamework.ioc'}->get_service('displayer')
+      ->render_file('not_found');
 
     Lamework::HTTPException->throw(404, $message)
 }

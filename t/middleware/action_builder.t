@@ -8,35 +8,34 @@ use_ok('Lamework::Middleware::ActionBuilder');
 use lib 't/lib';
 
 use MyApp;
-use Lamework::Env;
-use Lamework::Registry;
 
 my $app = MyApp->new;
 
-my $middleware = Lamework::Middleware::ActionBuilder->new(app => sub { });
+my $middleware = Lamework::Middleware::ActionBuilder->new(app => sub { },
+    namespace => 'MyApp::Action::');
 
 my $env = {};
 $middleware->call($env);
 
-Lamework::Env->new($env)->set_captures();
+$env = {'lamework.captures' => {}};
 $middleware->call($env);
 
-Lamework::Env->new($env)->set_captures(action => 'unknown');
+$env = {'lamework.captures' => {action => 'unknown'}};
 $middleware->call($env);
 
-Lamework::Env->new($env)->set_captures(action => 'with_syntax_errors');
+$env = {'lamework.captures' => {action => 'with_syntax_errors'}};
 eval { $middleware->call($env); };
 ok $@;
 
-Lamework::Env->new($env)->set_captures(action => 'die_during_run');
+$env = {'lamework.captures' => {action => 'die_during_run'}};
 eval { $middleware->call($env); };
 like $@ => qr/^here/;
 
-Lamework::Env->new($env)->set_captures(action => 'foo');
+$env = {'lamework.captures' => {action => 'foo'}};
 $middleware->call($env);
 is $env->{'foo'} => 1;
 
-Lamework::Env->new($env)->set_captures(action => 'custom_response');
+$env = {'lamework.captures' => {action => 'custom_response'}};
 my $res = $middleware->call($env);
 is_deeply $res =>
   [200, ['Content-Type' => 'text/html'], ['Custom response!']];

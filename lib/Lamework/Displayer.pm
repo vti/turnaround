@@ -5,19 +5,19 @@ use warnings;
 
 use base 'Lamework::Base';
 
-use Lamework::Registry;
-
 sub BUILD {
     my $self = shift;
 
-    $self->{formats} ||= do {
-        require Lamework::Renderer::Caml;
-        {   caml => Lamework::Renderer::Caml->new(
-                templates_path =>
-                  Lamework::Registry->get('home')->catfile('templates')
-            )
-        };
-    };
+    $self->{renderer_namespace} ||= 'Lamework::Renderer::';
+
+    return $self;
+}
+
+sub add_format {
+    my $self = shift;
+    my ($format, $engine) = @_;
+
+    $self->{formats}->{$format} = $engine;
 
     return $self;
 }

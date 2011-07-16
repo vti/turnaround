@@ -5,10 +5,6 @@ use warnings;
 
 use base 'Lamework::Middleware';
 
-use Lamework::Env;
-use Lamework::Registry;
-use Lamework::Request;
-
 sub call {
     my $self = shift;
     my ($env) = @_;
@@ -25,14 +21,13 @@ sub _match {
     my $path   = $env->{PATH_INFO};
     my $method = $env->{REQUEST_METHOD};
 
-    my $routes = Lamework::Registry->get('routes');
+    my $routes = $env->{'lamework.ioc'}->get_service('routes');
 
     my $m = $routes->match($path, method => lc $method);
     return unless $m;
 
-    Lamework::Env->new($env)->set_captures(%{$m->params});
-
-    Lamework::Env->new($env)->set_match($m);
+    $env->{'lamework.captures'} = $m->params;
+    $env->{'lamework.match'}    = $m;
 
     return $self;
 }

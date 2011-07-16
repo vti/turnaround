@@ -7,17 +7,8 @@ use base 'Lamework::Base';
 
 use Scalar::Util qw(weaken);
 
-use Lamework::Env;
 use Lamework::Request;
 use Lamework::Response;
-
-sub BUILD {
-    my $self = shift;
-
-    $self->{env} = Lamework::Env->new($self->{env});
-
-    return $self;
-}
 
 sub run {
     my $self = shift;
@@ -34,7 +25,7 @@ sub env {
 sub req {
     my $self = shift;
 
-    $self->{req} ||= Lamework::Request->new($self->env->to_hash);
+    $self->{req} ||= Lamework::Request->new($self->env);
 
     return $self->{req};
 }
