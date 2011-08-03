@@ -15,7 +15,7 @@ use overload q(&{}) => sub { shift->psgi_app }, fallback => 1;
 sub BUILD {
     my $self = shift;
 
-    my $ioc = $self->{ioc} ||= Lamework::IOC->new;
+    my $ioc = $self->ioc;
 
     $ioc->register(app => $self);
     $ioc->register(home => 'Lamework::Home', deps => 'app');
@@ -23,7 +23,13 @@ sub BUILD {
     $self->startup;
 }
 
-sub ioc { $_[0]->{ioc} }
+sub ioc {
+    my $self = shift;
+
+    $self->{ioc} ||= Lamework::IOC->new;
+
+    return $self->{ioc};
+}
 
 sub startup { $_[0] }
 
