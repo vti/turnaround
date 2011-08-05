@@ -14,6 +14,7 @@ use Test::More tests => 18;
 use_ok('Lamework::Action');
 
 use Lamework::IOC;
+use Lamework::DispatchedRequest::Routes;
 use Lamework::Displayer;
 use Lamework::Renderer::Caml;
 use Lamework::Routes;
@@ -21,19 +22,18 @@ use Lamework::Routes;
 my $routes = Lamework::Routes->new;
 $routes->add_route('/:action/:id', name => 'action');
 
-my $displayer = Lamework::Displayer->new;
-$displayer->add_format(
-    caml => Lamework::Renderer::Caml->new(templates_path => 't/action'));
+my $displayer =
+  Lamework::Displayer->new(
+    renderer => Lamework::Renderer::Caml->new(templates_path => 't/action'));
+
+my $env = {HTTP_HOST => 'localhost', QUERY_STRING => 'foo=bar',};
+$env->{'lamework.dispatched_request'} =
+  Lamework::DispatchedRequest::Routes->new(routes => $routes, captures => {});
 
 my $ioc = Lamework::IOC->new;
-$ioc->register(routes    => $routes);
-$ioc->register(displayer => $displayer);
+$ioc->register('displayer' => $displayer);
+$env->{'lamework.ioc'} = $ioc;
 
-my $env = {
-    HTTP_HOST      => 'localhost',
-    QUERY_STRING   => 'foo=bar',
-    'lamework.ioc' => $ioc
-};
 my $action = Action->new(env => $env);
 is $action->req->param('foo') => 'bar';
 

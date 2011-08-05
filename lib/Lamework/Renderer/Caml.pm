@@ -6,19 +6,30 @@ use warnings;
 use base 'Lamework::Renderer';
 
 use Text::Caml;
+use File::Spec ();
 
-sub new {
-    my $self = shift->SUPER::new;
+sub BUILD {
+    my $self = shift;
 
-    $self->{caml} = Text::Caml->new(@_);
+    my $templates_path = delete $self->{templates_path} || 'templates';
+    if (!File::Spec->file_name_is_absolute($templates_path) && $self->{home}) {
+        $templates_path = $self->{home}->catfile($templates_path);
+    }
+
+    $self->{caml} = Text::Caml->new(templates_path => $templates_path, @_);
 
     return $self;
 }
 
 sub render_file {
     my $self = shift;
+    my ($template, @rest) = @_;
 
-    return $self->{caml}->render_file(@_);
+    if ($template !~ m{\.[^\/\.]+$}) {
+        $template .= '.caml';
+    }
+
+    return $self->{caml}->render_file($template, @rest);
 }
 
 sub render {

@@ -5,13 +5,30 @@ use warnings;
 
 use base 'Lamework::Base';
 
-use Class::Load ();
+use Class::Load  ();
+use Scalar::Util ();
 
 sub register {
     my $self = shift;
     my ($key, $service, %attrs) = @_;
 
-    $self->{services}->{$key} = {class => $service, attrs => {%attrs}};
+    $self->{services}->{$key} = {attrs => {%attrs}};
+
+    if (Scalar::Util::blessed($service)) {
+        $self->{services}->{$key}->{instance} = $service;
+    }
+    else {
+        $self->{services}->{$key}->{class} = $service;
+    }
+
+    return $self;
+}
+
+sub register_constant {
+    my $self = shift;
+    my ($key, $constant) = @_;
+
+    $self->{services}->{$key} = {constant => $constant};
 
     return $self;
 }
@@ -31,9 +48,9 @@ sub get_service {
 
     my $service = $self->_get($key);
 
-    return $service->{class} if ref $service->{class};
+    return $service->{instance} if exists $service->{instance};
 
-    return $self->{services}->{$key}->{class} = $self->_build_service($service);
+    return $service->{instance} = $self->_build_service($service);
 }
 
 sub _get {
@@ -49,6 +66,8 @@ sub _get {
 sub _build_service {
     my $self = shift;
     my ($service) = @_;
+
+    return $service->{constant} if defined $service->{constant};
 
     Class::Load::load_class($service->{class});
 

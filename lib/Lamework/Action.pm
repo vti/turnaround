@@ -33,9 +33,10 @@ sub url_for {
         $url = $_[0];
     }
     else {
-        my $routes = $self->env->{'lamework.ioc'}->get_service('routes');
+        my $dispatched_request = $self->env->{'lamework.dispatched_request'};
 
-        my $path = $routes->build_path(@_);
+        my $path = $dispatched_request->build_path(@_);
+
         $path =~ s{^/}{};
 
         $url = $self->req->base;
@@ -45,7 +46,7 @@ sub url_for {
     return $url;
 }
 
-sub captures { $_[0]->env->captures }
+sub captures { $_[0]->env->{'lamework.dispatched_request'}->captures }
 
 sub set_var {
     my $self = shift;

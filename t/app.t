@@ -10,7 +10,7 @@ use lib 't/lib';
 
 use MyApp;
 
-my $app = MyApp->new->psgi_app;
+my $app = MyApp->new->to_app;
 
 test_psgi $app, sub {
     my $cb = shift;

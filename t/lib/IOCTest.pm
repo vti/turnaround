@@ -25,6 +25,14 @@ sub test_simple : Test {
     isa_ok($self->{ioc}->get_service('foo'), 'Foo');
 }
 
+sub test_constant : Test {
+    my $self = shift;
+
+    $self->{ioc}->register_constant('foo', 'Foo');
+
+    is($self->{ioc}->get_service('foo'), 'Foo');
+}
+
 sub test_instance : Test {
     my $self = shift;
 

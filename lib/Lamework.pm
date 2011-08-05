@@ -5,12 +5,14 @@ use warnings;
 
 use base 'Lamework::Base';
 
+use Plack::Builder;
+
 use Lamework::HTTPException;
 use Lamework::Middleware::Core;
 
 use Lamework::IOC;
 
-use overload q(&{}) => sub { shift->psgi_app }, fallback => 1;
+use overload q(&{}) => sub { shift->to_app }, fallback => 1;
 
 sub BUILD {
     my $self = shift;
@@ -26,25 +28,52 @@ sub BUILD {
 sub ioc {
     my $self = shift;
 
-    $self->{ioc} ||= Lamework::IOC->new;
+    $self->{ioc} ||= do {
+        my $ioc = Lamework::IOC->new;
+
+        $ioc->register(routes => 'Lamework::Routes');
+        $ioc->register(
+            dispatcher => 'Lamework::Dispatcher::Routes',
+            deps       => 'routes'
+        );
+
+        $ioc->register(
+            renderer => 'Lamework::Renderer::Caml',
+            deps     => ['home']
+        );
+        $ioc->register(
+            displayer => 'Lamework::Displayer',
+            deps      => ['home', 'renderer']
+        );
+
+        $ioc;
+    };
 
     return $self->{ioc};
 }
 
 sub startup { $_[0] }
 
-sub psgi_app {
+sub to_app {
     my $self = shift;
 
     $self->{psgi_app} ||= Lamework::Middleware::Core->new(ioc => $self->ioc)
-      ->wrap($self->build_psgi_app);
+      ->wrap($self->app);
 
     return $self->{psgi_app};
 }
 
-sub build_psgi_app { $_[0]->app }
-
 sub app {
+    my $self = shift;
+
+    builder {
+        enable '+Lamework::Middleware::MVC', ioc => $self->ioc;
+
+        $self->default_app;
+    };
+}
+
+sub default_app {
     sub { Lamework::HTTPException->throw(404) }
 }
 

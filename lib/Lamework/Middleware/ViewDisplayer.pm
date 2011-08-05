@@ -28,7 +28,7 @@ sub _display {
 
     my $args = $env->{'lamework.displayer'} || {};
 
-    my $displayer = $env->{'lamework.ioc'}->get_service('displayer');
+    my $displayer = $self->{displayer};
 
     my $body = $displayer->render_file($template, %$args);
 
@@ -56,7 +56,10 @@ sub _get_template {
     my $template = $env->{'lamework.displayer'}->{template};
     return $template if $template;
 
-    if (my $action = $env->{'lamework.captures'}->{action}) {
+    my $dispatched_request = $env->{'lamework.dispatched_request'};
+    return unless $dispatched_request;
+
+    if (my $action = $dispatched_request->captures->{action}) {
         my $template = String::CamelCase::decamelize($action);
         $template =~ s{::}{_}g;
         return $template;

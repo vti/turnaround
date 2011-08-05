@@ -9,17 +9,6 @@ use Class::Load       ();
 use String::CamelCase ();
 use Try::Tiny;
 
-sub new {
-    my $self = shift->SUPER::new(@_);
-
-    unless (defined $self->{namespace}) {
-        $self->{namespace} =
-          ref($self->{ioc}->get_service('app')) . '::Action::';
-    }
-
-    return $self;
-}
-
 sub call {
     my $self = shift;
     my ($env) = @_;
@@ -34,10 +23,10 @@ sub _action {
     my $self = shift;
     my ($env) = @_;
 
-    my $captures = $env->{'lamework.captures'};
-    return unless $captures;
+    my $dispatched_request = $env->{'lamework.dispatched_request'};
+    return unless $dispatched_request;
 
-    my $action = $captures->{action};
+    my $action = $dispatched_request->captures->{action};
     return unless defined $action;
 
     $action = $self->_build_action($action, $env);
@@ -57,7 +46,7 @@ sub _build_action {
     my $self = shift;
     my ($action, $env) = @_;
 
-    my $class = $self->_build_class_name($action);
+    my $class = $self->_build_class_name($action, $env);
 
     return try {
         Class::Load::load_class($class);
@@ -75,7 +64,7 @@ sub _build_action {
 
 sub _build_class_name {
     my $self = shift;
-    my ($action) = @_;
+    my ($action, $env) = @_;
 
     $action = String::CamelCase::camelize($action);
 
