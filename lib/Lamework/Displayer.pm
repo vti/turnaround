@@ -11,12 +11,13 @@ sub render_file {
 
     my $renderer = $self->{renderer};
 
-    my $body = $renderer->render_file($file, $args{vars} || {});
+    my $vars = $args{vars} || {};
+
+    my $body = $renderer->render_file($file, $vars);
 
     if (defined(my $layout = $args{layout} || $self->{layout})) {
         $body =
-          $self->render_file($layout,
-            vars => {%{$args{vars} || {}}, content => $body});
+          $renderer->render_file($layout, {%$vars, content => $body});
     }
 
     return $body;

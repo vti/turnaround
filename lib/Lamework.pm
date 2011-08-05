@@ -38,13 +38,14 @@ sub ioc {
             deps       => 'routes'
         );
 
+        $ioc->register_constant(layout => 'layout');
         $ioc->register(
             renderer => 'Lamework::Renderer::Caml',
             deps     => 'home'
         );
         $ioc->register(
             displayer => 'Lamework::Displayer',
-            deps      => ['home', 'renderer']
+            deps      => ['home', 'renderer', 'layout']
         );
 
         $ioc;

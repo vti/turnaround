@@ -67,7 +67,7 @@ sub _build_service {
     my $self = shift;
     my ($service) = @_;
 
-    return $service->{constant} if defined $service->{constant};
+    return $service->{constant} if exists $service->{constant};
 
     Class::Load::load_class($service->{class});
 
