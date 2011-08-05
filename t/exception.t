@@ -1,19 +1,35 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
+use Test::Spec;
 
 use_ok('Lamework::Exception');
 
-eval { Lamework::Exception->throw('hello!'); };
-isa_ok($@, 'Lamework::Exception');
-is("$@", 'hello!');
+describe "An exception" => sub {
+    it "should throw strings" => sub {
+        eval { Lamework::Exception->throw('hello!'); };
+        is("$@", 'hello!');
+    };
 
-eval { Lamework::Exception->throw(class => 'Foo::Bar', message => 'hello!'); };
-isa_ok($@, 'Lamework::Exception::Foo::Bar');
+    it "should throw namespaced classes" => sub {
+        eval {
+            Lamework::Exception->throw(
+                class   => 'Foo::Bar',
+                message => 'hello!'
+            );
+        };
+        is(ref $@, 'Lamework::Exception::Foo::Bar');
+    };
 
-eval { Lamework::Exception->throw(class => '+Foo::Bar', message => 'hello!'); };
-isa_ok($@, 'Foo::Bar');
+    it "should throw absolute classes" => sub {
+        eval {
+            Lamework::Exception->throw(
+                class   => '+Foo::Bar',
+                message => 'hello!'
+            );
+        };
+        is(ref $@, 'Foo::Bar');
+    };
+};
 
-eval { Lamework::Exception->throw(class => '+Foo::Bar', message => 'hello!'); };
-isa_ok($@, 'Foo::Bar');
+runtests unless caller;
