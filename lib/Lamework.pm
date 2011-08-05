@@ -5,6 +5,8 @@ use warnings;
 
 use base 'Lamework::Base';
 
+our $VERSION = '0.1';
+
 use Plack::Builder;
 
 use Lamework::HTTPException;

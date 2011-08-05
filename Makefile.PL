@@ -1,55 +1,45 @@
 #!/usr/bin/env perl
 
-use 5.008007;
-
 use strict;
 use warnings;
 
-use ExtUtils::MakeMaker;
+use inc::Module::Install;
 
-my ($mm) = $ExtUtils::MakeMaker::VERSION =~ /^([^_]+)/;
+name 'Lamework';
 
-WriteMakefile(
-    NAME         => 'Lamework',
-    VERSION_FROM => 'lib/Lamework.pm',
-    ABSTRACT     => 'Lamework',
-    AUTHOR       => 'Viacheslav Tykhanovskyi <vti@cpan.org>',
+version_from 'lib/Lamework.pm';
+author 'Viacheslav Tykhanovskyi <vti@cpan.org>';
+abstract 'Lamework';
+license 'artistic_2';
+perl_version '5.008007';
 
-    ($mm < 6.3002 ? () : ('LICENSE' => 'artistic_2')),
+requires 'Carp'              => '0';
+requires 'Class::Load'       => '0';
+requires 'Config::Tiny'      => '0';
+requires 'Cwd'               => '0';
+requires 'Encode'            => '0';
+requires 'File::Basename'    => '0';
+requires 'File::Spec'        => '0';
+requires 'Plack'             => '0';
+requires 'Routes::Tiny'      => '0';
+requires 'Scalar::Util'      => '0';
+requires 'String::CamelCase' => '0';
+requires 'Text::Caml'        => '0';
+requires 'Try::Tiny'         => '0';
 
-    (   $mm < 6.46
-        ? ()
-        : ( META_MERGE => {
-                requires  => {perl => '5.008007'},
-                resources => {
-                    license    => 'http://dev.perl.org/licenses/',
-                    repository => 'http://github.com/vti/lamework'
-                },
-                no_index => {directory => [qw/t/]}
-            },
-            META_ADD => {
-                build_requires     => {},
-                configure_requires => {}
-            },
-        )
-    ),
+test_requires 'Test::Class'       => '0';
+test_requires 'Test::More'        => '0';
+test_requires 'Test::Spec'        => '0';
 
-    PREREQ_PM => {
-        'Carp'              => '0',
-        'Class::Load'       => '0',
-        'Config::Tiny'      => '0',
-        'Cwd'               => '0',
-        'Encode'            => '0',
-        'File::Basename'    => '0',
-        'File::Spec'        => '0',
-        'Plack'             => '0',
-        'Routes::Tiny'      => '0',
-        'Scalar::Util'      => '0',
-        'String::CamelCase' => '0',
-        'Test::Class'       => '0',
-        'Test::More'        => '0',
-        'Text::Caml'        => '0',
-        'Try::Tiny'         => '0',
-    },
-    test => {TESTS => 't/*.t t/*/*.t t/*/*/*.t t/*/*/*/*.t'}
-);
+tests 't/*.t t/*/*.t t/*/*/*.t t/*/*/*/*.t';
+
+no_index directory => 't';
+
+resources
+  bugtracker => 'http://github.com/vti/lamework/issues',
+  repository => 'http://github.com/vti/lamework/',
+  license => 'http://dev.perl.org/licenses/';
+
+auto_install;
+
+WriteAll;
