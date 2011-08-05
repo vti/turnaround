@@ -10,7 +10,7 @@ use Lamework::Home;
 sub startup {
     my $self = shift;
 
-    $self->ioc->register(home => Lamework::Home->new('t'));
+    $self->ioc->register(home => Lamework::Home->new(path => 't'));
 
     my $routes = $self->ioc->get_service('routes');
 

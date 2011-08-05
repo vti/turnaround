@@ -20,8 +20,8 @@ sub BUILD {
 
     my $ioc = $self->ioc;
 
-    $ioc->register(app => $self);
-    $ioc->register(home => 'Lamework::Home', deps => 'app');
+    $ioc->register_constant(app_class => ref $self);
+    $ioc->register(home => 'Lamework::Home', deps => 'app_class');
 
     $self->startup;
 }
@@ -40,7 +40,7 @@ sub ioc {
 
         $ioc->register(
             renderer => 'Lamework::Renderer::Caml',
-            deps     => ['home']
+            deps     => 'home'
         );
         $ioc->register(
             displayer => 'Lamework::Displayer',

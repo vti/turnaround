@@ -8,20 +8,19 @@ use base 'Lamework::Base';
 use overload 'bool' => sub {1}, fallback => 1;
 use overload '""' => sub { shift->to_string }, fallback => 1;
 
+require Carp;
+
 use Cwd ();
 use File::Basename ();
 use File::Spec ();
 use Scalar::Util qw(blessed);
 
-sub BUILD_ARGS {
-    my $class = shift;
-    my ($path) = @_;
+sub BUILD {
+    my $self = shift;
 
-    if (!defined $path) {
-        $path = $class->_detect;
+    unless (defined $self->{path}) {
+        $self->{path} = $self->_detect;
     }
-
-    return (path => $path);
 }
 
 sub to_string {
@@ -39,11 +38,13 @@ sub catfile {
 sub _detect {
     my $self = shift;
 
-    my $namespace = ref $self->app;
-    $namespace =~ s{::}{/}g;
+    my $home;
 
-    my $home = $INC{$namespace . '.pm'};
-    if (defined $home) {
+    if (defined(my $namespace = $self->{app_class})) {
+        $namespace =~ s{::}{/}g;
+
+        $home = $INC{$namespace . '.pm'};
+
         $home = Cwd::realpath(
             File::Spec->catfile(File::Basename::dirname($home), '..'));
     }
@@ -51,7 +52,7 @@ sub _detect {
         $home = $ENV{LAMEWORK_HOME};
     }
     else {
-        die 'Cannot detect home. Pass it manually or set up $ENV{LAMEWORK_HOME}';
+        Carp::croak('Cannot detect home. Pass it manually or set up $ENV{LAMEWORK_HOME}');
     }
 
     return $home;

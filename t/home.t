@@ -7,7 +7,7 @@ use lib 't/lib';
 
 use_ok('Lamework::Home');
 
-my $home = Lamework::Home->new('/foo/bar');
+my $home = Lamework::Home->new(path => '/foo/bar');
 
 is $home => '/foo/bar';
 

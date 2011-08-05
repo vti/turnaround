@@ -18,7 +18,7 @@ sub wrap {
 
     $app = Lamework::Middleware::ActionBuilder->new(
         {   app       => $app,
-            namespace => ref($ioc->get_service('app')) . '::Action::'
+            namespace => $ioc->get_service('app_class') . '::Action::'
         }
     )->to_app;
 
