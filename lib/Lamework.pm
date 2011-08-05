@@ -8,10 +8,9 @@ use base 'Lamework::Base';
 our $VERSION = '0.1';
 
 use Plack::Builder;
+use Plack::Middleware::HTTPExceptions;
 
 use Lamework::HTTPException;
-use Lamework::Middleware::Core;
-
 use Lamework::IOC;
 
 use overload q(&{}) => sub { shift->to_app }, fallback => 1;
@@ -59,8 +58,8 @@ sub startup { $_[0] }
 sub to_app {
     my $self = shift;
 
-    $self->{psgi_app} ||= Lamework::Middleware::Core->new(ioc => $self->ioc)
-      ->wrap($self->app);
+    $self->{psgi_app}
+      ||= Plack::Middleware::HTTPExceptions->new->wrap($self->app);
 
     return $self->{psgi_app};
 }

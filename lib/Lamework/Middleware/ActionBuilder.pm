@@ -51,7 +51,7 @@ sub _build_action {
     return try {
         Class::Load::load_class($class);
 
-        return $class->new(env => $env);
+        return $class->new(env => $env, ioc => $self->{ioc});
     }
     catch {
         $class =~ s{::}{/}g;
