@@ -28,5 +28,4 @@ sub _build_dispatched_request {
     return Lamework::DispatchedRequest::Routes->new(@_);
 }
 
-
 1;
