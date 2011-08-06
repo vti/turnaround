@@ -21,6 +21,14 @@ sub register {
         $self->{services}->{$key}->{class} = $service;
     }
 
+    if (my $infect = $self->{infect}) {
+        no strict 'refs';
+        my $package = ref $infect;
+        if (!exists ${$package . '::'}{$key}) {
+            *{$package . '::' . $key} = sub { $self->get_service($key) };
+        }
+    }
+
     return $self;
 }
 
