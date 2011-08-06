@@ -32,10 +32,18 @@ sub ioc {
     $self->{ioc} ||= do {
         my $ioc = Lamework::IOC->new;
 
+        $ioc->register_constant(action_namespace => (ref $self) . '::Action::');
+
         $ioc->register(routes => 'Lamework::Routes');
         $ioc->register(
             dispatcher => 'Lamework::Dispatcher::Routes',
             deps       => 'routes'
+        );
+
+        $ioc->register(
+            action_builder => 'Lamework::ActionBuilder',
+            deps           => 'action_namespace',
+            aliases        => {action_namespace => 'namespace'}
         );
 
         $ioc->register_constant(layout => 'layout');

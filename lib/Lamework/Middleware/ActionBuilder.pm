@@ -5,10 +5,6 @@ use warnings;
 
 use base 'Lamework::Middleware';
 
-use Class::Load       ();
-use String::CamelCase ();
-use Try::Tiny;
-
 sub call {
     my $self = shift;
     my ($env) = @_;
@@ -29,7 +25,7 @@ sub _action {
     my $action = $dispatched_request->captures->{action};
     return unless defined $action;
 
-    $action = $self->_build_action($action, $env);
+    $action = $self->{action_builder}->build($action, $env);
     return unless defined $action;
 
     my $retval = $action->run;
@@ -40,35 +36,6 @@ sub _action {
     }
 
     return;
-}
-
-sub _build_action {
-    my $self = shift;
-    my ($action, $env) = @_;
-
-    my $class = $self->_build_class_name($action, $env);
-
-    return try {
-        Class::Load::load_class($class);
-
-        return $class->new(env => $env, ioc => $self->{ioc});
-    }
-    catch {
-        $class =~ s{::}{/}g;
-
-        die $_ unless $_ =~ m{^Can't locate $class\.pm in \@INC };
-
-        return;
-    };
-}
-
-sub _build_class_name {
-    my $self = shift;
-    my ($action, $env) = @_;
-
-    $action = String::CamelCase::camelize($action);
-
-    return "$self->{namespace}$action";
 }
 
 1;

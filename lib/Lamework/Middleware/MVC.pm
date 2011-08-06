@@ -17,8 +17,8 @@ sub wrap {
         {app => $app, displayer => $ioc->get_service('displayer')})->to_app;
 
     $app = Lamework::Middleware::ActionBuilder->new(
-        {   app       => $app,
-            namespace => $ioc->get_service('app_class') . '::Action::'
+        {   app            => $app,
+            action_builder => $ioc->get_service('action_builder')
         }
     )->to_app;
 

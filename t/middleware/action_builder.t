@@ -5,6 +5,7 @@ use Test::More tests => 5;
 
 use_ok('Lamework::Middleware::ActionBuilder');
 
+use Lamework::ActionBuilder;
 use Lamework::DispatchedRequest;
 
 use lib 't/lib';
@@ -14,8 +15,9 @@ use MyApp;
 my $app = MyApp->new;
 
 my $middleware = Lamework::Middleware::ActionBuilder->new(
-    app       => sub { },
-    namespace => 'MyApp::Action::'
+    app => sub { },
+    action_builder =>
+      Lamework::ActionBuilder->new(namespace => 'MyApp::Action::')
 );
 
 my $env = {};
