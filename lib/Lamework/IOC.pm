@@ -53,6 +53,17 @@ sub get_service {
     return $service->{instance} = $self->_build_service($service);
 }
 
+sub get_services {
+    my $self = shift;
+
+    my @services;
+    foreach my $service (keys %{$self->{services}}) {
+        push @services, $self->get_service($service);
+    }
+
+    return @services;
+}
+
 sub _get {
     my $self = shift;
     my ($key) = @_;

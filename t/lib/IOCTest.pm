@@ -41,6 +41,17 @@ sub test_instance : Test {
     isa_ok($self->{ioc}->get_service('foo'), 'Foo');
 }
 
+sub test_get_services : Test {
+    my $self = shift;
+
+    my $service1 = Foo->new;
+    $self->{ioc}->register('foo', $service1);
+    my $service2 = Foo->new;
+    $self->{ioc}->register('bar', $service2);
+
+    is_deeply($self->{ioc}->get_services, [foo => $service1, bar => $service2]);
+}
+
 sub test_deps : Test {
     my $self = shift;
 
