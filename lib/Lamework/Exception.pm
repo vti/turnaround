@@ -11,6 +11,12 @@ require Carp;
 use Class::Load;
 use Encode ();
 
+sub BUILD {
+    my $self = shift;
+
+    $self->{message} = 'Exception: ' . ref($self) unless defined $self->{message};
+}
+
 sub message { $_[0]->{message} }
 
 sub throw {
@@ -24,14 +30,15 @@ sub throw {
     else {
         my %params = @_;
 
-        unless ($params{class} =~ s{\+}{}) {
+        if (defined $params{class} && $params{class} !~ s{\+}{}) {
             $params{class} = "$class\::$params{class}";
         }
 
-        if ($params{class}) {
-            $class->_create_class($params{class});
-            Carp::croak($params{class}->new(message => $params{message}));
+        if (defined $params{class}) {
+            $class = $class->_create_class($params{class});
         }
+
+        Carp::croak($class->new(message => $params{message}));
     }
 }
 
@@ -42,12 +49,14 @@ sub _create_class {
     my $self = shift;
     my ($class) = @_;
 
-    return if Class::Load::is_class_loaded($class);
+    return $class if Class::Load::is_class_loaded($class);
 
     eval <<"EOF";
 package $class;
 use base 'Lamework::Exception';
 EOF
+
+    return $class;
 }
 
 1;

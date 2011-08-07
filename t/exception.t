@@ -11,6 +11,11 @@ describe "An exception" => sub {
         is("$@", 'hello!');
     };
 
+    it "should throw default message" => sub {
+        eval { Lamework::Exception->throw; };
+        is("$@", 'Exception: Lamework::Exception');
+    };
+
     it "should throw namespaced classes" => sub {
         eval {
             Lamework::Exception->throw(
@@ -21,6 +26,11 @@ describe "An exception" => sub {
         is(ref $@, 'Lamework::Exception::Foo::Bar');
     };
 
+    it "should throw namespaced classes with default message" => sub {
+        eval { Lamework::Exception->throw(class => 'Foo::Bar'); };
+        is("$@", 'Exception: Lamework::Exception::Foo::Bar');
+    };
+
     it "should throw absolute classes" => sub {
         eval {
             Lamework::Exception->throw(
@@ -29,6 +39,11 @@ describe "An exception" => sub {
             );
         };
         is(ref $@, 'Foo::Bar');
+    };
+
+    it "should throw absolute classes with default message" => sub {
+        eval { Lamework::Exception->throw(class => '+Foo::Bar'); };
+        is("$@", 'Exception: Foo::Bar');
     };
 };
 
