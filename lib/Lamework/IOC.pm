@@ -5,12 +5,17 @@ use warnings;
 
 use base 'Lamework::Base';
 
+require Carp;
+
 use Class::Load  ();
 use Scalar::Util ();
 
 sub register {
     my $self = shift;
     my ($key, $service, %attrs) = @_;
+
+    Carp::croak('Service name is required')  unless $key;
+    Carp::croak('Service class is required') unless $service;
 
     $self->{services}->{$key} = {attrs => {%attrs}};
 
@@ -19,14 +24,6 @@ sub register {
     }
     else {
         $self->{services}->{$key}->{class} = $service;
-    }
-
-    if (my $infect = $self->{infect}) {
-        no strict 'refs';
-        my $package = ref $infect;
-        if (!exists ${$package . '::'}{$key}) {
-            *{$package . '::' . $key} = sub { $self->get_service($key) };
-        }
     }
 
     return $self;

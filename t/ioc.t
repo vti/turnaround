@@ -105,14 +105,6 @@ describe "IOC" => sub {
 
         isa_ok($bar->get_foo, 'Foo');
     };
-
-    it "should create methods when needed" => sub {
-        my $object = Foo->new;
-        $ioc = Lamework::IOC->new(infect => $object);
-        $ioc->register('method');
-
-        ok($object->can('method'));
-    };
 };
 
 runtests unless caller;

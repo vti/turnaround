@@ -18,48 +18,54 @@ use overload q(&{}) => sub { shift->to_app }, fallback => 1;
 sub BUILD {
     my $self = shift;
 
-    my $ioc = $self->ioc;
+    my $app_scope = $self->app_scope;
 
-    $ioc->register_constant(app_class => ref $self);
-    $ioc->register(home => 'Lamework::Home', deps => 'app_class');
+    $app_scope->register_constant(app_class => ref $self);
+    $app_scope->register(home => 'Lamework::Home', deps => 'app_class');
+
+    $self->setup_app_scope;
 
     $self->startup;
 }
 
-sub ioc {
+sub app_scope {
     my $self = shift;
 
-    $self->{ioc} ||= do {
-        my $ioc = Lamework::IOC->new;
+    $self->{app_scope} ||= Lamework::IOC->new;
 
-        $ioc->register(routes => 'Lamework::Routes');
-        $ioc->register(
-            dispatcher => 'Lamework::Dispatcher::Routes',
-            deps       => 'routes'
-        );
+    return $self->{app_scope};
+}
 
-        $ioc->register_constant(
-            action_namespace => (ref $self) . '::Action::');
-        $ioc->register(
-            action_builder => 'Lamework::ActionBuilder',
-            deps           => 'action_namespace',
-            aliases        => {action_namespace => 'namespace'}
-        );
+sub setup_app_scope {
+    my $self = shift;
 
-        $ioc->register_constant(layout => 'layout');
-        $ioc->register(
-            renderer => 'Lamework::Renderer::Caml',
-            deps     => 'home'
-        );
-        $ioc->register(
-            displayer => 'Lamework::Displayer',
-            deps      => ['home', 'renderer', 'layout']
-        );
+    my $app_scope = $self->app_scope;
 
-        $ioc;
-    };
+    $app_scope->register(routes => 'Lamework::Routes');
+    $app_scope->register(
+        dispatcher => 'Lamework::Dispatcher::Routes',
+        deps       => 'routes'
+    );
 
-    return $self->{ioc};
+    $app_scope->register_constant(
+        action_namespace => (ref $self) . '::Action::');
+    $app_scope->register(
+        action_scope_factory => 'Lamework::ActionScopeFactory');
+    $app_scope->register(
+        action_builder => 'Lamework::ActionBuilder',
+        deps           => ['action_namespace', 'action_scope_factory'],
+        aliases        => {action_namespace => 'namespace'}
+    );
+
+    $app_scope->register_constant(layout => 'layout');
+    $app_scope->register(
+        renderer => 'Lamework::Renderer::Caml',
+        deps     => 'home'
+    );
+    $app_scope->register(
+        displayer => 'Lamework::Displayer',
+        deps      => ['home', 'renderer', 'layout']
+    );
 }
 
 sub startup { $_[0] }
@@ -77,7 +83,7 @@ sub app {
     my $self = shift;
 
     builder {
-        enable '+Lamework::Middleware::MVC', ioc => $self->ioc;
+        enable '+Lamework::Middleware::MVC', app_scope => $self->app_scope;
 
         $self->default_app;
     };

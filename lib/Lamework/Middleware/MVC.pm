@@ -11,24 +11,29 @@ sub wrap {
     my $self = shift;
     my ($app, %args) = @_;
 
-    my $ioc = delete $args{ioc} or die 'IOC is required';
+    my $app_scope = delete $args{app_scope} or die 'app_scope is required';
 
-    $app = Lamework::Middleware::ViewDisplayer->new(
-        {app => $app, displayer => $ioc->get_service('displayer')})->to_app;
+    $app =
+      $self->_wrap($app, 'ViewDisplayer',
+        displayer => $app_scope->get_service('displayer'));
 
-    $app = Lamework::Middleware::ActionBuilder->new(
-        {   app            => $app,
-            action_builder => $ioc->get_service('action_builder')
-        }
-    )->to_app;
+    $app =
+      $self->_wrap($app, 'ActionBuilder',
+        action_builder => $app_scope->get_service('action_builder'));
 
-    $app = Lamework::Middleware::RequestDispatcher->new(
-        {   app        => $app,
-            dispatcher => $ioc->get_service('dispatcher')
-        }
-    )->to_app;
+    $app =
+      $self->_wrap($app, 'RequestDispatcher',
+        dispatcher => $app_scope->get_service('dispatcher'));
 
     return $app;
+}
+
+sub _wrap {
+    my $self = shift;
+    my ($app, $class) = @_;
+
+    $class = "Lamework::Middleware::$class";
+    return $class->new({app => $app, @_})->to_app;
 }
 
 1;

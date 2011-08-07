@@ -24,7 +24,7 @@ sub build {
     return try {
         Class::Load::load_class($class);
 
-        return $class->new(env => $env);
+        return $self->_build_action($class, @args);
     }
     catch {
         $class =~ s{::}{/}g;
@@ -42,6 +42,19 @@ sub _build_class_name {
     $action = String::CamelCase::camelize($action);
 
     return "$self->{namespace}$action";
+}
+
+sub _build_action {
+    my $self = shift;
+    my ($class, @args) = @_;
+
+    if (my $action_scope_factory = $self->{action_scope_factory}) {
+        if (my $action_scope = $action_scope_factory->build($class)) {
+            push @args, $action_scope->get_services;
+        }
+    }
+
+    return $class->new(@args);
 }
 
 1;

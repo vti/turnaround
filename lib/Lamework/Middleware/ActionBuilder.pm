@@ -25,7 +25,7 @@ sub _action {
     my $action = $dispatched_request->captures->{action};
     return unless defined $action;
 
-    $action = $self->{action_builder}->build($action, $env);
+    $action = $self->{action_builder}->build($action, env => $env);
     return unless defined $action;
 
     my $retval = $action->run;
