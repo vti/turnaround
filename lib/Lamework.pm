@@ -50,7 +50,10 @@ sub setup_app_scope {
     $app_scope->register_constant(
         action_namespace => (ref $self) . '::Action::');
     $app_scope->register(
-        action_scope_factory => 'Lamework::ActionScopeFactory');
+        action_scope_factory => 'Lamework::ActionScopeFactory',
+        deps                 => 'action_namespace',
+        aliases              => {action_namespace => 'namespace'}
+    );
     $app_scope->register(
         action_builder => 'Lamework::ActionBuilder',
         deps           => ['action_namespace', 'action_scope_factory'],

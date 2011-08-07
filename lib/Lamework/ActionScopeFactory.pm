@@ -7,29 +7,35 @@ use base 'Lamework::Base';
 
 use Lamework::IOC;
 
+sub BUILD {
+    my $self = shift;
+
+    $self->{namespace} = '' unless defined $self->{namespace};
+}
+
 sub build {
     my $self = shift;
     my ($action) = @_;
 
     return unless exists $self->{$action};
 
-    my $ioc = $self->_build_ioc;
+    my $scope = $self->_build_scope;
 
     foreach my $dep (@{$self->{$action}}) {
-        $ioc->register(@$dep);
+        $scope->register(@$dep);
     }
 
-    return $ioc;
+    return $scope;
 }
 
 sub configure {
     my $self = shift;
     my ($action, @deps) = @_;
 
-    $self->{$action} = [@deps];
+    $self->{"$self->{namespace}$action"} = [@deps];
 }
 
-sub _build_ioc {
+sub _build_scope {
     my $self = shift;
 
     return Lamework::IOC->new(@_);

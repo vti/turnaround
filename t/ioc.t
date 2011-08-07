@@ -40,7 +40,7 @@ describe "IOC" => sub {
         my $service2 = Foo->new;
         $ioc->register('bar', $service2);
 
-        is_deeply($ioc->get_all, [foo => $service1, bar => $service2]);
+        is_deeply([$ioc->get_all], [bar => $service2, foo => $service1,]);
     };
 
     it "should resolve dependency" => sub {

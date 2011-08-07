@@ -63,7 +63,7 @@ sub get_all {
 
     my @services;
     foreach my $service (keys %{$self->{services}}) {
-        push @services, $self->get($service);
+        push @services, $service => $self->get($service);
     }
 
     return @services;
