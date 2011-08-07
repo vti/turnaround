@@ -38,7 +38,7 @@ sub register_constant {
     return $self;
 }
 
-sub create_service {
+sub create {
     my $self = shift;
     my ($key) = @_;
 
@@ -47,7 +47,7 @@ sub create_service {
     return $self->_build_service($service);
 }
 
-sub get_service {
+sub get {
     my $self = shift;
     my ($key) = @_;
 
@@ -58,12 +58,12 @@ sub get_service {
     return $service->{instance} = $self->_build_service($service);
 }
 
-sub get_services {
+sub get_all {
     my $self = shift;
 
     my @services;
     foreach my $service (keys %{$self->{services}}) {
-        push @services, $self->get_service($service);
+        push @services, $self->get($service);
     }
 
     return @services;
@@ -101,7 +101,7 @@ sub _build_service {
                 $key = $aliases->{$key};
             }
 
-            $args{$key} = $self->get_service($dep);
+            $args{$key} = $self->get($dep);
 
             if (my $setters = $service->{attrs}->{setters}) {
                 next unless my $setter = $setters->{$dep};

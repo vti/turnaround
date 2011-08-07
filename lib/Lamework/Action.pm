@@ -89,7 +89,7 @@ sub forbidden {
     my $self = shift;
     my ($message) = @_;
 
-    $message ||= $self->env->{'lamework.ioc'}->get_service('displayer')
+    $message ||= $self->env->{'lamework.ioc'}->get('displayer')
       ->render_file('forbidden');
 
     Lamework::HTTPException->throw(403, $message);
@@ -99,7 +99,7 @@ sub not_found {
     my $self = shift;
     my ($message) = @_;
 
-    $message ||= $self->env->{'lamework.ioc'}->get_service('displayer')
+    $message ||= $self->env->{'lamework.ioc'}->get('displayer')
       ->render_file('not_found');
 
     Lamework::HTTPException->throw(404, $message)

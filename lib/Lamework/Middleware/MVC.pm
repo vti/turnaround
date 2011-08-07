@@ -15,15 +15,15 @@ sub wrap {
 
     $app =
       $self->_wrap($app, 'ViewDisplayer',
-        displayer => $app_scope->get_service('displayer'));
+        displayer => $app_scope->get('displayer'));
 
     $app =
       $self->_wrap($app, 'ActionBuilder',
-        action_builder => $app_scope->get_service('action_builder'));
+        action_builder => $app_scope->get('action_builder'));
 
     $app =
       $self->_wrap($app, 'RequestDispatcher',
-        dispatcher => $app_scope->get_service('dispatcher'));
+        dispatcher => $app_scope->get('dispatcher'));
 
     return $app;
 }

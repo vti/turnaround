@@ -13,7 +13,7 @@ sub startup {
     $self->app_scope->register(home => Lamework::Home->new(path => 't'));
     $self->app_scope->register_constant(layout => undef);
 
-    my $routes = $self->app_scope->get_service('routes');
+    my $routes = $self->app_scope->get('routes');
 
     $routes->add_route('/:action');
 }

@@ -29,7 +29,7 @@ describe 'An ActionScopeFactory' => sub {
     it "should build an IOC" => sub {
         $factory->configure('Action', ['foo' => 'Foo']);
         my $ioc = $factory->build('Action');
-        my $foo = $ioc->get_service('foo');
+        my $foo = $ioc->get('foo');
         ok($foo);
     };
 };

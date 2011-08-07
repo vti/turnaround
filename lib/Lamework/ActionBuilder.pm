@@ -50,7 +50,7 @@ sub _build_action {
 
     if (my $action_scope_factory = $self->{action_scope_factory}) {
         if (my $action_scope = $action_scope_factory->build($class)) {
-            push @args, $action_scope->get_services;
+            push @args, $action_scope->get_all;
         }
     }
 

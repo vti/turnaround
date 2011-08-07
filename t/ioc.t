@@ -19,35 +19,35 @@ describe "IOC" => sub {
     it "should hold services" => sub {
         $ioc->register('foo', 'Foo');
 
-        isa_ok($ioc->get_service('foo'), 'Foo');
+        isa_ok($ioc->get('foo'), 'Foo');
     };
 
     it "should hold constants" => sub {
         $ioc->register_constant('foo', 'Foo');
 
-        is($ioc->get_service('foo'), 'Foo');
+        is($ioc->get('foo'), 'Foo');
     };
 
     it "should accept instance as a service" => sub {
         $ioc->register('foo', Foo->new);
 
-        isa_ok($ioc->get_service('foo'), 'Foo');
+        isa_ok($ioc->get('foo'), 'Foo');
     };
 
-    it "should return all services on get_services" => sub {
+    it "should return all services on get_all" => sub {
         my $service1 = Foo->new;
         $ioc->register('foo', $service1);
         my $service2 = Foo->new;
         $ioc->register('bar', $service2);
 
-        is_deeply($ioc->get_services, [foo => $service1, bar => $service2]);
+        is_deeply($ioc->get_all, [foo => $service1, bar => $service2]);
     };
 
     it "should resolve dependency" => sub {
         $ioc->register('foo', 'Foo');
         $ioc->register('bar', 'Bar', deps => 'foo');
 
-        isa_ok($ioc->get_service('bar')->foo, 'Foo');
+        isa_ok($ioc->get('bar')->foo, 'Foo');
     };
 
     it "should resolve dependencies" => sub {
@@ -55,29 +55,29 @@ describe "IOC" => sub {
         $ioc->register('bar', 'Bar', deps => 'foo');
         $ioc->register('baz', 'Baz', deps => ['foo', 'bar']);
 
-        isa_ok($ioc->get_service('baz')->foo, 'Foo');
-        isa_ok($ioc->get_service('baz')->bar, 'Bar');
+        isa_ok($ioc->get('baz')->foo, 'Foo');
+        isa_ok($ioc->get('baz')->bar, 'Bar');
     };
 
     it "should hold singletons" => sub {
         $ioc->register('foo', 'Foo');
         $ioc->register('bar', 'Bar', deps => 'foo');
 
-        my $bar = $ioc->get_service('bar');
+        my $bar = $ioc->get('bar');
         isa_ok($bar,      'Bar');
         isa_ok($bar->foo, 'Foo');
 
         $bar->hello('there');
         is $bar->hello, 'there';
 
-        $bar = $ioc->get_service('bar');
+        $bar = $ioc->get('bar');
         is $bar->hello, 'there';
     };
 
-    it "should create service every time on create_service" => sub {
+    it "should create service every time on create" => sub {
         $ioc->register('foo', 'Foo');
 
-        isa_ok($ioc->create_service('foo'), 'Foo');
+        isa_ok($ioc->create('foo'), 'Foo');
     };
 
     it "should implement aliases" => sub {
@@ -88,7 +88,7 @@ describe "IOC" => sub {
             aliases => {foo => 'foo'}
         );
 
-        my $zzz = $ioc->get_service('zzz');
+        my $zzz = $ioc->get('zzz');
 
         isa_ok($zzz->foo, 'Foo');
     };
@@ -101,7 +101,7 @@ describe "IOC" => sub {
             setters => {foo => 'set_foo'}
         );
 
-        my $bar = $ioc->get_service('bar');
+        my $bar = $ioc->get('bar');
 
         isa_ok($bar->get_foo, 'Foo');
     };
