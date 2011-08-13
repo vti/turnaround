@@ -17,13 +17,13 @@ describe "IOC" => sub {
     };
 
     it "should hold services" => sub {
-        $ioc->register('foo', 'Foo');
+        $ioc->register('foo', class => 'Foo');
 
         isa_ok($ioc->get('foo'), 'Foo');
     };
 
     it "should hold constants" => sub {
-        $ioc->register_constant('foo', 'Foo');
+        $ioc->register('foo', 'Foo');
 
         is($ioc->get('foo'), 'Foo');
     };
@@ -43,25 +43,59 @@ describe "IOC" => sub {
         is_deeply([$ioc->get_all], [bar => $service2, foo => $service1,]);
     };
 
-    it "should resolve dependency" => sub {
-        $ioc->register('foo', 'Foo');
-        $ioc->register('bar', 'Bar', deps => 'foo');
+    it "should resolve single dependency" => sub {
+        $ioc->register('foo', class => 'Foo');
+        $ioc->register('bar', class => 'Bar', deps => 'foo');
 
         isa_ok($ioc->get('bar')->foo, 'Foo');
     };
 
-    it "should resolve dependencies" => sub {
+    it "should resolve multiple dependencies" => sub {
         $ioc->register('foo', 'Foo');
-        $ioc->register('bar', 'Bar', deps => 'foo');
-        $ioc->register('baz', 'Baz', deps => ['foo', 'bar']);
+        $ioc->register('bar', class => 'Bar', deps => 'foo');
+        $ioc->register('baz', class => 'Baz', deps => ['foo', 'bar']);
 
         isa_ok($ioc->get('baz')->foo, 'Foo');
         isa_ok($ioc->get('baz')->bar, 'Bar');
     };
 
+    it "should resolve dependecy and pass it as other name" => sub {
+        $ioc->register('some name', 'Foo');
+        $ioc->register(
+            'zzz',
+            class   => 'Bar',
+            deps    => {foo => 'some name'}
+        );
+
+        my $zzz = $ioc->get('zzz');
+
+        isa_ok($zzz->foo, 'Foo');
+    };
+
+    it "should create via factory" => sub {
+        $ioc->register('foo' => sub {'123'});
+
+        is($ioc->get('foo'), '123');
+    };
+
+    it "should create via factory and pass deps" => sub {
+        $ioc->register('dep' => '123');
+        $ioc->register(
+            'foo' => block => sub {
+                my $ioc  = shift;
+                my %args = @_;
+
+                return $args{dep};
+            },
+            deps => 'dep'
+        );
+
+        is($ioc->get('foo'), '123');
+    };
+
     it "should hold singletons" => sub {
-        $ioc->register('foo', 'Foo');
-        $ioc->register('bar', 'Bar', deps => 'foo');
+        $ioc->register('foo', class => 'Foo');
+        $ioc->register('bar', class => 'Bar', deps => 'foo');
 
         my $bar = $ioc->get('bar');
         isa_ok($bar,      'Bar');
@@ -74,36 +108,16 @@ describe "IOC" => sub {
         is $bar->hello, 'there';
     };
 
-    it "should create service every time on create" => sub {
-        $ioc->register('foo', 'Foo');
-
-        isa_ok($ioc->create('foo'), 'Foo');
-    };
-
-    it "should implement aliases" => sub {
-        $ioc->register('foo', 'Foo');
-        $ioc->register(
-            'zzz'   => 'Bar',
-            deps    => 'foo',
-            aliases => {foo => 'foo'}
-        );
-
-        my $zzz = $ioc->get('zzz');
-
-        isa_ok($zzz->foo, 'Foo');
-    };
-
-    it "should allow setters injection" => sub {
-        $ioc->register('foo', 'Foo');
-        $ioc->register(
-            'bar'   => 'Setters',
-            deps    => 'foo',
-            setters => {foo => 'set_foo'}
-        );
+    it "should hold prototypes" => sub {
+        $ioc->register('bar', class => 'Bar', lifecycle => 'prototype');
 
         my $bar = $ioc->get('bar');
 
-        isa_ok($bar->get_foo, 'Foo');
+        $bar->hello('there');
+        is $bar->hello, 'there';
+
+        $bar = $ioc->get('bar');
+        ok not defined $bar->hello;
     };
 };
 

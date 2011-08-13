@@ -11,19 +11,19 @@ sub wrap {
     my $self = shift;
     my ($app, %args) = @_;
 
-    my $app_scope = delete $args{app_scope} or die 'app_scope is required';
+    my $scope = delete $args{scope} or die 'scope is required';
 
     $app =
       $self->_wrap($app, 'ViewDisplayer',
-        displayer => $app_scope->get('displayer'));
+        displayer => $scope->get('displayer'));
 
     $app =
       $self->_wrap($app, 'ActionBuilder',
-        action_builder => $app_scope->get('action_builder'));
+        action_builder => $scope->get('action_builder'));
 
     $app =
       $self->_wrap($app, 'RequestDispatcher',
-        dispatcher => $app_scope->get('dispatcher'));
+        dispatcher => $scope->get('dispatcher'));
 
     return $app;
 }

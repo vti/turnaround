@@ -9,6 +9,8 @@ use Class::Load       ();
 use String::CamelCase ();
 use Try::Tiny;
 
+use Lamework::IOC;
+
 sub BUILD {
     my $self = shift;
 
@@ -35,6 +37,17 @@ sub build {
     };
 }
 
+sub configure {
+    my $self = shift;
+    my ($action, @deps) = @_;
+
+    my $class = $self->_build_class_name($action);
+
+    $self->{actions}->{$class} = {@deps};
+
+    return $self;
+}
+
 sub _build_class_name {
     my $self = shift;
     my ($action) = @_;
@@ -48,13 +61,32 @@ sub _build_action {
     my $self = shift;
     my ($class, @args) = @_;
 
-    if (my $action_scope_factory = $self->{action_scope_factory}) {
-        if (my $action_scope = $action_scope_factory->build($class)) {
-            push @args, $action_scope->get_all;
-        }
-    }
+    push @args, $self->_build_args($class);
 
     return $class->new(@args);
+}
+
+sub _build_args {
+    my $self = shift;
+    my ($class) = @_;
+
+    return () unless exists $self->{actions}->{$class};
+
+    my $scope = $self->_build_scope;
+
+    my $deps = $self->{actions}->{$class};
+
+    foreach my $key (%$deps) {
+        $scope->register($key => $deps->{$key});
+    }
+
+    return $scope->get_all;
+}
+
+sub _build_scope {
+    my $self = shift;
+
+    return Lamework::IOC->new(@_);
 }
 
 1;
