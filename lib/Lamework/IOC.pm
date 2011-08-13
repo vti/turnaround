@@ -16,7 +16,7 @@ sub register {
 
     Carp::croak('Service name is required') unless $key;
 
-    if (@_ == 1) {
+    if (@_ == 1 && !(ref($_[0]) eq 'HASH')) {
         my $type =
             Scalar::Util::blessed($_[0]) ? 'instance'
           : ref($_[0]) eq 'CODE' ? 'block'
@@ -25,7 +25,7 @@ sub register {
         return $self;
     }
 
-    $self->{services}->{$key} = {@_};
+    $self->{services}->{$key} = @_ == 1 ? $_[0] : {@_};
 
     return $self;
 }

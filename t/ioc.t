@@ -22,6 +22,12 @@ describe "IOC" => sub {
         isa_ok($ioc->get('foo'), 'Foo');
     };
 
+    it "should accept hash references" => sub {
+        $ioc->register('foo', {class => 'Foo'});
+
+        isa_ok($ioc->get('foo'), 'Foo');
+    };
+
     it "should hold constants" => sub {
         $ioc->register('foo', 'Foo');
 
