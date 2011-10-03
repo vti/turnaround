@@ -3,6 +3,8 @@ package Lamework::Middleware::MVC;
 use strict;
 use warnings;
 
+use Lamework::Registry;
+
 use Lamework::Middleware::ActionBuilder;
 use Lamework::Middleware::RequestDispatcher;
 use Lamework::Middleware::ViewDisplayer;
@@ -11,26 +13,23 @@ sub wrap {
     my $self = shift;
     my ($app, %args) = @_;
 
-    my $scope = delete $args{scope} or die 'scope is required';
-
-    $app =
-      $self->_wrap($app, 'ViewDisplayer',
-        displayer => $scope->get('displayer'));
+    $app = $self->_wrap($app, 'ViewDisplayer', displayer => $args{displayer});
 
     $app =
       $self->_wrap($app, 'ActionBuilder',
-        action_builder => $scope->get('action_builder'));
+        action_builder => $args{action_builder});
 
     $app =
       $self->_wrap($app, 'RequestDispatcher',
-        dispatcher => $scope->get('dispatcher'));
+        dispatcher => $args{dispatcher});
 
     return $app;
 }
 
 sub _wrap {
-    my $self = shift;
-    my ($app, $class) = @_;
+    my $self  = shift;
+    my $app   = shift;
+    my $class = shift;
 
     $class = "Lamework::Middleware::$class";
     return $class->new({app => $app, @_})->to_app;

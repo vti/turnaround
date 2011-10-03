@@ -19,12 +19,6 @@ describe 'ActionBuilder' => sub {
         isa_ok($action, 'Foo');
     };
 
-    it "should build a configured action" => sub {
-        $action_builder->configure('Foo', foo => '123');
-        my $action = $action_builder->build('Foo');
-        is($action->{foo}, '123');
-    };
-
     it "should die on action syntax errors" => sub {
         eval { $action_builder->build('WithSyntaxErrors'); };
         ok($@);

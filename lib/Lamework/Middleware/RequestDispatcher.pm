@@ -21,7 +21,7 @@ sub _dispatch {
     my $path   = $env->{PATH_INFO};
     my $method = $env->{REQUEST_METHOD};
 
-    my $dispatcher = $self->{dispatcher};
+    my $dispatcher = $self->{dispatcher} or die 'dispatcher required';
 
     my $dispatched_request = $dispatcher->dispatch($path, method => lc $method);
     return unless $dispatched_request;

@@ -9,7 +9,7 @@ sub render_file {
     my $self = shift;
     my ($file, %args) = @_;
 
-    my $renderer = $self->{renderer};
+    my $renderer = $self->{renderer} or die 'renderer required';
 
     my $vars = $args{vars} || {};
 
