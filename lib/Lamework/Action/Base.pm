@@ -5,10 +5,7 @@ use warnings;
 
 use base 'Lamework::Base';
 
-use Scalar::Util qw(weaken);
-
 use Lamework::Request;
-use Lamework::Response;
 
 sub run {
     my $self = shift;
