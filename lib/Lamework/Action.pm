@@ -5,6 +5,7 @@ use warnings;
 
 use base 'Lamework::Action::Base';
 
+use Lamework::Registry;
 use Lamework::HTTPException;
 use Lamework::Logger;
 
@@ -89,7 +90,7 @@ sub forbidden {
     my $self = shift;
     my ($message) = @_;
 
-    $message ||= $self->env->{'lamework.ioc'}->get('displayer')
+    $message ||= Lamework::Registry->instance($self->app)->get('displayer')
       ->render_file('forbidden');
 
     Lamework::HTTPException->throw(403, $message);
@@ -99,7 +100,7 @@ sub not_found {
     my $self = shift;
     my ($message) = @_;
 
-    $message ||= $self->env->{'lamework.ioc'}->get('displayer')
+    $message ||= Lamework::Registry->instance($self->app)->get('displayer')
       ->render_file('not_found');
 
     Lamework::HTTPException->throw(404, $message)

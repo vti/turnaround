@@ -5,7 +5,15 @@ use warnings;
 
 use base 'Lamework::Base';
 
+use Scalar::Util qw(weaken);
+
 use Lamework::Request;
+
+sub BUILD {
+    my $self = shift;
+
+    weaken $self->{app};
+}
 
 sub run {
     my $self = shift;
@@ -17,6 +25,12 @@ sub env {
     my $self = shift;
 
     return $self->{env};
+}
+
+sub app {
+    my $self = shift;
+
+    return $self->{app};
 }
 
 sub req {

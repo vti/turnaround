@@ -24,7 +24,7 @@ sub build {
     return try {
         Class::Load::load_class($class);
 
-        return $self->_build_action($class, @args);
+        return $self->_build_action($class, app => $self->{app}, @args);
     }
     catch {
         $class =~ s{::}{/}g;

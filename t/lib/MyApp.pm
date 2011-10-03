@@ -30,7 +30,7 @@ sub startup {
     my $action_namespace = ref($self) . '::Action::';
 
     $registry->set(action_builder =>
-          Lamework::ActionBuilder->new(namespace => $action_namespace));
+          Lamework::ActionBuilder->new(app => $self, namespace => $action_namespace));
     $registry->set(renderer =>
           Lamework::Renderer::Caml->new(home => $registry->get('home')));
     $registry->set(
