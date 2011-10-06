@@ -7,7 +7,7 @@ use base 'Lamework::Base';
 
 our $VERSION = '0.1';
 
-use Plack::Middleware::HTTPExceptions;
+use Lamework::Middleware::HTTPExceptions;
 
 use Lamework::Home;
 use Lamework::HTTPException;
@@ -39,7 +39,7 @@ sub to_app {
 
     if (!$self->{psgi_app}) {
         $self->{psgi_app} =
-          Plack::Middleware::HTTPExceptions->new->wrap($self->app);
+          Lamework::Middleware::HTTPExceptions->new->wrap($self->app);
     }
 
     return $self->{psgi_app};
