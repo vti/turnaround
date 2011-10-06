@@ -37,8 +37,10 @@ sub registry {
 sub to_app {
     my $self = shift;
 
-    $self->{psgi_app}
-      ||= Plack::Middleware::HTTPExceptions->new->wrap($self->app);
+    if (!$self->{psgi_app}) {
+        $self->{psgi_app} =
+          Plack::Middleware::HTTPExceptions->new->wrap($self->app);
+    }
 
     return $self->{psgi_app};
 }

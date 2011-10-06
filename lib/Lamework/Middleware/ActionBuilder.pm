@@ -28,8 +28,11 @@ sub _action {
     $action = $self->{action_builder}->build($action, env => $env);
     return unless defined $action;
 
-    my $retval = $action->run;
-    return $retval if ref $retval eq 'CODE' || ref $retval eq 'ARRAY';
+    $action->run;
+
+    if ($action->response_cb) {
+        return $action->response_cb;
+    }
 
     if ($action->res->code || defined $action->res->body) {
         return $action->res->finalize;

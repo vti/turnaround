@@ -3,19 +3,31 @@ package Lamework::Action;
 use strict;
 use warnings;
 
-use base 'Lamework::Action::Base';
+use base 'Lamework::Base';
 
-use Lamework::Registry;
 use Lamework::HTTPException;
-use Lamework::Logger;
+use Lamework::Request;
 
-sub log {
+sub env {
     my $self = shift;
 
-    $self->{logger}
-      ||= Lamework::Logger->new(logger => $self->env->{'psgix.logger'});
+    return $self->{env};
+}
 
-    return $self->{logger};
+sub req {
+    my $self = shift;
+
+    $self->{req} ||= Lamework::Request->new($self->env);
+
+    return $self->{req};
+}
+
+sub res {
+    my $self = shift;
+
+    $self->{res} ||= $self->req->new_response;
+
+    return $self->{res};
 }
 
 sub url_for {
@@ -77,21 +89,9 @@ sub set_template {
     return $self;
 }
 
-sub set_layout {
-    my $self = shift;
-    my ($layout) = @_;
-
-    $self->env->{'lamework.displayer'}->{layout} = $layout;
-
-    return $self;
-}
-
 sub forbidden {
     my $self = shift;
     my ($message) = @_;
-
-    $message ||= Lamework::Registry->instance($self->app)->get('displayer')
-      ->render_file('forbidden');
 
     Lamework::HTTPException->throw(403, $message);
 }
@@ -100,10 +100,7 @@ sub not_found {
     my $self = shift;
     my ($message) = @_;
 
-    $message ||= Lamework::Registry->instance($self->app)->get('displayer')
-      ->render_file('not_found');
-
-    Lamework::HTTPException->throw(404, $message)
+    Lamework::HTTPException->throw(404, $message);
 }
 
 sub redirect {
@@ -112,6 +109,17 @@ sub redirect {
     my $url = $self->url_for(@_);
 
     Lamework::HTTPException->throw(302, location => $url);
+}
+
+sub response_cb {
+    my $self = shift;
+
+    if (@_) {
+        $self->{response_cb} = $_[0];
+        return $self;
+    }
+
+    return $self->{response_cb};
 }
 
 1;
