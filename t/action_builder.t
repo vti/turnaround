@@ -30,9 +30,9 @@ describe 'ActionBuilder' => sub {
     };
 
     it "accept default arguments" => sub {
-        $action_builder = Lamework::ActionBuilder->new(defaults_args => {foo => 'bar'});
+        $action_builder = Lamework::ActionBuilder->new(default_args => {foo => 'bar'});
         my $action = $action_builder->build('Foo');
-        is($action->{foo}, 'bar');foo
+        is($action->{foo}, 'bar');
     };
 };
 

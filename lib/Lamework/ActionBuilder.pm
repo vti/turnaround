@@ -26,7 +26,7 @@ sub build {
     return try {
         Class::Load::load_class($class);
 
-        return $self->_build_action($class, %{$self->{defaults_args}}, @args);
+        return $self->_build_action($class, %{$self->{default_args}}, @args);
     }
     catch {
         $class =~ s{::}{/}g;
