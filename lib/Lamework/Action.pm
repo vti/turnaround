@@ -8,6 +8,12 @@ use base 'Lamework::Base';
 use Lamework::HTTPException;
 use Lamework::Request;
 
+sub registry {
+    my $self = shift;
+
+    return $self->{registry};
+}
+
 sub env {
     my $self = shift;
 

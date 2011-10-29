@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More tests => 4;
 
 use_ok('Lamework::Middleware::ActionBuilder');
 
@@ -48,12 +48,6 @@ $env = {
 };
 eval { $middleware->call($env); };
 like $@ => qr/^here/;
-
-$env =
-  {'lamework.dispatched_request' =>
-      Lamework::DispatchedRequest->new(captures => {action => 'foo'})};
-$middleware->call($env);
-is $env->{'foo'} => 1;
 
 $env = {
     'lamework.dispatched_request' => Lamework::DispatchedRequest->new(

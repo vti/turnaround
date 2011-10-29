@@ -21,15 +21,15 @@ my $middleware = Lamework::Middleware::RequestDispatcher->new(
     dispatcher => Lamework::Dispatcher::Routes->new(routes => $routes)
 );
 
-my $env = {PATH_INFO => '/'};
+my $env = {PATH_INFO => '/', REQUEST_METHOD => 'GET'};
 $middleware->call($env);
 ok !$env->{'lamework.dispatched_request'};
 
-$env = {PATH_INFO => ''};
+$env = {PATH_INFO => '', REQUEST_METHOD => 'GET'};
 $middleware->call($env);
 ok !$env->{'lamework.dispatched_request'};
 
-$env = {PATH_INFO => '/foo'};
+$env = {PATH_INFO => '/foo', REQUEST_METHOD => 'GET'};
 $middleware->call($env);
 ok $env->{'lamework.dispatched_request'};
 
