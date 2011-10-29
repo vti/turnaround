@@ -13,6 +13,8 @@ sub BUILD {
     my $self = shift;
 
     $self->{namespace} = '' unless defined $self->{namespace};
+
+    $self->{default_args} ||= {};
 }
 
 sub build {
@@ -24,7 +26,7 @@ sub build {
     return try {
         Class::Load::load_class($class);
 
-        return $self->_build_action($class, @args);
+        return $self->_build_action($class, %{$self->{defaults_args}}, @args);
     }
     catch {
         $class =~ s{::}{/}g;

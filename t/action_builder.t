@@ -28,6 +28,12 @@ describe 'ActionBuilder' => sub {
         eval { $action_builder->build('DieDuringCreation'); };
         ok($@);
     };
+
+    it "accept default arguments" => sub {
+        $action_builder = Lamework::ActionBuilder->new(defaults_args => {foo => 'bar'});
+        my $action = $action_builder->build('Foo');
+        is($action->{foo}, 'bar');foo
+    };
 };
 
 runtests unless caller;
