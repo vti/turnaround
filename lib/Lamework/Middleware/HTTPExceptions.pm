@@ -37,12 +37,10 @@ sub transform_error {
         die $e; # rethrow
     }
 
-    if ((my $displayer = $env->{'lamework.displayer'})
-        && $code =~ m/^40(3|4)$/)
-    {
+    if ($code =~ m/^40(3|4)$/) {
         my $file =
           $code == 404 ? $self->{'404_template'} : $self->{'403_template'};
-        $message = $displayer->render_file($file);
+        $message = $self->{displayer}->render_file($file);
     }
 
     $message ||= HTTP::Status::status_message($code);
