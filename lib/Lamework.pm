@@ -39,7 +39,8 @@ sub to_app {
 
     if (!$self->{psgi_app}) {
         $self->{psgi_app} =
-          Lamework::Middleware::HTTPExceptions->new->wrap($self->app);
+          Lamework::Middleware::HTTPExceptions->new(
+            displayer => $self->registry->get('displayer'))->wrap($self->app);
     }
 
     return $self->{psgi_app};
