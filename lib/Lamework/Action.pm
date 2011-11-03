@@ -114,7 +114,10 @@ sub redirect {
 
     my $url = $self->url_for(@_);
 
-    Lamework::HTTPException->throw(302, location => $url);
+    $self->res->code(302);
+    $self->res->header(Location => $url);
+
+    return $self;
 }
 
 sub response_cb {
