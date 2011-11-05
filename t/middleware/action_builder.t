@@ -10,10 +10,6 @@ use Lamework::DispatchedRequest;
 
 use lib 't/lib';
 
-use MyApp;
-
-my $app = MyApp->new;
-
 my $middleware = Lamework::Middleware::ActionBuilder->new(
     app => sub { },
     action_builder =>
