@@ -55,6 +55,16 @@ sub deny_when_no_user : Test {
     ok(exception { $mw->call({}) });
 }
 
+sub redirect_instead_of_throw : Test {
+    my $self = shift;
+
+    my $mw = $self->_build_middleware(redirect_to => '/login');
+
+    my $res = $mw->call({});
+
+    is_deeply($res, [302, ['Location' => '/login'], ['']]);
+}
+
 sub _build_middleware {
     my $self = shift;
 
@@ -65,7 +75,8 @@ sub _build_middleware {
 
     return Lamework::Middleware::ACL->new(
         app => sub { [200, [], ['OK']] },
-        acl => $acl
+        acl => $acl,
+        @_
     );
 }
 

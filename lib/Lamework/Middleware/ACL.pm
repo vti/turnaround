@@ -13,7 +13,8 @@ sub call {
     my $self = shift;
     my ($env) = @_;
 
-    $self->_acl($env);
+    my $res = $self->_acl($env);
+    return $res if $res;
 
     return $self->app->($env);
 }
@@ -22,13 +23,13 @@ sub _acl {
     my $self = shift;
     my ($env) = @_;
 
-    $self->_throw_403 unless my $user = $env->{user};
+    return $self->_deny unless my $user = $env->{user};
 
     my $action = $self->_get_action($env);
 
     my $role = blessed $user ? $user->role : $user->{role};
 
-    $self->_throw_403 unless $self->{acl}->is_allowed($role, $action);
+    return $self->_deny unless $self->{acl}->is_allowed($role, $action);
 }
 
 sub _get_action {
@@ -42,8 +43,12 @@ sub _get_action {
     return $dispatched_request->captures->{action};
 }
 
-sub _throw_403 {
+sub _deny {
     my $self = shift;
+
+    if (my $redirect_to = $self->{redirect_to}) {
+        return [302, ['Location' => $redirect_to], ['']];
+    }
 
     Lamework::HTTPException->throw(403);
 }
