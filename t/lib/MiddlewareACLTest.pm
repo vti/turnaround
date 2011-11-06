@@ -60,9 +60,17 @@ sub redirect_instead_of_throw : Test {
 
     my $mw = $self->_build_middleware(redirect_to => '/login');
 
-    my $res = $mw->call({});
+    my $res = $mw->call({PATH_INFO => '/'});
 
     is_deeply($res, [302, ['Location' => '/login'], ['']]);
+}
+
+sub prevent_redirect_recursion : Test {
+    my $self = shift;
+
+    my $mw = $self->_build_middleware(redirect_to => '/login');
+
+    ok(exception { $mw->call({PATH_INFO => '/login'}) });
 }
 
 sub _build_middleware {
