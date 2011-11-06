@@ -30,6 +30,8 @@ sub _acl {
     my $role = blessed $user ? $user->role : $user->{role};
 
     return $self->_deny unless $self->{acl}->is_allowed($role, $action);
+
+    return;
 }
 
 sub _get_action {
