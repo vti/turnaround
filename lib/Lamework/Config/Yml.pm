@@ -1,17 +1,17 @@
-package Lamework::Config::Ini;
+package Lamework::Config::Yml;
 
 use strict;
 use warnings;
 
 use base 'Lamework::Base';
 
-use Config::Tiny;
+use YAML::Tiny;
 
 sub parse {
     my $self = shift;
     my ($config) = @_;
 
-    return Config::Tiny->read_string($config);
+    YAML::Tiny->read_string($config)->[0];
 }
 
 1;
