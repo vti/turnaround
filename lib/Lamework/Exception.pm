@@ -14,7 +14,8 @@ use Encode ();
 sub BUILD {
     my $self = shift;
 
-    $self->{message} = 'Exception: ' . ref($self) unless defined $self->{message};
+    $self->{message} = 'Exception: ' . ref($self)
+      unless defined $self->{message} && $self->{message} ne '';
 }
 
 sub message { $_[0]->{message} }
