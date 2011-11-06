@@ -5,6 +5,8 @@ use warnings;
 
 use base 'Lamework::Middleware';
 
+use Scalar::Util qw(blessed);
+
 use Lamework::HTTPException;
 
 sub call {
@@ -24,7 +26,9 @@ sub _acl {
 
     my $action = $self->_get_action($env);
 
-    $self->_throw_403 unless $self->{acl}->is_allowed($user->{role}, $action);
+    my $role = blessed $user ? $user->role : $user->{role};
+
+    $self->_throw_403 unless $self->{acl}->is_allowed($role, $action);
 }
 
 sub _get_action {
