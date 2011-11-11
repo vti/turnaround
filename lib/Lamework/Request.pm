@@ -30,13 +30,7 @@ sub query_parameters {
     my $self = shift;
 
     $self->env->{'plack.request.query'} ||= do {
-        my %values = $self->uri->query_form;
-        foreach my $value (keys %values) {
-            $values{Encode::decode($self->{encoding}, $value)} =
-              Encode::decode($self->{encoding}, delete $values{$value});
-        }
-
-        Hash::MultiValue->new(%values);
+        $self->_decode_parameters($self->uri->query_form);
     };
 }
 
@@ -45,18 +39,26 @@ sub _parse_request_body {
 
     my $retval = $self->SUPER::_parse_request_body(@_);
 
-    my @keys = $self->env->{'plack.request.body'}->keys;
-    foreach my $key (@keys) {
-        my @values = $self->{env}->{'plack.request.body'}->get_all($key);
-        $self->{env}->{'plack.request.body'}->remove($key);
-
-        $key = Encode::decode($self->{encoding}, $key);
-        @values = map { Encode::decode($self->{encoding}, $_) } @values;
-
-        $self->{env}->{'plack.request.body'}->add($key => @values);
-    }
+    $self->env->{'plack.request.body'} =
+      $self->_decode_parameters($self->env->{'plack.request.body'});
 
     return $retval;
+}
+
+sub _decode_parameters {
+    my $self = shift;
+
+    my @flatten = @_ == 1 ? $_[0]->flatten : @_;
+
+    my $encoding = $self->{encoding};
+
+    my @decoded;
+    while (my ($key, $val) = splice @flatten, 0, 2) {
+        push @decoded, Encode::decode($encoding, $key),
+          Encode::decode($encoding, $val);
+    }
+
+    return Hash::MultiValue->new(@decoded);
 }
 
 1;
