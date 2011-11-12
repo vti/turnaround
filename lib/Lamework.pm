@@ -56,5 +56,4 @@ sub default_app {
     sub { Lamework::HTTPException->throw(404) }
 }
 
-
 1;
