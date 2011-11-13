@@ -3,7 +3,7 @@ package DieDuringCreation;
 use strict;
 use warnings;
 
-use base 'Lamework::Action';
+use base 'Lamework::Base';
 
 sub new {
     die 'here';
