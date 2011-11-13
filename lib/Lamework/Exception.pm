@@ -9,7 +9,8 @@ use overload '""' => sub { $_[0]->to_string }, fallback => 1;
 
 require Carp;
 use Class::Load;
-use Encode ();
+use Encode       ();
+use Scalar::Util ();
 
 sub BUILD {
     my $self = shift;
@@ -43,7 +44,25 @@ sub throw {
     }
 }
 
-sub to_string { &as_string }
+sub caught {
+    my $class = shift;
+    my ($exception, $isa) = @_;
+
+    $isa ||= '+Lamework::Exception';
+
+    if ($isa !~ s/^\+//) {
+        $isa = __PACKAGE__ . '::' . $isa;
+    }
+
+    return
+      unless defined $exception
+          && Scalar::Util::blessed $exception
+          && $exception->isa($isa);
+
+    return 1;
+}
+
+sub to_string {&as_string}
 sub as_string { Encode::encode_utf8($_[0]->{message}) }
 
 sub _create_class {
