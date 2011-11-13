@@ -25,11 +25,11 @@ sub render_file {
 
 sub render {
     my $self = shift;
-    my ($template, %args) = @_;
+    my ($template_string, %args) = @_;
 
     my $renderer = $self->{renderer};
 
-    return $renderer->render($template, $args{vars});
+    return $renderer->render($template_string, $args{vars});
 }
 
 1;
