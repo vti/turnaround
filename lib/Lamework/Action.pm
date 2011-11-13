@@ -5,13 +5,14 @@ use warnings;
 
 use base 'Lamework::Base';
 
+use Lamework::Env;
 use Lamework::HTTPException;
 use Lamework::Request;
 
-sub registry {
+sub BUILD {
     my $self = shift;
 
-    return $self->{registry};
+    $self->{env} = Lamework::Env->new($self->{env});
 }
 
 sub env {
@@ -23,7 +24,7 @@ sub env {
 sub req {
     my $self = shift;
 
-    $self->{req} ||= Lamework::Request->new($self->env);
+    $self->{req} ||= Lamework::Request->new($self->env->to_hash);
 
     return $self->{req};
 }
@@ -52,7 +53,7 @@ sub url_for {
         $url = $_[0];
     }
     else {
-        my $dispatched_request = $self->env->{'lamework.dispatched_request'};
+        my $dispatched_request = $self->env->get('dispatched_request');
 
         my $path = $dispatched_request->build_path(@_);
 
@@ -65,7 +66,7 @@ sub url_for {
     return $url;
 }
 
-sub captures { $_[0]->env->{'lamework.dispatched_request'}->captures }
+sub captures { $_[0]->env->get('dispatched_request')->captures }
 
 sub set_var {
     my $self = shift;
@@ -74,7 +75,7 @@ sub set_var {
         my $key   = $_[$i];
         my $value = $_[$i + 1];
 
-        $self->env->{'lamework.displayer'}->{vars}->{$key} = $value;
+        $self->env->get('vars')->{$key} = $value;
     }
 
     return $self;
@@ -83,14 +84,14 @@ sub set_var {
 sub vars {
     my $self = shift;
 
-    return $self->env->{'lamework.displayer'}->{vars};
+    return $self->env->get('vars');
 }
 
 sub set_template {
     my $self = shift;
     my ($template) = @_;
 
-    $self->env->{'lamework.displayer'}->{template} = $template;
+    $self->env->set(template => $template);
 
     return $self;
 }

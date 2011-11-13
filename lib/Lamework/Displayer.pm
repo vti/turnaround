@@ -5,15 +5,21 @@ use warnings;
 
 use base 'Lamework::Base';
 
+sub BUILD {
+    my $self = shift;
+
+    die 'renderer required' unless $self->{renderer};
+}
+
 sub render_file {
     my $self = shift;
-    my ($file, %args) = @_;
+    my ($template_file, %args) = @_;
 
-    my $renderer = $self->{renderer} or die 'renderer required';
+    my $renderer = $self->{renderer};
 
     my $vars = $args{vars} || {};
 
-    my $body = $renderer->render_file($file, $vars);
+    my $body = $renderer->render_file($template_file, $vars);
 
     if (defined(my $layout = $args{layout} || $self->{layout})) {
         $body =
@@ -29,7 +35,9 @@ sub render {
 
     my $renderer = $self->{renderer};
 
-    return $renderer->render($template_string, $args{vars});
+    my $vars = $args{vars} || {};
+
+    return $renderer->render($template_string, $vars);
 }
 
 1;

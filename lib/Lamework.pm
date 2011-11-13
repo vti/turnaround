@@ -7,6 +7,7 @@ use base 'Lamework::Base';
 
 our $VERSION = '0.1';
 
+use Lamework::Middleware::Core;
 use Lamework::Middleware::HTTPExceptions;
 
 use Lamework::Home;
@@ -38,9 +39,12 @@ sub to_app {
     my $self = shift;
 
     if (!$self->{psgi_app}) {
-        $self->{psgi_app} =
+        my $app =
           Lamework::Middleware::HTTPExceptions->new(
             displayer => $self->registry->get('displayer'))->wrap($self->app);
+        $app = Lamework::Middleware::Core->new->wrap($app);
+
+        $self->{psgi_app} = $app;
     }
 
     return $self->{psgi_app};

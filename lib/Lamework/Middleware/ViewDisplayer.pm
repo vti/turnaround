@@ -9,6 +9,16 @@ use Encode ();
 use Plack::MIME;
 use String::CamelCase ();
 
+use Lamework::Env;
+
+sub new {
+    my $self = shift->SUPER::new(@_);
+
+    $self->{render_args} ||= [qw/vars layout/];
+
+    return $self;
+}
+
 sub call {
     my $self = shift;
     my ($env) = @_;
@@ -23,10 +33,12 @@ sub _display {
     my $self = shift;
     my ($env) = @_;
 
+    $env = Lamework::Env->new($env);
+
     my $template = $self->_get_template($env);
     return unless defined $template;
 
-    my $args = $env->{'lamework.displayer'} || {};
+    my $args = {map { $_ => $env->get($_) } @{$self->{render_args}}};
 
     my $displayer = $self->{displayer};
 
@@ -53,10 +65,10 @@ sub _get_template {
     my $self = shift;
     my ($env) = @_;
 
-    my $template = $env->{'lamework.displayer'}->{template};
+    my $template = $env->get('template');
     return $template if $template;
 
-    my $dispatched_request = $env->{'lamework.dispatched_request'};
+    my $dispatched_request = $env->get('dispatched_request');
     return unless $dispatched_request;
 
     if (my $action = $dispatched_request->captures->{action}) {
