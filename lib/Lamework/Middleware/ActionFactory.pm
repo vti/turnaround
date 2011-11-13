@@ -5,6 +5,10 @@ use warnings;
 
 use base 'Lamework::Middleware';
 
+use Try::Tiny;
+
+use Lamework::Exception;
+
 sub new {
     my $self = shift->SUPER::new(@_);
 
@@ -33,7 +37,14 @@ sub _action {
     my $action = $dispatched_request->captures->{action};
     return unless defined $action;
 
-    $action = $self->{action_factory}->build($action, env => $env);
+    $action = try {
+        $self->{action_factory}->build($action, env => $env);
+    }
+    catch {
+        die $_ unless Lamework::Exception->caught($_, 'Factory');
+
+        return;
+    };
     return unless defined $action;
 
     $action->run;
