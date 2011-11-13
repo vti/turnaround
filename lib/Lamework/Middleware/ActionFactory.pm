@@ -1,9 +1,17 @@
-package Lamework::Middleware::ActionBuilder;
+package Lamework::Middleware::ActionFactory;
 
 use strict;
 use warnings;
 
 use base 'Lamework::Middleware';
+
+sub new {
+    my $self = shift->SUPER::new(@_);
+
+    die 'action_factory is required' unless $self->{action_factory};
+
+    return $self;
+}
 
 sub call {
     my $self = shift;
@@ -25,7 +33,7 @@ sub _action {
     my $action = $dispatched_request->captures->{action};
     return unless defined $action;
 
-    $action = $self->{action_builder}->build($action, env => $env);
+    $action = $self->{action_factory}->build($action, env => $env);
     return unless defined $action;
 
     $action->run;

@@ -1,4 +1,4 @@
-package Lamework::ActionBuilder;
+package Lamework::ActionFactory;
 
 use strict;
 use warnings;

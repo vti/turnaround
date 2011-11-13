@@ -10,7 +10,7 @@ use Plack::Builder;
 use Lamework::Home;
 use Lamework::Routes;
 use Lamework::Dispatcher::Routes;
-use Lamework::ActionBuilder;
+use Lamework::ActionFactory;
 use Lamework::Renderer::Caml;
 use Lamework::Displayer;
 
@@ -29,8 +29,8 @@ sub startup {
 
     my $action_namespace = ref($self) . '::Action::';
 
-    $registry->set(action_builder =>
-          Lamework::ActionBuilder->new(namespace => $action_namespace));
+    $registry->set(action_factory =>
+          Lamework::ActionFactory->new(namespace => $action_namespace));
     $registry->set(renderer =>
           Lamework::Renderer::Caml->new(home => $registry->get('home')));
     $registry->set(
@@ -49,10 +49,14 @@ sub app {
     my $self = shift;
 
     builder {
-        enable '+Lamework::Middleware::MVC',
-          dispatcher     => $self->registry->get('dispatcher'),
-          action_builder => $self->registry->get('action_builder'),
-          displayer      => $self->registry->get('displayer');
+        enable '+Lamework::Middleware::RequestDispatcher',
+          dispatcher => $self->registry->get('dispatcher');
+
+        enable '+Lamework::Middleware::ActionFactory',
+          action_factory => $self->registry->get('action_factory');
+
+        enable '+Lamework::Middleware::ViewDisplayer',
+          displayer => $self->registry->get('displayer');
 
         $self->default_app;
     };
