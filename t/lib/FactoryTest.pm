@@ -32,6 +32,14 @@ sub build_an_object_with_default_args : Test {
     is($foo->{foo}, 'bar');
 }
 
+sub throw_on_unknown_class : Test {
+    my $self = shift;
+
+    my $factory = $self->_build_factory;
+
+    ok(exception { $factory->build('Unknown') });
+}
+
 sub throw_on_syntax_errors : Test {
     my $self = shift;
 

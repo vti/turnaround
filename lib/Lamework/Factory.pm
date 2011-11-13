@@ -9,6 +9,8 @@ use Class::Load       ();
 use String::CamelCase ();
 use Try::Tiny;
 
+use Lamework::Exception;
+
 sub BUILD {
     my $self = shift;
 
@@ -33,9 +35,7 @@ sub build {
 
         die $_ unless $_ =~ m{^Can't locate $class\.pm in \@INC };
 
-        die $_ if $self->{die_on_not_found};
-
-        return;
+        Lamework::Exception->throw(class => 'Factory', message => $_);
     };
 }
 
