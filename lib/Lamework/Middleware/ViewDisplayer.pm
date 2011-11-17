@@ -15,6 +15,7 @@ sub new {
     my $self = shift->SUPER::new(@_);
 
     $self->{render_args} ||= [qw/vars layout/];
+    $self->{encoding} ||= 'UTF-8';
 
     return $self;
 }
@@ -46,10 +47,9 @@ sub _display {
 
     my $content_type = Plack::MIME->mime_type(".html");
 
-    if (Encode::is_utf8($body)) {
-        $body = Encode::encode('UTF-8', $body);
-
-        $content_type .= '; charset=utf-8';
+    if (my $encoding = $self->{encoding}) {
+        $body = Encode::encode($encoding, $body);
+        $content_type .= '; charset=' . lc($encoding);
     }
 
     return [

@@ -36,7 +36,7 @@ sub render_template : Test {
     my $res = $mw->call($env);
 
     is_deeply $res,
-      [200, ['Content-Length' => 5, 'Content-Type' => 'text/html'],
+      [200, ['Content-Length' => 5, 'Content-Type' => 'text/html; charset=utf-8'],
         ['there']];
 }
 
