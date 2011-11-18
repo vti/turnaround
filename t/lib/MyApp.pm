@@ -5,8 +5,6 @@ use warnings;
 
 use base 'Lamework';
 
-use Plack::Builder;
-
 use Lamework::Home;
 use Lamework::Routes;
 use Lamework::Dispatcher::Routes;
@@ -17,49 +15,34 @@ use Lamework::Displayer;
 sub startup {
     my $self = shift;
 
-    my $registry = $self->registry;
+    $self->{home} = Lamework::Home->new(path => 't');
 
-    $registry->set(home => Lamework::Home->new(path => 't'));
-    $registry->set(routes => Lamework::Routes->new);
-    $registry->set(
-        dispatcher => Lamework::Dispatcher::Routes->new(
-            routes => $registry->get('routes')
+    $self->add_middleware('RequestDispatcher',
+        dispatcher =>
+          Lamework::Dispatcher::Routes->new(routes => $self->_build_routes));
+
+    $self->add_middleware(
+        'ActionFactory',
+        action_factory => Lamework::ActionFactory->new(
+            namespace => ref($self) . '::Action::'
         )
     );
 
-    my $action_namespace = ref($self) . '::Action::';
-
-    $registry->set(action_factory =>
-          Lamework::ActionFactory->new(namespace => $action_namespace));
-    $registry->set(renderer =>
-          Lamework::Renderer::Caml->new(home => $registry->get('home')));
-    $registry->set(
+    $self->add_middleware(
+        'ViewDisplayer',
         displayer => Lamework::Displayer->new(
-            home     => $registry->get('home'),
-            renderer => $registry->get('renderer')
+            renderer => Lamework::Renderer::Caml->new(home => $self->{home})
         )
     );
-
-    my $routes = $self->registry->get('routes');
-
-    $routes->add_route('/:action');
 }
 
-sub app {
+sub _build_routes {
     my $self = shift;
 
-    builder {
-        enable '+Lamework::Middleware::RequestDispatcher',
-          dispatcher => $self->registry->get('dispatcher');
+    my $routes = Lamework::Routes->new;
+    $routes->add_route('/:action');
 
-        enable '+Lamework::Middleware::ActionFactory',
-          action_factory => $self->registry->get('action_factory');
-
-        enable '+Lamework::Middleware::ViewDisplayer',
-          displayer => $self->registry->get('displayer');
-
-        $self->default_app;
-    };
+    return $routes;
 }
 
 1;
