@@ -9,6 +9,7 @@ use Class::Load       ();
 use String::CamelCase ();
 use Try::Tiny;
 
+use Lamework::Loader;
 use Lamework::Exception;
 
 sub BUILD {
@@ -25,18 +26,9 @@ sub build {
 
     my $class = $self->_build_class_name($name);
 
-    return try {
-        Class::Load::load_class($class);
+    $self->_load_class($class);
 
-        return $self->_build_object($class, %{$self->{default_args}}, @args);
-    }
-    catch {
-        $class =~ s{::}{/}g;
-
-        die $_ unless $_ =~ m{^Can't locate $class\.pm in \@INC };
-
-        Lamework::Exception->throw(class => 'Factory', message => $_);
-    };
+    return $self->_build_object($class, %{$self->{default_args}}, @args);
 }
 
 sub _build_class_name {
@@ -46,6 +38,15 @@ sub _build_class_name {
     $action = String::CamelCase::camelize($action);
 
     return "$self->{namespace}$action";
+}
+
+sub _load_class {
+    my $self = shift;
+    my ($class) = @_;
+
+    my $loader = Lamework::Loader->new;
+
+    $loader->load_class($class);
 }
 
 sub _build_object {

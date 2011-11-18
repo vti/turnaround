@@ -5,9 +5,10 @@ use warnings;
 
 use base 'Lamework::Base';
 
-use Class::Load    ();
 use File::Basename ();
 use Encode ();
+
+use Lamework::Loader;
 
 sub BUILD {
     my $self = shift;
@@ -26,7 +27,7 @@ sub load {
 
     my $class = __PACKAGE__ . '::' . ucfirst($ext);
 
-    Class::Load::load_class($class);
+    Lamework::Loader->new->load_class($class);
 
     my $config = $self->_read_file($path);
 
