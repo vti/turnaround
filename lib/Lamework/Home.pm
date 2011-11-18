@@ -13,7 +13,6 @@ require Carp;
 use Cwd ();
 use File::Basename ();
 use File::Spec ();
-use Scalar::Util qw(blessed);
 
 sub BUILD {
     my $self = shift;
