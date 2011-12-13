@@ -9,7 +9,6 @@ our $VERSION = '0.1';
 
 use Lamework::Home;
 use Lamework::HTTPException;
-use Lamework::Loader;
 use Lamework::Builder;
 
 use overload q(&{}) => sub { shift->to_app }, fallback => 1;
@@ -39,11 +38,7 @@ sub default_app {
 sub to_app {
     my $self = shift;
 
-    $self->{psgi_app} ||= do {
-        my $app = sub { $self->default_app };
-
-        $self->{builder}->wrap($app);
-    };
+    $self->{psgi_app} ||= $self->{builder}->wrap($self->default_app);
 
     return $self->{psgi_app};
 }
