@@ -14,7 +14,6 @@ license 'artistic_2';
 perl_version '5.008007';
 
 requires 'Carp'              => '0';
-requires 'Class::Load'       => '0';
 requires 'Config::Tiny'      => '0';
 requires 'Cwd'               => '0';
 requires 'Encode'            => '0';

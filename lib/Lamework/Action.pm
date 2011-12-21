@@ -6,7 +6,7 @@ use warnings;
 use base 'Lamework::Base';
 
 use Lamework::Env;
-use Lamework::HTTPException;
+use Lamework::Exception;
 use Lamework::Request;
 
 sub BUILD {
@@ -100,14 +100,14 @@ sub forbidden {
     my $self = shift;
     my ($message) = @_;
 
-    Lamework::HTTPException->throw(403, $message);
+    throw 'Lamework::HTTPException', code => 403, message => $message;
 }
 
 sub not_found {
     my $self = shift;
     my ($message) = @_;
 
-    Lamework::HTTPException->throw(404, $message);
+    throw 'Lamework::HTTPException', code => 404, message => $message;
 }
 
 sub redirect {

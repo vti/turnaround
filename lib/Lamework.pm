@@ -8,7 +8,7 @@ use base 'Lamework::Base';
 our $VERSION = '0.1';
 
 use Lamework::Home;
-use Lamework::HTTPException;
+use Lamework::Exception;
 use Lamework::Builder;
 
 use overload q(&{}) => sub { shift->to_app }, fallback => 1;
@@ -32,7 +32,7 @@ sub add_middleware {
 }
 
 sub default_app {
-    sub { Lamework::HTTPException->throw(404) }
+    sub { throw 'Lamework::HTTPException', code => 404 }
 }
 
 sub to_app {

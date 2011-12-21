@@ -41,7 +41,7 @@ sub _action {
         $self->{action_factory}->build($action, env => $env);
     }
     catch {
-        die $_ unless Lamework::Exception->caught($_);
+        die $_ unless caught;
 
         return;
     };

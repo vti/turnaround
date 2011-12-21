@@ -5,7 +5,6 @@ use warnings;
 
 use base 'Lamework::Base';
 
-use Class::Load       ();
 use String::CamelCase ();
 use Try::Tiny;
 

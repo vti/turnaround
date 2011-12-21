@@ -7,7 +7,7 @@ use base 'Lamework::Middleware';
 
 use Scalar::Util qw(blessed);
 
-use Lamework::HTTPException;
+use Lamework::Exception;
 
 sub call {
     my $self = shift;
@@ -54,7 +54,7 @@ sub _deny {
         return [302, ['Location' => $redirect_to], ['']];
     }
 
-    Lamework::HTTPException->throw(403);
+    throw('Lamework::HTTPException', code => 403);
 }
 
 1;

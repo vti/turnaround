@@ -13,80 +13,53 @@ use Lamework::Exception;
 sub throw_strings : Test {
     my $self = shift;
 
-    is(exception { Lamework::Exception->throw('hello!'); }, 'hello!');
+    like(exception { throw 'Lamework::Exception' => 'hello!'; }, qr/^hello!/);
 }
 
 sub throw_default_message : Test {
     my $self = shift;
 
-    is(exception { Lamework::Exception->throw; },
-        'Exception: Lamework::Exception');
+    like(exception { throw }, qr/^Exception: Lamework::Exception/);
 }
 
-sub throw_namespaced_classes : Test {
+sub throw_line : Test {
     my $self = shift;
 
-    isa_ok(
-        exception {
-            Lamework::Exception->throw(
-                class   => 'Foo::Bar',
-                message => 'hello!'
-            );
-        },
-        'Lamework::Exception::Foo::Bar'
-    );
+    my $e = exception { throw };
+
+    is($e->line, __LINE__ - 2);
 }
 
-sub throw_namespaced_classes_with_default_message : Test {
+sub throw_path : Test {
     my $self = shift;
 
-    is(exception { Lamework::Exception->throw(class => 'Foo::Bar'); },
-        'Exception: Lamework::Exception::Foo::Bar');
-}
+    my $e = exception { throw };
 
-sub throw_absolute_classes : Test {
-    my $self = shift;
-
-    isa_ok(
-        exception {
-            Lamework::Exception->throw(
-                class   => '+Foo::Bar',
-                message => 'hello!'
-            );
-        },
-        'Foo::Bar'
-    );
-}
-
-sub throw_absolute_classes_with_default_message : Test {
-    my $self = shift;
-
-    is(exception { Lamework::Exception->throw(class => '+Foo::Bar'); },
-        'Exception: Foo::Bar');
+    is($e->path, 't/lib/ExceptionTest.pm');
 }
 
 sub catch_exceptions : Test {
     my $self = shift;
 
-    my $e = exception { Lamework::Exception->throw(class => '+Foo::Bar'); };
+    my $e = exception { throw 'Foo::Bar' };
 
-    ok(Lamework::Exception->caught($e));
+    ok(caught($e => 'Foo::Bar'));
 }
 
 sub catch_exceptions_by_isa : Test {
     my $self = shift;
 
-    my $e = exception { Lamework::Exception->throw(class => 'Foo::Bar'); };
+    my $e = exception { throw 'Foo::Bar' };
 
-    ok(Lamework::Exception->caught($e, 'Foo::Bar'));
+    ok(caught($e => 'Foo::Bar'));
 }
 
 sub not_catch_exceptions_by_wrong_isa : Test {
     my $self = shift;
 
-    my $e = exception { Lamework::Exception->throw(class => 'Foo::Bar'); };
+    my $e = exception { throw 'Foo::Bar' };
 
-    ok(!Lamework::Exception->caught($e, 'Foo::Baz'));
+    ok(!caught($e, 'Foo::Baz'));
 }
 
 1;

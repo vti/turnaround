@@ -12,7 +12,15 @@ use Lamework::Loader;
 
 use lib 't/lib/LoaderTest';
 
-sub load_existing_class : Test {
+sub know_when_class_is_already_loaded : Test {
+    my $self = shift;
+
+    my $loader = $self->_build_loader;
+
+    ok($loader->is_class_loaded('LoaderTest'));
+}
+
+sub load_loaded_class : Test {
     my $self = shift;
 
     my $loader = $self->_build_loader;
@@ -28,7 +36,15 @@ sub load_existing_class_searching_namespaces : Test {
     is($loader->load_class('Class'), 'Bar::Class');
 }
 
-sub throw_exception_on_unknown_class : Test {
+sub throw_on_invalid_class_name : Test {
+    my $self = shift;
+
+    my $loader = $self->_build_loader;
+
+    ok(exception { $loader->load_class('@#$@') });
+}
+
+sub throw_on_unknown_class : Test {
     my $self = shift;
 
     my $loader = $self->_build_loader;
