@@ -5,9 +5,7 @@ use warnings;
 
 use base 'Lamework::Base';
 
-use Try::Tiny;
-
-use Lamework::Exception ();
+use Lamework::Exception::ClassNotFound;
 
 sub load_class {
     my $self = shift;
@@ -36,9 +34,15 @@ sub is_class_loaded {
     $path =~ s{::}{/}g;
     $path .= '.pm';
 
-    return 1 if exists $INC{$path} && $INC{$path};
+    return 1 if exists $INC{$path} && defined $INC{$path};
 
-    return 1 if $class->can('isa');
+    {
+        no strict 'refs';
+
+        return 1 if @{"$class\::ISA"};
+
+        return 1 if grep { defined &{$_} } keys %{"$class\::"};
+    }
 
     return 0;
 }
@@ -47,21 +51,31 @@ sub try_load_class {
     my $self = shift;
     my ($class) = @_;
 
-    die 'Invalid class name' unless $class =~ m/^[a-z0-9:]+$/i;
+    die "Invalid class name '$class'" unless $class =~ m/^[a-z0-9:]+$/i;
 
     my $path = $class;
     $path =~ s{::}{/}g;
     $path .= '.pm';
 
-    return try {
-        if (!$self->is_class_loaded($class)) {
-            require $path;
-        }
+    return 1 if $self->is_class_loaded($class);
+
+    eval {
+        require $path;
 
         return 1;
     }
-    catch {
-        die $_ unless $_ =~ m{^Can't locate $path in \@INC };
+    or do {
+        my $e = $@;
+
+        delete $INC{$path};
+
+        {
+            no strict 'refs';
+
+            %{"$class\::"} = ();
+        }
+
+        $e->rethrow unless $e =~ m{^Can't locate \Q$path\E in \@INC };
 
         return 0;
     };
@@ -71,8 +85,7 @@ sub _throw_not_found {
     my $self = shift;
     my ($class) = @_;
 
-    Lamework::Exception::throw('Lamework::Exception',
-        "Class '$class' not found");
+    Lamework::Exception::ClassNotFound->throw(message => "Class '$class' not found");
 }
 
 1;

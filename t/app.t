@@ -6,6 +6,7 @@ use Test::More tests => 3;
 use Plack::Test;
 use HTTP::Request::Common;
 
+use lib 'lib';
 use lib 't/lib';
 
 use MyApp;

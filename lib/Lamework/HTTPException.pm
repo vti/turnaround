@@ -3,7 +3,7 @@ package Lamework::HTTPException;
 use strict;
 use warnings;
 
-use base 'Lamework::Exception';
+use base 'Lamework::Exception::Base';
 
 sub code { $_[0]->{code} }
 

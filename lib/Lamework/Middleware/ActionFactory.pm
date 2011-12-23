@@ -5,8 +5,6 @@ use warnings;
 
 use base 'Lamework::Middleware';
 
-use Try::Tiny;
-
 use Lamework::Exception;
 
 sub new {
@@ -41,7 +39,7 @@ sub _action {
         $self->{action_factory}->build($action, env => $env);
     }
     catch {
-        die $_ unless caught;
+        $_->rethrow unless $_->does('Lamework::Exception::ClassNotFound');
 
         return;
     };

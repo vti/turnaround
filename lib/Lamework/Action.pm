@@ -100,14 +100,14 @@ sub forbidden {
     my $self = shift;
     my ($message) = @_;
 
-    throw 'Lamework::HTTPException', code => 403, message => $message;
+    raise 'Lamework::HTTPException', code => 403, message => $message;
 }
 
 sub not_found {
     my $self = shift;
     my ($message) = @_;
 
-    throw 'Lamework::HTTPException', code => 404, message => $message;
+    raise 'Lamework::HTTPException', code => 404, message => $message;
 }
 
 sub redirect {

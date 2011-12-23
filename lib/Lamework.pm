@@ -32,7 +32,7 @@ sub add_middleware {
 }
 
 sub default_app {
-    sub { throw 'Lamework::HTTPException', code => 404 }
+    sub { raise 'Lamework::HTTPException', code => 404, message => 'Not Found' }
 }
 
 sub to_app {

@@ -14,14 +14,15 @@ license 'artistic_2';
 perl_version '5.008007';
 
 requires 'Carp'              => '0';
-requires 'Config::Tiny'      => '0';
 requires 'Cwd'               => '0';
 requires 'Encode'            => '0';
 requires 'File::Basename'    => '0';
 requires 'File::Spec'        => '0';
+requires 'Scalar::Util'      => '0';
+
+requires 'Config::Tiny'      => '0';
 requires 'Plack'             => '0';
 requires 'Routes::Tiny'      => '0';
-requires 'Scalar::Util'      => '0';
 requires 'String::CamelCase' => '0';
 requires 'Text::Caml'        => '0';
 requires 'Try::Tiny'         => '0';

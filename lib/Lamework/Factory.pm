@@ -6,10 +6,8 @@ use warnings;
 use base 'Lamework::Base';
 
 use String::CamelCase ();
-use Try::Tiny;
 
 use Lamework::Loader;
-use Lamework::Exception;
 
 sub BUILD {
     my $self = shift;

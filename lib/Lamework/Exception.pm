@@ -3,74 +3,64 @@ package Lamework::Exception;
 use strict;
 use warnings;
 
-use base 'Lamework::Base';
+use base 'Exporter';
+our @EXPORT = (qw(try catch finally raise die));
 
-use overload '""' => sub { $_[0]->to_string }, fallback => 1;
-
-use Encode       ();
-use Scalar::Util ();
+require Try::Tiny;
+require Scalar::Util;
 
 use Lamework::Loader;
+use Lamework::Exception::Base;
 
-use Exporter qw(import);
-our @EXPORT = (qw(throw caught));
+sub die (@);
 
-sub new {
-    my $class = shift;
+$SIG{__DIE__} = sub { _die([caller], @_) };
 
-    my $self = {@_};
-    bless $self, $class;
+sub import {
+    my $pkg = shift;
 
-    $self->{message} = 'Exception: ' . ref($self)
-      unless defined $self->{message} && $self->{message} ne '';
+    $pkg->export('CORE::GLOBAL', 'die');
 
-    return $self;
+    $pkg->export_to_level(1, $pkg, @EXPORT);
 }
 
-sub path    { $_[0]->{path} }
-sub line    { $_[0]->{line} }
-sub message { $_[0]->{message} }
+sub die (@) { _die([caller], @_) }
 
-sub throw {
-    my $class = shift;
+sub try(&;@)     { goto &Try::Tiny::try }
+sub catch(&;@)   { goto &Try::Tiny::catch }
+sub finally(&;@) { goto &Try::Tiny::finally }
 
-    $class ||= __PACKAGE__;
+sub raise(@) {
+    my ($exception_class, @args) = @_;
 
-    if (!Lamework::Loader->new->try_load_class($class)) {
-        _create_class($class);
+    $exception_class ||= __PACKAGE__ . '::Base';
+
+    if (!Lamework::Loader->is_class_loaded($exception_class)) {
+        my $path = $exception_class;
+        $path =~ s{::}{/}g;
+        $path .= '.pm';
+        eval { require $path; 1 } or do {
+            delete $INC{$path};
+            my $e = $@;
+            CORE::die $e unless $e =~ m{^Can't locate \Q$path\E in \@INC };
+            _create_class($exception_class);
+        };
     }
 
-    my ($package, $path, $line) = caller;
-
-    unshift @_, 'message' if @_ == 1;
-    my $e = $class->new(path => $path, line => $line, @_);
-
-    die $e;
+    unshift @args, 'message' if @args == 1;
+    $exception_class->throw(caller => [caller(0)], @args);
 }
 
-sub caught {
-    my ($exception, $isa) = @_;
+sub _die {
+    my ($caller, $e) = @_;
 
-    ($isa, $exception) = ($exception, $_) if @_ < 2;
+    return unless $^S;
 
-    $isa ||= 'Lamework::Exception';
+    if (!Scalar::Util::blessed($e)) {
+        $e = Lamework::Exception::Base->new(message => $e, caller => $caller);
+    }
 
-    return
-      unless defined $exception
-          && Scalar::Util::blessed $exception
-          && $exception->isa($isa);
-
-    return 1;
-}
-
-sub to_string {&as_string}
-
-sub as_string {
-    my $self = shift;
-
-    my $message = Encode::encode('UTF-8', $self->{message});
-
-    return sprintf("%s at %s line %s.\n", $message, $self->path, $self->line);
+    CORE::die $e;
 }
 
 sub _create_class {
@@ -78,7 +68,7 @@ sub _create_class {
 
     eval <<"EOF";
 package $class;
-use base 'Lamework::Exception';
+use base 'Lamework::Exception::Base';
 EOF
 
     return $class;

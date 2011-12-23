@@ -37,7 +37,7 @@ sub throw_on_unknown_class : Test {
 
     my $factory = $self->_build_factory;
 
-    ok(exception { $factory->build('Unknown') });
+    isa_ok(exception { $factory->build('Unknown') }, 'Lamework::Exception::ClassNotFound');
 }
 
 sub throw_on_syntax_errors : Test {
@@ -45,15 +45,15 @@ sub throw_on_syntax_errors : Test {
 
     my $factory = $self->_build_factory;
 
-    ok(exception { $factory->build('WithSyntaxErrors') });
+    ok(exception { $factory->build('WithSyntaxErrors') }, 'Lamework::Exception::Base');
 }
 
 sub throw_during_creation_errors : Test {
     my $self = shift;
 
     my $factory = $self->_build_factory;
-
-    ok(exception { $factory->build('DieDuringCreation') });
+    my $e = exception { $factory->build('DieDuringCreation') };
+    isa_ok($e, 'Lamework::Exception::Base');
 }
 
 sub _build_factory {

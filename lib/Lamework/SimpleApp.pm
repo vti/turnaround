@@ -15,6 +15,8 @@ use Lamework::Displayer;
 sub startup {
     my $self = shift;
 
+    $self->add_middleware('HTTPExceptions');
+
     $self->add_middleware('RequestDispatcher',
         dispatcher =>
           Lamework::Dispatcher::Routes->new(routes => $self->_build_routes));

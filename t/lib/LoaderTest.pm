@@ -50,7 +50,7 @@ sub throw_on_unknown_class : Test {
     my $loader = $self->_build_loader;
 
     isa_ok(exception { $loader->load_class('Unknown') },
-        'Lamework::Exception');
+        'Lamework::Exception::ClassNotFound');
 }
 
 sub throw_on_class_with_syntax_errors : Test {
@@ -58,7 +58,20 @@ sub throw_on_class_with_syntax_errors : Test {
 
     my $loader = $self->_build_loader;
 
-    ok(exception { $loader->load_class('WithSyntaxErrors') });
+    isa_ok(exception { $loader->load_class('WithSyntaxErrors') },
+        'Lamework::Exception::Base');
+}
+
+sub throw_on_class_with_syntax_errors2 : Test(2) {
+    my $self = shift;
+
+    my $loader = $self->_build_loader;
+
+    my $e = exception { $loader->load_class('WithSyntaxErrors') };
+    isa_ok($e, 'Lamework::Exception::Base');
+
+    $e = exception { $loader->load_class('WithSyntaxErrors') };
+    isa_ok($e, 'Lamework::Exception::Base');
 }
 
 sub _build_loader {

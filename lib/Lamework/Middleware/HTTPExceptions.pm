@@ -6,7 +6,6 @@ use warnings;
 use base 'Plack::Middleware::HTTPExceptions';
 
 use Carp ();
-use Try::Tiny;
 use Scalar::Util 'blessed';
 use HTTP::Status ();
 
@@ -37,7 +36,7 @@ sub transform_error {
         die $e; # rethrow
     }
 
-    if ($code =~ m/^40(3|4)$/) {
+    if ($code =~ m/^40(3|4)$/ && $self->{displayer}) {
         my $file =
           $code == 404 ? $self->{'404_template'} : $self->{'403_template'};
         $message = $self->{displayer}->render_file($file);

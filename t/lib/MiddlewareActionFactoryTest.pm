@@ -8,6 +8,7 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
+use Lamework::DispatchedRequest;
 use Lamework::ActionFactory;
 use Lamework::Middleware::ActionFactory;
 

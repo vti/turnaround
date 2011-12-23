@@ -54,7 +54,7 @@ sub _deny {
         return [302, ['Location' => $redirect_to], ['']];
     }
 
-    throw('Lamework::HTTPException', code => 403);
+    raise 'Lamework::HTTPException', code => 403;
 }
 
 1;

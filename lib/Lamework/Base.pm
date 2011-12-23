@@ -3,6 +3,8 @@ package Lamework::Base;
 use strict;
 use warnings;
 
+use Lamework::Exception ();
+
 sub new {
     my $class = shift;
 
