@@ -27,8 +27,10 @@ requires 'String::CamelCase' => '0';
 requires 'Text::Caml'        => '0';
 requires 'Try::Tiny'         => '0';
 
-test_requires 'Test::More' => '0';
-test_requires 'Test::Spec' => '0';
+test_requires 'Test::Class' => '0';
+test_requires 'Test::Fatal' => '0';
+test_requires 'Test::More'  => '0';
+test_requires 'Test::Spec'  => '0';
 
 tests 't/*.t t/*/*.t t/*/*/*.t t/*/*/*/*.t';
 
