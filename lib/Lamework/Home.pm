@@ -10,9 +10,9 @@ use overload '""' => sub { shift->to_string }, fallback => 1;
 
 require Carp;
 
-use Cwd ();
+use Cwd            ();
 use File::Basename ();
-use File::Spec ();
+use File::Spec     ();
 
 sub BUILD {
     my $self = shift;
@@ -42,16 +42,23 @@ sub _detect {
     if (defined(my $namespace = $self->{app_class})) {
         $namespace =~ s{::}{/}g;
 
-        $home = $INC{$namespace . '.pm'};
+        if (exists $INC{$namespace . '.pm'}) {
+            $home = $INC{$namespace . '.pm'};
 
-        $home = Cwd::realpath(
-            File::Spec->catfile(File::Basename::dirname($home), '..'));
+            $home = Cwd::realpath(
+                File::Spec->catfile(File::Basename::dirname($home), '..'));
+        }
+        else {
+            $home = '.';
+        }
     }
     elsif (defined $ENV{LAMEWORK_HOME}) {
         $home = $ENV{LAMEWORK_HOME};
     }
     else {
-        Carp::croak('Cannot detect home. Pass it manually or set up $ENV{LAMEWORK_HOME}');
+        Carp::croak(
+            'Cannot detect home. Pass it manually or set up $ENV{LAMEWORK_HOME}'
+        );
     }
 
     return $home;
