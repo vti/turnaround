@@ -75,7 +75,8 @@ sub try_load_class {
             %{"$class\::"} = ();
         }
 
-        $e->rethrow unless $e =~ m{^Can't locate \Q$path\E in \@INC };
+        Lamework::Exception::Base->throw(message => $e)
+          unless $e =~ m{^Can't locate \Q$path\E in \@INC };
 
         return 0;
     };
