@@ -12,15 +12,20 @@ use Lamework::Exception;
 
 #use lib 't/lib/LoaderTest';
 
-sub make_objects_from_string_exceptions : Test {
+sub raise_objects_from_simple_die : Test {
     my $self = shift;
 
-    try {
-        die 'hello';
-    }
-    catch {
-        ok $_->does('Lamework::Exception::Base');
-    };
+    my $e = exception { die 'hello' };
+
+    isa_ok($e, 'Lamework::Exception::Base');
+}
+
+sub propagate_object_exceptions : Test {
+    my $self = shift;
+
+    my $e = exception { raise };
+
+    isa_ok($e, 'Lamework::Exception::Base');
 }
 
 sub record_caller_from_string_exceptions : Test(2) {
@@ -32,17 +37,6 @@ sub record_caller_from_string_exceptions : Test(2) {
     catch {
         is $_->line, __LINE__ - 3;
         is $_->path, 't/lib/ExceptionTest.pm';
-    };
-}
-
-sub propagate_object_exceptions : Test {
-    my $self = shift;
-
-    try {
-        raise;
-    }
-    catch {
-        ok $_->does('Lamework::Exception::Base');
     };
 }
 

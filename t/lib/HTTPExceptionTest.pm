@@ -17,4 +17,14 @@ sub throw_correct_isa : Test {
         'Lamework::HTTPException');
 }
 
+sub stingify_without_details : Test {
+    my $self = shift;
+
+    is( exception {
+            raise 'Lamework::HTTPException', code => '500', message => 'foo';
+        },
+        'foo'
+    );
+}
+
 1;
