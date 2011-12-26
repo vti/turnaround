@@ -32,11 +32,10 @@ sub _user {
 
         if ($user) {
             $env->{user} = $user;
-            return;
         }
     }
 
-    $env->{user} = Lamework::Anonymous->new;
+    $env->{user} ||= Lamework::Anonymous->new;
 }
 
 package Lamework::Anonymous;
