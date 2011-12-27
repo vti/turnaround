@@ -30,18 +30,16 @@ sub is_class_loaded {
     my $self = shift;
     my ($class) = @_;
 
-    my $path = $class;
-    $path =~ s{::}{/}g;
-    $path .= '.pm';
+    my $path = $self->_class_to_path($class);
 
     return 1 if exists $INC{$path} && defined $INC{$path};
 
     {
         no strict 'refs';
 
-        return 1 if @{"$class\::ISA"};
-
-        return 1 if grep { defined &{$_} } keys %{"$class\::"};
+        for (keys %{"$class\::"}) {
+            return if defined &{$_};
+        }
     }
 
     return 0;
@@ -53,9 +51,7 @@ sub try_load_class {
 
     die "Invalid class name '$class'" unless $class =~ m/^[a-z0-9:]+$/i;
 
-    my $path = $class;
-    $path =~ s{::}{/}g;
-    $path .= '.pm';
+    my $path = $self->_class_to_path($class);
 
     return 1 if $self->is_class_loaded($class);
 
@@ -80,6 +76,15 @@ sub try_load_class {
 
         return 0;
     };
+}
+
+sub _class_to_path {
+    my $self = shift;
+    my ($class) = @_;
+
+    $class =~ s{::}{/}g;
+
+    return $class . '.pm';
 }
 
 sub _throw_not_found {
