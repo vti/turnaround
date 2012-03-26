@@ -19,7 +19,7 @@ sub throw_on_unknown_template : Test {
 
     my $mw = $self->_build_middleware;
 
-    my $env = {'lamework.template' => 'unknown'};
+    my $env = $self->_build_env(template => 'unknown');
 
     like(exception { $mw->call($env) }, qr/can't find/i);
 }
@@ -29,10 +29,8 @@ sub render_template : Test {
 
     my $mw = $self->_build_middleware;
 
-    my $env = {
-        'lamework.template' => 'template.caml',
-        'lamework.vars'     => {hello => 'there'}
-    };
+    my $env = $self->_build_env(template => 'template.caml', vars => {hello => 'there'});
+
     my $res = $mw->call($env);
 
     is_deeply $res,
@@ -45,10 +43,8 @@ sub render_template_with_utf8 : Test {
 
     my $mw = $self->_build_middleware;
 
-    my $env = {
-        'lamework.template' => 'template-utf8.caml',
-        'lamework.vars'     => {hello => 'привет'}
-    };
+    my $env = $self->_build_env(template => 'template-utf8.caml', vars => {hello => 'привет'});
+
     my $res = $mw->call($env);
 
     is_deeply $res,
@@ -65,11 +61,12 @@ sub render_template_with_layout : Test {
 
     my $mw = $self->_build_middleware;
 
-    my $env = {
-        'lamework.template' => 'template.caml',
-        'lamework.vars'     => {hello => 'there'},
-        'lamework.layout'   => 'layout.caml'
-    };
+    my $env = $self->_build_env(
+        template => 'template.caml',
+        vars     => {hello => 'there'},
+        layout   => 'layout.caml'
+    );
+
     my $res = $mw->call($env);
 
     is_deeply $res,
@@ -79,6 +76,21 @@ sub render_template_with_layout : Test {
         ],
         ["Before\nthere\nAfter"]
       ];
+}
+
+sub _build_env {
+    my $self = shift;
+    my (%params) = @_;
+
+    my $env = {};
+
+    $env = Lamework::Env->new($env);
+
+    foreach my $param (keys %params) {
+        $env->set("displayer.$param", $params{$param});
+    }
+
+    return $env->to_hash;
 }
 
 sub _build_middleware {

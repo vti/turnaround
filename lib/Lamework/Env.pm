@@ -20,8 +20,6 @@ sub new {
     my $self = [{env => $env}];
     bless $self, $class;
 
-    #weaken $self->{env};
-
     return $self;
 }
 
@@ -29,14 +27,37 @@ sub get {
     my $self = shift;
     my ($name) = @_;
 
-    return $self->to_hash->{"lamework.$name"};
+    $name = $self->_build_name($name);
+
+    my @parts = split /\./ => $name;
+
+    my $head = $self->to_hash;
+    for my $part (@parts) {
+        return unless exists $head->{$part};
+        $head = $head->{$part};
+    }
+
+    return $head;
 }
 
 sub set {
     my $self = shift;
-    my ($name, $value) = @_;
+    my (%params) = @_;
 
-    $self->to_hash->{"lamework.$name"} = $value;
+    while (my ($name, $value) = each %params) {
+        $name = $self->_build_name($name);
+
+        my @parts = split /\./ => $name;
+        $name = pop @parts;
+
+        my $head = $self->to_hash;
+        for my $part (@parts) {
+            $head->{$part} = {} unless exists $head->{$part};
+            $head = $head->{$part};
+        }
+
+        $head->{$name} = $value;
+    }
 
     return $self;
 }
@@ -45,6 +66,13 @@ sub to_hash {
     my $self = shift;
 
     return $self->[0]->{env};
+}
+
+sub _build_name {
+    my $self = shift;
+    my ($name) = @_;
+
+    return "lamework.$name";
 }
 
 1;

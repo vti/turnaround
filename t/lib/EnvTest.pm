@@ -20,6 +20,26 @@ sub set_get_variables : Test {
     is($env->get('foo'), 'bar');
 }
 
+sub set_get_variables_with_namespace : Test {
+    my $self = shift;
+
+    my $env = $self->_build_env({});
+
+    $env->set('foo.1' => 'bar');
+
+    is($env->get('foo.1'), 'bar');
+}
+
+sub build_nested_hashref_namespaces : Test {
+    my $self = shift;
+
+    my $env = $self->_build_env({});
+
+    $env->set('foo.1' => 'bar');
+
+    is_deeply($env, {'lamework' => {'foo' => {1 => 'bar'}}});
+}
+
 sub return_hashref : Test {
     my $self = shift;
 
@@ -27,7 +47,7 @@ sub return_hashref : Test {
 
     $env->set(foo => 'bar');
 
-    is_deeply($env->to_hash, {'lamework.foo' => 'bar'});
+    is_deeply($env->to_hash, {'lamework' => {foo => 'bar'}});
 }
 
 sub behave_as_hashref : Test {
@@ -37,7 +57,7 @@ sub behave_as_hashref : Test {
 
     $env->set(foo => 'bar');
 
-    is($env->{'lamework.foo'}, 'bar');
+    is($env->{'lamework'}->{'foo'}, 'bar');
 }
 
 sub throw_when_no_env_was_passed : Test {

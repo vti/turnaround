@@ -8,6 +8,7 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
+use Lamework::Env;
 use Lamework::Routes;
 use Lamework::Dispatcher::Routes;
 use Lamework::Middleware::RequestDispatcher;
@@ -20,7 +21,7 @@ sub do_nothing_when_nothing_dispatched : Test {
 
     $mw->call($env);
 
-    ok !$env->{'lamework.dispatched_request'};
+    ok(!Lamework::Env->new($env)->get('dispatched_request'));
 }
 
 sub do_nothing_when_path_info_is_empty : Test {
@@ -31,7 +32,7 @@ sub do_nothing_when_path_info_is_empty : Test {
 
     $mw->call($env);
 
-    ok !$env->{'lamework.dispatched_request'};
+    ok(!Lamework::Env->new($env)->get('dispatched_request'));
 }
 
 sub dispatch_when_path_found : Test {
@@ -42,7 +43,7 @@ sub dispatch_when_path_found : Test {
 
     $mw->call($env);
 
-    ok $env->{'lamework.dispatched_request'};
+    ok(Lamework::Env->new($env)->get('dispatched_request'));
 }
 
 sub do_nothing_when_method_is_wrong : Test {
@@ -53,7 +54,7 @@ sub do_nothing_when_method_is_wrong : Test {
 
     $mw->call($env);
 
-    ok !$env->{'lamework.dispatched_request'};
+    ok(!Lamework::Env->new($env)->get('dispatched_request'));
 }
 
 sub dispatch_when_path_and_method_are_found : Test {
@@ -64,7 +65,7 @@ sub dispatch_when_path_and_method_are_found : Test {
 
     $mw->call($env);
 
-    ok $env->{'lamework.dispatched_request'};
+    ok(Lamework::Env->new($env)->get('dispatched_request'));
 }
 
 sub _build_middleware {

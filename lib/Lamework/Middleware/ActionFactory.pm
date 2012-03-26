@@ -5,6 +5,7 @@ use warnings;
 
 use base 'Lamework::Middleware';
 
+use Lamework::Env;
 use Lamework::Exception;
 
 sub new {
@@ -19,7 +20,7 @@ sub call {
     my $self = shift;
     my ($env) = @_;
 
-    my $res = $self->_action($env);
+    my $res = $self->_action(Lamework::Env->new($env));
     return $res if $res;
 
     return $self->app->($env);
@@ -29,10 +30,10 @@ sub _action {
     my $self = shift;
     my ($env) = @_;
 
-    my $dispatched_request = $env->{'lamework.dispatched_request'};
+    my $dispatched_request = $env->get('dispatched_request');
     return unless $dispatched_request;
 
-    my $action = $dispatched_request->captures->{action};
+    my $action = $dispatched_request->get_action;
     return unless defined $action;
 
     $action = try {

@@ -17,8 +17,9 @@ sub allow_when_role_is_correct : Test {
 
     my $mw = $self->_build_middleware;
 
-    my $res =
-      $mw->call($self->_build_env(user => {role => 'user'}, action => 'foo'));
+    my $env = $self->_build_env(user => {role => 'user'}, action => 'foo');
+
+    my $res = $mw->call($env);
 
     ok($res);
 }
@@ -94,12 +95,16 @@ sub _build_env {
 
     my $action = delete $params{action};
 
-    return {
-        'lamework.dispatched_request' => Lamework::DispatchedRequest->new(
-            captures => {action => $action}
-        ),
+    my $env = {};
+    $env = Lamework::Env->new($env);
+
+    $env->set(
+        'dispatched_request' =>
+          Lamework::DispatchedRequest->new(captures => {action => $action}),
         %params
-    };
+    );
+
+    return $env->to_hash;
 }
 
 1;

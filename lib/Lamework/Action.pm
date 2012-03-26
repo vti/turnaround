@@ -75,23 +75,17 @@ sub set_var {
         my $key   = $_[$i];
         my $value = $_[$i + 1];
 
-        $self->env->get('vars')->{$key} = $value;
+        $self->env->set("displayer.vars.$key" => $value);
     }
 
     return $self;
-}
-
-sub vars {
-    my $self = shift;
-
-    return $self->env->get('vars');
 }
 
 sub set_template {
     my $self = shift;
     my ($template) = @_;
 
-    $self->env->set(template => $template);
+    $self->env->set('displayer.template' => $template);
 
     return $self;
 }

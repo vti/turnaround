@@ -14,7 +14,6 @@ use Lamework::Env;
 sub new {
     my $self = shift->SUPER::new(@_);
 
-    $self->{render_args} ||= [qw/vars layout/];
     $self->{encoding} ||= 'UTF-8';
 
     return $self;
@@ -39,11 +38,9 @@ sub _display {
     my $template = $self->_get_template($env);
     return unless defined $template;
 
-    my $args = {map { $_ => $env->get($_) } @{$self->{render_args}}};
+    my $args = $env->get('displayer');
 
-    my $displayer = $self->{displayer};
-
-    my $body = $displayer->render_file($template, %$args);
+    my $body = $self->{displayer}->render_file($template, %$args);
 
     my $content_type = Plack::MIME->mime_type(".html");
 
@@ -65,7 +62,7 @@ sub _get_template {
     my $self = shift;
     my ($env) = @_;
 
-    my $template = $env->get('template');
+    my $template = $env->get('displayer.template');
     return $template if $template;
 
     my $dispatched_request = $env->get('dispatched_request');

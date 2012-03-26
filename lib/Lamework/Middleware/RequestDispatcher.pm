@@ -5,6 +5,8 @@ use warnings;
 
 use base 'Lamework::Middleware';
 
+use Lamework::Env;
+
 sub call {
     my $self = shift;
     my ($env) = @_;
@@ -27,7 +29,11 @@ sub _dispatch {
       $dispatcher->dispatch($path, method => lc $method);
     return unless $dispatched_request;
 
-    $env->{'lamework.dispatched_request'} = $dispatched_request;
+    $env = Lamework::Env->new($env);
+
+    $env->set(dispatched_request => $dispatched_request);
+
+    return $self;
 }
 
 1;
