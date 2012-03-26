@@ -100,7 +100,7 @@ sub _build_env {
 
     $env->set(
         'dispatched_request' =>
-          Lamework::DispatchedRequest->new(captures => {action => $action}),
+          Lamework::DispatchedRequest->new(action => $action),
         %params
     );
 

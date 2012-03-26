@@ -43,7 +43,7 @@ sub _get_action {
 
     die 'No DispatchedRequest found' unless $dispatched_request;
 
-    return $dispatched_request->captures->{action};
+    return $dispatched_request->get_action;
 }
 
 sub _deny {
