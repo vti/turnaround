@@ -37,7 +37,7 @@ sub _action {
     return unless defined $action;
 
     $action = try {
-        $self->{action_factory}->build($action, env => $env);
+        $self->{action_factory}->build($action, env => $env->to_hash);
     }
     catch {
         $_->rethrow unless $_->does('Lamework::Exception::ClassNotFound');
