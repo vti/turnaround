@@ -22,7 +22,7 @@ sub startup {
           Lamework::Dispatcher::Routes->new(routes => $self->_build_routes));
 
     $self->add_middleware(
-        'ActionFactory',
+        'ActionDispatcher',
         action_factory => Lamework::ActionFactory->new(
             namespace => ref($self) . '::Action::'
         )

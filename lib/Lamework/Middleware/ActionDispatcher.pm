@@ -1,4 +1,4 @@
-package Lamework::Middleware::ActionFactory;
+package Lamework::Middleware::ActionDispatcher;
 
 use strict;
 use warnings;

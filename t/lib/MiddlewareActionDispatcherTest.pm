@@ -1,4 +1,4 @@
-package MiddlewareActionFactoryTest;
+package MiddlewareActionDispatcherTest;
 
 use strict;
 use warnings;
@@ -10,7 +10,7 @@ use Test::Fatal;
 
 use Lamework::DispatchedRequest;
 use Lamework::ActionFactory;
-use Lamework::Middleware::ActionFactory;
+use Lamework::Middleware::ActionDispatcher;
 
 sub do_nothing_when_no_action : Test {
     my $self = shift;
@@ -57,7 +57,7 @@ sub _build_middleware {
     my $self = shift;
     my (%params) = @_;
 
-    return Lamework::Middleware::ActionFactory->new(
+    return Lamework::Middleware::ActionDispatcher->new(
         action_factory =>
           Lamework::ActionFactory->new(namespace => 'MyApp::Action::'),
         app => sub { [200, [], ['OK']] }
