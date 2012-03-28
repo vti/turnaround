@@ -6,6 +6,7 @@ use warnings;
 use base 'Lamework::Middleware';
 
 use Scalar::Util qw(blessed);
+use Lamework::Env;
 
 sub call {
     my $self = shift;
@@ -22,20 +23,19 @@ sub _user {
 
     my $session = $env->{'psgix.session'};
 
+    my $user;
     if ($session && $session->{user}) {
         my $loader = $self->{user_loader};
 
-        my $user =
+        $user =
           blessed $loader
           ? $loader->load($session->{user})
           : $loader->($session->{user});
-
-        if ($user) {
-            $env->{user} = $user;
-        }
     }
 
-    $env->{user} ||= Lamework::Anonymous->new;
+    $user ||= Lamework::Anonymous->new;
+
+    Lamework::Env->new($env)->set(user => $user);
 }
 
 package Lamework::Anonymous;
