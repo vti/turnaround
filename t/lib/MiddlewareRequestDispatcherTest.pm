@@ -13,26 +13,22 @@ use Lamework::Routes;
 use Lamework::Dispatcher::Routes;
 use Lamework::Middleware::RequestDispatcher;
 
-sub do_nothing_when_nothing_dispatched : Test {
+sub throw_404_when_nothing_dispatched : Test {
     my $self = shift;
 
     my $mw = $self->_build_middleware;
     my $env = {PATH_INFO => '/', REQUEST_METHOD => 'GET'};
 
-    $mw->call($env);
-
-    ok(!Lamework::Env->new($env)->get('dispatched_request'));
+    isa_ok(exception {$mw->call($env)}, 'Lamework::HTTPException');
 }
 
-sub do_nothing_when_path_info_is_empty : Test {
+sub throw_404_when_path_info_is_empty : Test {
     my $self = shift;
 
     my $mw = $self->_build_middleware;
     my $env = {PATH_INFO => '', REQUEST_METHOD => 'GET'};
 
-    $mw->call($env);
-
-    ok(!Lamework::Env->new($env)->get('dispatched_request'));
+    isa_ok(exception {$mw->call($env)}, 'Lamework::HTTPException');
 }
 
 sub dispatch_when_path_found : Test {
@@ -52,9 +48,7 @@ sub do_nothing_when_method_is_wrong : Test {
     my $mw = $self->_build_middleware;
     my $env = {REQUEST_METHOD => 'GET', PATH_INFO => '/only_post'};
 
-    $mw->call($env);
-
-    ok(!Lamework::Env->new($env)->get('dispatched_request'));
+    isa_ok(exception {$mw->call($env)}, 'Lamework::HTTPException');
 }
 
 sub dispatch_when_path_and_method_are_found : Test {

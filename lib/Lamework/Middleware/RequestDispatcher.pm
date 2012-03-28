@@ -6,6 +6,7 @@ use warnings;
 use base 'Lamework::Middleware';
 
 use Lamework::Env;
+use Lamework::Exception;
 
 sub call {
     my $self = shift;
@@ -27,7 +28,7 @@ sub _dispatch {
 
     my $dispatched_request =
       $dispatcher->dispatch($path, method => lc $method);
-    return unless $dispatched_request;
+    raise 'Lamework::HTTPException', code => 404 unless $dispatched_request;
 
     $env = Lamework::Env->new($env);
 
