@@ -29,8 +29,8 @@ sub _user {
 
         $user =
           blessed $loader
-          ? $loader->load($session->{user})
-          : $loader->($session->{user});
+          ? $loader->load($session->{user}, $env)
+          : $loader->($session->{user}, $env);
     }
 
     $user ||= Lamework::Anonymous->new;
