@@ -31,12 +31,15 @@ sub wrap {
     foreach my $middleware (reverse @{$self->{middleware}}) {
         my $instance = $middleware->{name};
 
-        if (!Scalar::Util::blessed($instance)) {
+        if (ref $instance eq 'CODE') {
+            $app = $instance->($app);
+        }
+        elsif (!Scalar::Util::blessed($instance)) {
             $instance = $loader->load_class($instance);
             $instance = $instance->new(@{$middleware->{args}});
-        }
 
-        $app = $instance->wrap($app);
+            $app = $instance->wrap($app);
+        }
     }
 
     return $app;
