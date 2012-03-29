@@ -31,6 +31,12 @@ sub load {
 
     my $config = $self->_read_file($path);
 
+    if (my $preprocess = $self->{preprocess}) {
+        foreach my $key (keys %{$preprocess}) {
+            $config =~ s/$key/$preprocess->{$key}/msg;
+        }
+    }
+
     return $class->new->parse($config);
 }
 
