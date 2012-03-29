@@ -12,14 +12,14 @@ use Lamework::Loader;
 sub BUILD {
     my $self = shift;
 
-    $self->{middlewares} ||= [];
+    $self->{middleware} ||= [];
 }
 
 sub add_middleware {
     my $self = shift;
     my ($middleware, @args) = @_;
 
-    push @{$self->{middlewares}}, {name => $middleware, args => [@args]};
+    push @{$self->{middleware}}, {name => $middleware, args => [@args]};
 }
 
 sub wrap {
@@ -28,7 +28,7 @@ sub wrap {
 
     my $loader = $self->_build_loader;
 
-    foreach my $middleware (reverse @{$self->{middlewares}}) {
+    foreach my $middleware (reverse @{$self->{middleware}}) {
         my $instance = $middleware->{name};
 
         if (!Scalar::Util::blessed($instance)) {
