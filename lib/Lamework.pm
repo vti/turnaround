@@ -21,6 +21,8 @@ sub BUILD {
     $self->{builder} ||= Lamework::Builder->new;
 
     $self->startup;
+
+    return $self;
 }
 
 sub startup { $_[0] }
