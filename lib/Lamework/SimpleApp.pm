@@ -5,17 +5,27 @@ use warnings;
 
 use base 'Lamework';
 
-use Lamework::Home;
-use Lamework::Routes;
-use Lamework::Dispatcher::Routes;
 use Lamework::ActionFactory;
-use Lamework::Renderer::Caml;
+use Lamework::Dispatcher::Routes;
 use Lamework::Displayer;
+use Lamework::Home;
+use Lamework::HTTPExceptionResolver::Template;
+use Lamework::Renderer::Caml;
+use Lamework::Routes;
 
 sub startup {
     my $self = shift;
 
-    $self->add_middleware('HTTPExceptions');
+    my $displayer =
+      Lamework::Displayer->new(
+        renderer => Lamework::Renderer::Caml->new(home => $self->{home}));
+
+    $self->add_middleware(
+        'HTTPExceptions',
+        resolver => Lamework::HTTPExceptionResolver::Template->new(
+            displayer => $displayer
+        )
+    );
 
     $self->add_middleware('RequestDispatcher',
         dispatcher =>
@@ -28,12 +38,7 @@ sub startup {
         )
     );
 
-    $self->add_middleware(
-        'ViewDisplayer',
-        displayer => Lamework::Displayer->new(
-            renderer => Lamework::Renderer::Caml->new(home => $self->{home})
-        )
-    );
+    $self->add_middleware('ViewDisplayer', displayer => $displayer);
 }
 
 sub _build_routes {
