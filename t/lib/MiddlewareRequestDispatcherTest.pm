@@ -2,6 +2,7 @@ package MiddlewareRequestDispatcherTest;
 
 use strict;
 use warnings;
+use utf8;
 
 use base 'TestBase';
 
@@ -62,6 +63,20 @@ sub dispatch_when_path_and_method_are_found : Test {
     ok(Lamework::Env->new($env)->get('dispatched_request'));
 }
 
+sub dispatch_utf_path : Test {
+    my $self = shift;
+
+    my $mw = $self->_build_middleware;
+    my $env = {
+        REQUEST_METHOD => 'GET',
+        PATH_INFO => '/unicode/' . Encode::encode('UTF-8', 'привет')
+    };
+
+    $mw->call($env);
+
+    is(Lamework::Env->new($env)->get('dispatched_request')->{captures}->{name}, 'привет');
+}
+
 sub _build_middleware {
     my $self = shift;
 
@@ -72,6 +87,7 @@ sub _build_middleware {
         defaults => {action => 'bar'},
         method   => 'post'
     );
+    $routes->add_route('/unicode/:name', name => 'bar');
 
     return Lamework::Middleware::RequestDispatcher->new(
         app => sub { [200, [], ['OK']] },

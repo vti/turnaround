@@ -5,8 +5,17 @@ use warnings;
 
 use base 'Lamework::Middleware';
 
+use Encode ();
 use Lamework::Env;
 use Lamework::Exception;
+
+sub new {
+    my $self = shift->SUPER::new(@_);
+
+    $self->{encoding} ||= 'UTF-8';
+
+    return $self;
+}
 
 sub call {
     my $self = shift;
@@ -23,6 +32,10 @@ sub _dispatch {
 
     my $path   = $env->{PATH_INFO}      || '';
     my $method = $env->{REQUEST_METHOD} || 'GET';
+
+    if ($self->{encoding}) {
+        $path = Encode::decode($self->{encoding}, $path);
+    }
 
     my $dispatcher = $self->{dispatcher} or die 'dispatcher required';
 
