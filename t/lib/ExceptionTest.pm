@@ -10,8 +10,6 @@ use Test::Fatal;
 
 use Lamework::Exception;
 
-#use lib 't/lib/LoaderTest';
-
 sub raise_objects_from_simple_die : Test {
     my $self = shift;
 
@@ -79,15 +77,5 @@ sub throw_default_message : Test {
 
     like(exception { raise }, qr/^Exception: Lamework::Exception::Base/);
 }
-
-#sub throw_foo : Test {
-#    my $self = shift;
-#
-#    my $e = exception { raise 'WithSyntaxErrors' };
-#    like($e, qr/^Bareword /);
-#
-#    $e = exception { raise 'WithSyntaxErrors' };
-#    like($e, qr/^Bareword /);
-#}
 
 1;

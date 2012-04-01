@@ -5,7 +5,10 @@ use warnings;
 
 use base 'Lamework::Base';
 
-use overload '""' => sub { $_[0]->to_string }, fallback => 1;
+use overload
+  '""'     => sub { $_[0]->to_string },
+  'bool'   => sub {1},
+  fallback => 1;
 
 use Encode       ();
 use Scalar::Util ();

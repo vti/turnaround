@@ -12,6 +12,7 @@ require Scalar::Util;
 use Lamework::Loader;
 use Lamework::Exception::Base;
 
+my $OLD_DIE = $SIG{__DIE__};
 $SIG{__DIE__} = sub { _die([caller], @_) };
 
 sub try(&;@)     { goto &Try::Tiny::try }
@@ -36,13 +37,17 @@ sub _try_load_class { Lamework::Loader->new->try_load_class(@_) }
 sub _die {
     my ($caller, $e) = @_;
 
+    local $SIG{__DIE__} = $OLD_DIE;
+
     return unless $^S;
 
     if (!Scalar::Util::blessed($e)) {
+        $e =~ s/ at .*? line .*?\.//;
+        chomp $e;
         $e = Lamework::Exception::Base->new(message => $e, caller => $caller);
     }
 
-    CORE::die $e;
+    CORE::die($e);
 }
 
 sub _create_class {
