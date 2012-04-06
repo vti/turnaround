@@ -2,6 +2,7 @@ use strict;
 use warnings;
 
 use Test::More tests => 3;
+use File::Spec;
 
 use lib 't/lib';
 
@@ -11,4 +12,4 @@ my $home = Lamework::Home->new(path => '/foo/bar');
 
 is $home => '/foo/bar';
 
-is($home->catfile('hello', 'there') => '/foo/bar/hello/there');
+is($home->catfile('hello', 'there') => File::Spec->catfile('/foo/bar/hello/there'));
