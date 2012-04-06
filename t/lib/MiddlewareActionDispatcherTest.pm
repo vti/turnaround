@@ -69,9 +69,10 @@ sub _build_env {
     my (%params) = @_;
 
     return {
-        'lamework.dispatched_request' => Lamework::DispatchedRequest->new(
-            captures => {action => $params{action}}
-        ),
+        'lamework' => {
+            dispatched_request =>
+              Lamework::DispatchedRequest->new(action => $params{action})
+        },
         %params
     };
 }
