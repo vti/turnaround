@@ -68,7 +68,7 @@ sub set_var {
         my $key   = $_[$i];
         my $value = $_[$i + 1];
 
-        $self->env->{"lamework.displayer.vars.$key"} = $value;
+        $self->env->{'lamework.displayer.vars'}->{$key} = $value;
     }
 
     return $self;
