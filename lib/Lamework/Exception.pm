@@ -4,9 +4,8 @@ use strict;
 use warnings;
 
 use base 'Exporter';
-our @EXPORT = (qw(try catch finally raise));
+our @EXPORT = (qw(raise));
 
-require Try::Tiny;
 require Scalar::Util;
 
 use Lamework::Loader;
@@ -14,10 +13,6 @@ use Lamework::Exception::Base;
 
 my $OLD_DIE = $SIG{__DIE__};
 $SIG{__DIE__} = sub { _die([caller], @_) };
-
-sub try(&;@)     { goto &Try::Tiny::try }
-sub catch(&;@)   { goto &Try::Tiny::catch }
-sub finally(&;@) { goto &Try::Tiny::finally }
 
 sub raise(@) {
     my ($exception_class, @args) = @_;

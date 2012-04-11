@@ -35,14 +35,14 @@ sub _action {
     my $action = $dispatched_request->get_action;
     return unless defined $action;
 
-    $action = try {
-        $self->{action_factory}->build($action, env => $env);
-    }
-    catch {
-        $_->rethrow unless $_->does('Lamework::Exception::ClassNotFound');
+    $action =
+      eval { $self->{action_factory}->build($action, env => $env) } || do {
+        my $e = $@;
+
+        $e->rethrow unless $e->does('Lamework::Exception::ClassNotFound');
 
         return;
-    };
+      };
     return unless defined $action;
 
     $action->run;

@@ -59,8 +59,7 @@ sub try_load_class {
         require $path;
 
         return 1;
-    }
-    or do {
+    } || do {
         my $e = $@;
 
         delete $INC{$path};
@@ -91,7 +90,8 @@ sub _throw_not_found {
     my $self = shift;
     my ($class) = @_;
 
-    Lamework::Exception::ClassNotFound->throw(message => "Class '$class' not found");
+    Lamework::Exception::ClassNotFound->throw(
+        message => "Class '$class' not found");
 }
 
 1;

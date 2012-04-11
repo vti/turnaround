@@ -29,24 +29,28 @@ sub propagate_object_exceptions : Test {
 sub record_caller_from_string_exceptions : Test(2) {
     my $self = shift;
 
-    try {
+    eval {
         die 'hello';
     }
-    catch {
-        is $_->line, __LINE__ - 3;
-        is $_->path, 't/lib/ExceptionTest.pm';
+    or do {
+        my $e = $@;
+
+        is $e->line, __LINE__ - 5;
+        is $e->path, 't/lib/ExceptionTest.pm';
     };
 }
 
 sub record_caller_from_object_exceptions : Test(2) {
     my $self = shift;
 
-    try {
+    eval {
         raise;
     }
-    catch {
-        is $_->line, __LINE__ - 3;
-        is $_->path, 't/lib/ExceptionTest.pm';
+    or do {
+        my $e = $@;
+
+        is $e->line, __LINE__ - 5;
+        is $e->path, 't/lib/ExceptionTest.pm';
     };
 }
 

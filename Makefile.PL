@@ -25,7 +25,6 @@ requires 'Plack'             => '0';
 requires 'Routes::Tiny'      => '0';
 requires 'String::CamelCase' => '0';
 requires 'Text::Caml'        => '0';
-requires 'Try::Tiny'         => '0';
 
 test_requires 'Test::Class' => '0';
 test_requires 'Test::Fatal' => '0';
