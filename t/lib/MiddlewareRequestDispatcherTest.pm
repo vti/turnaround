@@ -9,7 +9,6 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Lamework::Env;
 use Lamework::Routes;
 use Lamework::Dispatcher::Routes;
 use Lamework::Middleware::RequestDispatcher;
@@ -40,7 +39,7 @@ sub dispatch_when_path_found : Test {
 
     $mw->call($env);
 
-    ok(Lamework::Env->new($env)->get('dispatched_request'));
+    ok($env->{'lamework.dispatched_request'});
 }
 
 sub do_nothing_when_method_is_wrong : Test {
@@ -60,7 +59,7 @@ sub dispatch_when_path_and_method_are_found : Test {
 
     $mw->call($env);
 
-    ok(Lamework::Env->new($env)->get('dispatched_request'));
+    ok($env->{'lamework.dispatched_request'});
 }
 
 sub dispatch_utf_path : Test {
@@ -74,7 +73,7 @@ sub dispatch_utf_path : Test {
 
     $mw->call($env);
 
-    is(Lamework::Env->new($env)->get('dispatched_request')->{captures}->{name}, 'привет');
+    is($env->{'lamework.dispatched_request'}->{captures}->{name}, 'привет');
 }
 
 sub _build_middleware {

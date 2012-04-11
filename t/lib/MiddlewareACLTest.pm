@@ -96,15 +96,15 @@ sub _build_env {
     my $action = delete $params{action};
 
     my $env = {};
-    $env = Lamework::Env->new($env);
 
-    $env->set(
-        'dispatched_request' =>
-          Lamework::DispatchedRequest->new(action => $action),
-        %params
-    );
+    $env->{'lamework.dispatched_request'} =
+      Lamework::DispatchedRequest->new(action => $action);
 
-    return $env->to_hash;
+    foreach my $key (keys %params) {
+        $env->{"lamework.$key"} = $params{$key};
+    }
+
+    return $env;
 }
 
 1;

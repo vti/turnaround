@@ -7,14 +7,13 @@ use base 'Lamework::Middleware';
 
 use Scalar::Util qw(blessed);
 
-use Lamework::Env;
 use Lamework::Exception;
 
 sub call {
     my $self = shift;
     my ($env) = @_;
 
-    my $res = $self->_acl(Lamework::Env->new($env));
+    my $res = $self->_acl($env);
     return $res if $res;
 
     return $self->app->($env);
@@ -24,7 +23,7 @@ sub _acl {
     my $self = shift;
     my ($env) = @_;
 
-    return $self->_deny($env) unless my $user = $env->get('user');
+    return $self->_deny($env) unless my $user = $env->{'lamework.user'};
 
     my $action = $self->_get_action($env);
 
@@ -39,7 +38,7 @@ sub _get_action {
     my $self = shift;
     my ($env) = @_;
 
-    my $dispatched_request = $env->get('dispatched_request');
+    my $dispatched_request = $env->{'lamework.dispatched_request'};
 
     die 'No DispatchedRequest found' unless $dispatched_request;
 

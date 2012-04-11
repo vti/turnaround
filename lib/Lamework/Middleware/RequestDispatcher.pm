@@ -6,7 +6,6 @@ use warnings;
 use base 'Lamework::Middleware';
 
 use Encode ();
-use Lamework::Env;
 use Lamework::Exception;
 
 sub new {
@@ -43,9 +42,7 @@ sub _dispatch {
       $dispatcher->dispatch($path, method => lc $method);
     raise 'Lamework::HTTPException', code => 404 unless $dispatched_request;
 
-    $env = Lamework::Env->new($env);
-
-    $env->set(dispatched_request => $dispatched_request);
+    $env->{'lamework.dispatched_request'} = $dispatched_request;
 
     return $self;
 }

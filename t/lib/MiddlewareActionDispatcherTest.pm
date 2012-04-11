@@ -68,13 +68,15 @@ sub _build_env {
     my $self = shift;
     my (%params) = @_;
 
-    return {
-        'lamework' => {
-            dispatched_request =>
-              Lamework::DispatchedRequest->new(action => $params{action})
-        },
-        %params
-    };
+    my $env =
+      {'lamework.dispatched_request' =>
+          Lamework::DispatchedRequest->new(action => $params{action})};
+
+    foreach my $key (keys %params) {
+        $env->{"lamework.$key"} = $params{$key};
+    }
+
+    return $env;
 }
 
 1;

@@ -6,7 +6,6 @@ use warnings;
 use base 'Lamework::Middleware';
 
 use Scalar::Util qw(blessed);
-use Lamework::Env;
 
 sub call {
     my $self = shift;
@@ -35,7 +34,7 @@ sub _user {
 
     $user ||= Lamework::Anonymous->new;
 
-    Lamework::Env->new($env)->set(user => $user);
+    $env->{'lamework.user'} = $user;
 }
 
 package Lamework::Anonymous;

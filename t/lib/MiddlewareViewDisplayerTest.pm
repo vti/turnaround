@@ -84,13 +84,11 @@ sub _build_env {
 
     my $env = {};
 
-    $env = Lamework::Env->new($env);
-
     foreach my $param (keys %params) {
-        $env->set("displayer.$param", $params{$param});
+        $env->{"lamework.displayer.$param"} = $params{$param};
     }
 
-    return $env->to_hash;
+    return $env;
 }
 
 sub _build_middleware {

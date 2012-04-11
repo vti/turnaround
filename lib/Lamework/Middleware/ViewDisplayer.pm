@@ -9,8 +9,6 @@ use Encode ();
 use Plack::MIME;
 use String::CamelCase ();
 
-use Lamework::Env;
-
 sub new {
     my $self = shift->SUPER::new(@_);
 
@@ -33,14 +31,15 @@ sub _display {
     my $self = shift;
     my ($env) = @_;
 
-    $env = Lamework::Env->new($env);
-
     my $template = $self->_get_template($env);
     return unless defined $template;
 
-    my $args = $env->get('displayer');
+    my $vars   = $env->{'lamework.displayer.vars'};
+    my $layout = $env->{'lamework.displayer.layout'};
 
-    my $body = $self->{displayer}->render_file($template, %$args);
+    my $body =
+      $self->{displayer}
+      ->render_file($template, vars => $vars, layout => $layout);
 
     my $content_type = Plack::MIME->mime_type(".html");
 
@@ -62,10 +61,10 @@ sub _get_template {
     my $self = shift;
     my ($env) = @_;
 
-    my $template = $env->get('displayer.template');
+    my $template = $env->{'lamework.displayer.template'};
     return $template if $template;
 
-    my $dispatched_request = $env->get('dispatched_request');
+    my $dispatched_request = $env->{'lamework.dispatched_request'};
     return unless $dispatched_request;
 
     if (my $action = $dispatched_request->get_action) {

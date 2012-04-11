@@ -5,15 +5,8 @@ use warnings;
 
 use base 'Lamework::Base';
 
-use Lamework::Env;
 use Lamework::Exception;
 use Lamework::Request;
-
-sub BUILD {
-    my $self = shift;
-
-    $self->{env} = Lamework::Env->new($self->{env});
-}
 
 sub env {
     my $self = shift;
@@ -24,7 +17,7 @@ sub env {
 sub req {
     my $self = shift;
 
-    $self->{req} ||= Lamework::Request->new($self->env->to_hash);
+    $self->{req} ||= Lamework::Request->new($self->env);
 
     return $self->{req};
 }
@@ -53,7 +46,7 @@ sub url_for {
         $url = $_[0];
     }
     else {
-        my $dispatched_request = $self->env->get('dispatched_request');
+        my $dispatched_request = $self->env->{'lamework.dispatched_request'};
 
         my $path = $dispatched_request->build_path(@_);
 
@@ -66,7 +59,7 @@ sub url_for {
     return $url;
 }
 
-sub captures { $_[0]->env->get('dispatched_request')->get_captures }
+sub captures { $_[0]->env->{'lamework.dispatched_request'}->get_captures }
 
 sub set_var {
     my $self = shift;
@@ -75,17 +68,8 @@ sub set_var {
         my $key   = $_[$i];
         my $value = $_[$i + 1];
 
-        $self->env->set("displayer.vars.$key" => $value);
+        $self->env->{"lamework.displayer.vars.$key"} = $value;
     }
-
-    return $self;
-}
-
-sub set_template {
-    my $self = shift;
-    my ($template) = @_;
-
-    $self->env->set('displayer.template' => $template);
 
     return $self;
 }
