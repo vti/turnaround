@@ -10,6 +10,8 @@ use Encode ();
 
 use Lamework::Loader;
 
+our $CONFIG = {};
+
 sub BUILD {
     my $self = shift;
 
@@ -37,8 +39,10 @@ sub load {
         }
     }
 
-    return $class->new->parse($config);
+    return $CONFIG = $class->new->parse($config);
 }
+
+sub config { $CONFIG }
 
 sub _read_file {
     my $self = shift;
