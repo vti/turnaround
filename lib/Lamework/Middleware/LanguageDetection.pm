@@ -13,8 +13,8 @@ sub new {
     die 'default_language is required' unless $self->{default_language};
     die 'languages is required'        unless $self->{languages};
 
-    $self->{env_key}     ||= 'lamework.language';
-    $self->{session_key} ||= 'lamework.language';
+    $self->{env_key}     ||= 'lamework.i18n.language';
+    $self->{session_key} ||= 'lamework.i18n.language';
 
     $self->{use_path}    = 1 unless defined $self->{use_path};
     $self->{use_session} = 1 unless defined $self->{use_session};
