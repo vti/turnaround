@@ -12,6 +12,8 @@ sub new {
 
     die 'action_factory is required' unless $self->{action_factory};
 
+    $self->{action_arguments} ||= {};
+
     return $self;
 }
 
@@ -35,14 +37,16 @@ sub _action {
     my $action = $dispatched_request->get_action;
     return unless defined $action;
 
-    $action =
-      eval { $self->{action_factory}->build($action, env => $env) } || do {
+    $action = eval {
+        $self->{action_factory}
+          ->build($action, env => $env, %{$self->{action_arguments}});
+    } || do {
         my $e = $@;
 
         $e->rethrow unless $e->does('Lamework::Exception::ClassNotFound');
 
         return;
-      };
+    };
     return unless defined $action;
 
     $action->run;
