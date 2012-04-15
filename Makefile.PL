@@ -18,6 +18,7 @@ requires 'Cwd'               => '0';
 requires 'Encode'            => '0';
 requires 'File::Basename'    => '0';
 requires 'File::Spec'        => '0';
+requires 'Locale::Maketext'  => '0';
 requires 'Scalar::Util'      => '0';
 
 requires 'Config::Tiny'      => '0';
