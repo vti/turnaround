@@ -8,6 +8,13 @@ use base 'Lamework::Base';
 use Lamework::Exception;
 use Lamework::Request;
 
+sub service {
+    my $self = shift;
+    my ($name) = @_;
+
+    return $self->{env}->{'lamework.services'}->service($name);
+}
+
 sub env {
     my $self = shift;
 
