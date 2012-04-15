@@ -27,17 +27,7 @@ sub call {
     my $self = shift;
     my ($env) = @_;
 
-    my $lang = $self->_detect_language($env);
-
-    if (!$lang || !$self->_is_allowed($lang)) {
-        $lang = $self->{default_language};
-    }
-
-    $env->{$self->{env_key}} = $lang;
-
-    if ($self->{use_session}) {
-        $env->{'psgix.session'}->{$self->{session_key}} = $lang;
-    }
+    $self->_detect_language($env);
 
     return $self->app->($env);
 }
@@ -52,7 +42,15 @@ sub _detect_language {
     $lang ||= $self->_detect_from_path($env)    if $self->{use_path};
     $lang ||= $self->_detect_from_header($env)  if $self->{use_header};
 
-    return $lang;
+    if (!$lang || !$self->_is_allowed($lang)) {
+        $lang = $self->{default_language};
+    }
+
+    $env->{$self->{env_key}} = $lang;
+
+    if ($self->{use_session}) {
+        $env->{'psgix.session'}->{$self->{session_key}} = $lang;
+    }
 }
 
 sub _detect_from_session {

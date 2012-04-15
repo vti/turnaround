@@ -14,19 +14,21 @@ sub new {
     $params{default_language} = $i18n->get_default_language;
     $params{languages}        = [$i18n->get_languages];
 
-    return $class->SUPER::new(%params);
+    my $self = $class->SUPER::new(%params);
+
+    $self->{i18n} = $i18n;
+
+    return $self;
 }
 
-sub call {
+sub _detect_language {
     my $self = shift;
     my ($env) = @_;
 
-    my $app = $self->SUPER::call(@_);
+    $self->SUPER::_detect_language($env);
 
     my $language = $env->{'lamework.i18n.language'};
     $env->{'lamework.i18n.maketext'} = $self->{i18n}->handle($language);
-
-    return $app;
 }
 
 1;
