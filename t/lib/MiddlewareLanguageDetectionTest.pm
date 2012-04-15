@@ -16,7 +16,7 @@ sub detect_from_session : Test {
     my $mw =
       $self->_build_middleware(default_language => 'en', languages => ['ru']);
 
-    my $env = {'psgix.session' => {'lamework.i18n.language' => 'ru'}};
+    my $env = {PATH_INFO => '', 'psgix.session' => {'lamework.i18n.language' => 'ru'}};
 
     $mw->call($env);
 
@@ -68,7 +68,7 @@ sub set_default_language_when_unknown_detected : Test {
     my $mw =
       $self->_build_middleware(default_language => 'en', languages => ['ru']);
 
-    my $env = {'psgix.session' => {'lamework.i18n.language' => 'es'}};
+    my $env = {PATH_INFO => '', 'psgix.session' => {'lamework.i18n.language' => 'es'}};
 
     $mw->call($env);
 

@@ -38,8 +38,8 @@ sub _detect_language {
 
     my $lang;
 
-    $lang ||= $self->_detect_from_session($env) if $self->{use_session};
     $lang ||= $self->_detect_from_path($env)    if $self->{use_path};
+    $lang ||= $self->_detect_from_session($env) if $self->{use_session};
     $lang ||= $self->_detect_from_header($env)  if $self->{use_header};
 
     if (!$lang || !$self->_is_allowed($lang)) {
@@ -69,7 +69,7 @@ sub _detect_from_path {
     my $path = $env->{PATH_INFO};
 
     my $languages_re = join '|', @{$self->{languages}};
-    if ($path =~ s{^/?($languages_re)(?=/|$)}{}) {
+    if ($path =~ s{^/($languages_re)(?=/|$)}{}) {
         $env->{PATH_INFO} = $path;
         return $1;
     }
