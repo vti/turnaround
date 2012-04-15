@@ -69,7 +69,7 @@ sub _detect_from_path {
     my $path = $env->{PATH_INFO};
 
     my $languages_re = join '|', @{$self->{languages}};
-    if ($path =~ s{^/($languages_re)(?=/|$)}{}) {
+    if ($path =~ s{^/?($languages_re)(?=/|$)}{}) {
         $env->{PATH_INFO} = $path;
         return $1;
     }
