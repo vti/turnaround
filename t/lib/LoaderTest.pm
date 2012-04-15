@@ -1,4 +1,4 @@
-package Foo;
+package LoaderTestFoo;
 sub bar {}
 
 package LoaderTest;
@@ -82,7 +82,7 @@ sub is_class_loaded : Test(1) {
 
     my $loader = $self->_build_loader;
 
-    ok($loader->is_class_loaded('Foo'));
+    ok($loader->is_class_loaded('LoaderTestFoo'));
 }
 
 sub not_is_class_loaded : Test(1) {
