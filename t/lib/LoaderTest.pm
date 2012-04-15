@@ -1,3 +1,6 @@
+package Foo;
+sub bar {}
+
 package LoaderTest;
 
 use strict;
@@ -72,6 +75,22 @@ sub throw_on_class_with_syntax_errors2 : Test(2) {
 
     $e = exception { $loader->load_class('WithSyntaxErrors') };
     isa_ok($e, 'Lamework::Exception::Base');
+}
+
+sub is_class_loaded : Test(1) {
+    my $self = shift;
+
+    my $loader = $self->_build_loader;
+
+    ok($loader->is_class_loaded('Foo'));
+}
+
+sub not_is_class_loaded : Test(1) {
+    my $self = shift;
+
+    my $loader = $self->_build_loader;
+
+    ok(!$loader->is_class_loaded('Foo123'));
 }
 
 sub _build_loader {

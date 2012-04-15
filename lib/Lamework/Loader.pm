@@ -36,9 +36,8 @@ sub is_class_loaded {
 
     {
         no strict 'refs';
-
         for (keys %{"$class\::"}) {
-            return if defined &{$_};
+            return 1 if defined *{"$class\::$_"};
         }
     }
 
