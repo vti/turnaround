@@ -8,12 +8,12 @@ use warnings;
 
 use base 'TestBase';
 
+use lib 't/core/LoaderTest';
+
 use Test::More;
 use Test::Fatal;
 
 use Turnaround::Loader;
-
-use lib 't/tests/LoaderTest';
 
 sub know_when_class_is_already_loaded : Test {
     my $self = shift;

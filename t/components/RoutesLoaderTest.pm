@@ -14,7 +14,7 @@ sub add_routes : Test {
     my $self = shift;
 
     my $routes =
-      $self->_build_routes->load('t/tests/RoutesLoaderTest/routes.yml');
+      $self->_build_routes->load('t/components/RoutesLoaderTest/routes.yml');
 
     ok($routes->match('/'));
 }
@@ -23,7 +23,7 @@ sub no_route_when_config_empty : Test {
     my $self = shift;
 
     my $routes =
-      $self->_build_routes->load('t/tests/RoutesLoaderTest/empty.yml');
+      $self->_build_routes->load('t/components/RoutesLoaderTest/empty.yml');
 
     ok(!$routes->match('/'));
 }
@@ -33,7 +33,7 @@ sub throw_when_no_file : Test {
 
     like(
         exception {
-            $self->_build_routes->load('t/tests/RoutesLoaderTest/unknown.yml');
+            $self->_build_routes->load('t/components/RoutesLoaderTest/unknown.yml');
         },
         qr/file '.*?unknown\.yml' does not exist/i
     );
@@ -44,7 +44,7 @@ sub throw_on_wrong_config : Test {
 
     like(
         exception {
-            $self->_build_routes->load('t/tests/RoutesLoaderTest/bad.yml');
+            $self->_build_routes->load('t/components/RoutesLoaderTest/bad.yml');
         },
         qr/YAML::Tiny failed to classify line 'bad file'/
     );

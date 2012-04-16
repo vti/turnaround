@@ -3,7 +3,9 @@ package HelperFactoryTest;
 use strict;
 use warnings;
 
-use base 'FactoryTest';
+use base 'TestBase';
+
+use lib 't/components/HelperFactoryTest';
 
 use Test::More;
 

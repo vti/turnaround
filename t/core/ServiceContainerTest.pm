@@ -5,10 +5,10 @@ use warnings;
 
 use base 'TestBase';
 
+use lib 't/core/ServiceContainerTest';
+
 use Test::More;
 use Test::Fatal;
-
-use lib 't/tests/ServiceContainerTest';
 
 use FooInstance;
 

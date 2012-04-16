@@ -96,7 +96,7 @@ sub _build_middleware {
 
     my $displayer =
       Turnaround::Displayer->new(renderer =>
-          Turnaround::Renderer::Caml->new(templates_path => 't/tests/MiddlewareViewDisplayerTest/'));
+          Turnaround::Renderer::Caml->new(templates_path => 't/middleware/MiddlewareViewDisplayerTest/'));
 
     return Turnaround::Middleware::ViewDisplayer->new(
         app => sub { [200, [], ['OK']] },

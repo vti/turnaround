@@ -6,12 +6,12 @@ use utf8;
 
 use base 'TestBase';
 
+use lib 't/components';
+
 use Test::More;
 use Test::Fatal;
 
 use Turnaround::I18N;
-
-use lib 't/lib/I18NTest';
 
 use I18NTest::MyApp;
 
