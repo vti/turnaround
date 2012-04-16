@@ -10,8 +10,6 @@ use Encode ();
 
 use Turnaround::Loader;
 
-our $CONFIG = {};
-
 sub BUILD {
     my $self = shift;
 
@@ -39,10 +37,8 @@ sub load {
         }
     }
 
-    return $CONFIG = $class->new->parse($config);
+    return $class->new->parse($config);
 }
-
-sub config { $CONFIG }
 
 sub _read_file {
     my $self = shift;
