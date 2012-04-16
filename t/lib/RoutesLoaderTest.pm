@@ -8,7 +8,7 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Lamework::Routes::Loader;
+use Turnaround::Routes::Loader;
 
 sub add_routes : Test {
     my $self = shift;
@@ -53,7 +53,7 @@ sub throw_on_wrong_config : Test {
 sub _build_routes {
     my $self = shift;
 
-    return Lamework::Routes::Loader->new(@_);
+    return Turnaround::Routes::Loader->new(@_);
 }
 
 1;

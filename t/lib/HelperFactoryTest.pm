@@ -7,7 +7,7 @@ use base 'FactoryTest';
 
 use Test::More;
 
-use Lamework::HelperFactory;
+use Turnaround::HelperFactory;
 
 sub autoload_objects : Test {
     my $self = shift;
@@ -22,7 +22,7 @@ sub autoload_objects : Test {
 sub _build_factory {
     my $self = shift;
 
-    return Lamework::HelperFactory->new(@_);
+    return Turnaround::HelperFactory->new(@_);
 }
 
 1;

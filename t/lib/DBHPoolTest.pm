@@ -8,7 +8,7 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Lamework::DBHPool;
+use Turnaround::DBHPool;
 
 sub setup : Test(setup) {
 }
@@ -35,7 +35,7 @@ sub throw_on_invalid_dsn : Test {
 sub _build_pool {
     my $self = shift;
 
-    return Lamework::DBHPool->new(dsn => 'dbi:SQLite:dbname=:memory:', @_);
+    return Turnaround::DBHPool->new(dsn => 'dbi:SQLite:dbname=:memory:', @_);
 }
 
 1;

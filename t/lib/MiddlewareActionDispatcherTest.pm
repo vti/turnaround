@@ -8,9 +8,9 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Lamework::DispatchedRequest;
-use Lamework::ActionFactory;
-use Lamework::Middleware::ActionDispatcher;
+use Turnaround::DispatchedRequest;
+use Turnaround::ActionFactory;
+use Turnaround::Middleware::ActionDispatcher;
 
 sub do_nothing_when_no_action : Test {
     my $self = shift;
@@ -57,9 +57,9 @@ sub _build_middleware {
     my $self = shift;
     my (%params) = @_;
 
-    return Lamework::Middleware::ActionDispatcher->new(
+    return Turnaround::Middleware::ActionDispatcher->new(
         action_factory =>
-          Lamework::ActionFactory->new(namespace => 'MyApp::Action::'),
+          Turnaround::ActionFactory->new(namespace => 'MyApp::Action::'),
         app => sub { [200, [], ['OK']] }
     );
 }
@@ -70,7 +70,7 @@ sub _build_env {
 
     my $env =
       {'lamework.dispatched_request' =>
-          Lamework::DispatchedRequest->new(action => $params{action})};
+          Turnaround::DispatchedRequest->new(action => $params{action})};
 
     foreach my $key (keys %params) {
         $env->{"lamework.$key"} = $params{$key};

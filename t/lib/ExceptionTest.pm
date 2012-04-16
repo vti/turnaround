@@ -9,14 +9,14 @@ use Test::More;
 use Test::Fatal;
 
 use Carp ();
-use Lamework::Exception;
+use Turnaround::Exception;
 
 sub raise_objects_from_simple_die : Test {
     my $self = shift;
 
     my $e = exception { die 'hello' };
 
-    isa_ok($e, 'Lamework::Exception::Base');
+    isa_ok($e, 'Turnaround::Exception::Base');
 }
 
 sub raise_objects_from_carp : Test {
@@ -24,7 +24,7 @@ sub raise_objects_from_carp : Test {
 
     my $e = exception { Carp::croak('hello') };
 
-    isa_ok($e, 'Lamework::Exception::Base');
+    isa_ok($e, 'Turnaround::Exception::Base');
 }
 
 sub propagate_object_exceptions : Test {
@@ -32,7 +32,7 @@ sub propagate_object_exceptions : Test {
 
     my $e = exception { raise };
 
-    isa_ok($e, 'Lamework::Exception::Base');
+    isa_ok($e, 'Turnaround::Exception::Base');
 }
 
 sub record_caller_from_string_exceptions : Test(2) {
@@ -82,13 +82,13 @@ sub not_catch_exceptions_by_wrong_isa : Test {
 sub throw_messages : Test {
     my $self = shift;
 
-    like(exception { raise 'Lamework::Exception::Base' => 'hello!'; }, qr/^hello!/);
+    like(exception { raise 'Turnaround::Exception::Base' => 'hello!'; }, qr/^hello!/);
 }
 
 sub throw_default_message : Test {
     my $self = shift;
 
-    like(exception { raise }, qr/^Exception: Lamework::Exception::Base/);
+    like(exception { raise }, qr/^Exception: Turnaround::Exception::Base/);
 }
 
 1;

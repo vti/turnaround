@@ -6,9 +6,9 @@ use File::Spec;
 
 use lib 't/lib';
 
-use_ok('Lamework::Home');
+use_ok('Turnaround::Home');
 
-my $home = Lamework::Home->new(path => '/foo/bar');
+my $home = Turnaround::Home->new(path => '/foo/bar');
 
 is $home => '/foo/bar';
 

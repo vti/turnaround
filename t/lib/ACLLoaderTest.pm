@@ -8,7 +8,7 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Lamework::ACL::Loader;
+use Turnaround::ACL::Loader;
 
 sub add_acl : Test(4) {
     my $self = shift;
@@ -25,7 +25,7 @@ sub add_acl : Test(4) {
 sub _build_acl {
     my $self = shift;
 
-    return Lamework::ACL::Loader->new(@_);
+    return Turnaround::ACL::Loader->new(@_);
 }
 
 1;

@@ -8,8 +8,8 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Lamework::Dispatcher::Routes;
-use Lamework::Routes;
+use Turnaround::Dispatcher::Routes;
+use Turnaround::Routes;
 
 sub throw_on_unknown_action : Test {
     my $self = shift;
@@ -52,12 +52,12 @@ sub undef_on_not_match : Test {
 sub _build_dispatcher {
     my $self = shift;
 
-    my $routes = Lamework::Routes->new;
+    my $routes = Turnaround::Routes->new;
     $routes->add_route('/', name => 'root');
     $routes->add_route('/:action');
     $routes->add_route('/unknown/action');
 
-    Lamework::Dispatcher::Routes->new(routes => $routes);
+    Turnaround::Dispatcher::Routes->new(routes => $routes);
 }
 
 1;

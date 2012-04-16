@@ -8,7 +8,7 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Lamework::Middleware::MultilingualParser;
+use Turnaround::Middleware::MultilingualParser;
 
 sub parse_tag : Test(2) {
     my $self = shift;
@@ -42,7 +42,7 @@ sub _build_middleware {
     my $self = shift;
     my ($body) = shift;
 
-    return Lamework::Middleware::MultilingualParser->new(
+    return Turnaround::Middleware::MultilingualParser->new(
         default_language => 'en',
         languages        => [qw/en ru/],
         app => sub { [200, ['Content-Type' => 'text/html'], [$body]] },

@@ -10,7 +10,7 @@ use utf8;
 use Test::More;
 use Test::Fatal;
 
-use Lamework::Request;
+use Turnaround::Request;
 
 sub should_handle_utf_in_query_parameters : Test {
     my $self = shift;
@@ -72,7 +72,7 @@ sub should_handle_utf_in_multi_post_parameters : Test {
 sub _build_request {
     my $self = shift;
 
-    return Lamework::Request->new(@_);
+    return Turnaround::Request->new(@_);
 }
 
 1;

@@ -8,7 +8,7 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Lamework::Validator;
+use Turnaround::Validator;
 
 sub validate_empty : Test(1) {
     my $self = shift;
@@ -296,7 +296,7 @@ sub set_group_error : Test(1) {
 sub _build_validator {
     my $self = shift;
 
-    return Lamework::Validator->new(@_);
+    return Turnaround::Validator->new(@_);
 }
 
 1;

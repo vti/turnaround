@@ -7,7 +7,7 @@ use base 'TestBase';
 
 use Test::More;
 
-use Lamework::Util qw(merge_hashrefs);
+use Turnaround::Util qw(merge_hashrefs);
 
 sub merge_without_colisions : Test {
     my $self = shift;

@@ -10,7 +10,7 @@ use utf8;
 use Test::More;
 use Test::Fatal;
 
-use Lamework::Config;
+use Turnaround::Config;
 
 sub load_config_base_on_extension : Test {
     my $self = shift;
@@ -47,7 +47,7 @@ sub persistence : Test {
 sub _build_config {
     my $self = shift;
 
-    return Lamework::Config->new(@_);
+    return Turnaround::Config->new(@_);
 }
 
 1;

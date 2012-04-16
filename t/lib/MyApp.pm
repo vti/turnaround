@@ -3,15 +3,15 @@ package MyApp;
 use strict;
 use warnings;
 
-use base 'Lamework::SimpleApp';
+use base 'Turnaround::SimpleApp';
 
-use Lamework::Home;
-use Lamework::Routes;
+use Turnaround::Home;
+use Turnaround::Routes;
 
 sub startup {
     my $self = shift;
 
-    $self->{home} = Lamework::Home->new(path => 't');
+    $self->{home} = Turnaround::Home->new(path => 't');
 
     $self->SUPER::startup;
 }
@@ -19,7 +19,7 @@ sub startup {
 sub _build_routes {
     my $self = shift;
 
-    my $routes = Lamework::Routes->new;
+    my $routes = Turnaround::Routes->new;
     $routes->add_route('/:action');
 
     return $routes;

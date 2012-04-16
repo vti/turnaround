@@ -10,9 +10,9 @@ use Encode;
 use Test::More;
 use Test::Fatal;
 
-use Lamework::Displayer;
-use Lamework::Renderer::Caml;
-use Lamework::Middleware::ViewDisplayer;
+use Turnaround::Displayer;
+use Turnaround::Renderer::Caml;
+use Turnaround::Middleware::ViewDisplayer;
 
 sub throw_on_unknown_template : Test {
     my $self = shift;
@@ -95,10 +95,10 @@ sub _build_middleware {
     my $self = shift;
 
     my $displayer =
-      Lamework::Displayer->new(renderer =>
-          Lamework::Renderer::Caml->new(templates_path => 't/displayer'));
+      Turnaround::Displayer->new(renderer =>
+          Turnaround::Renderer::Caml->new(templates_path => 't/displayer'));
 
-    return Lamework::Middleware::ViewDisplayer->new(
+    return Turnaround::Middleware::ViewDisplayer->new(
         app => sub { [200, [], ['OK']] },
         displayer => $displayer
     );

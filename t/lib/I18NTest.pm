@@ -9,7 +9,7 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Lamework::I18N;
+use Turnaround::I18N;
 
 use lib 't/lib/I18NTest';
 
@@ -60,7 +60,7 @@ sub return_handle : Test {
 sub _build_i18n {
     my $self = shift;
 
-    return Lamework::I18N->new(app_class => 'I18NTest::MyApp', @_);
+    return Turnaround::I18N->new(app_class => 'I18NTest::MyApp', @_);
 }
 
 1;

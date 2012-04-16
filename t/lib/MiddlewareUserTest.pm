@@ -8,7 +8,7 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Lamework::Middleware::User;
+use Turnaround::Middleware::User;
 
 sub set_anonymous_when_no_session : Test {
     my $self = shift;
@@ -61,7 +61,7 @@ sub set_user : Test {
 sub _build_middleware {
     my $self = shift;
 
-    return Lamework::Middleware::User->new(
+    return Turnaround::Middleware::User->new(
         app => sub { [200, [], ['OK']] },
         user_loader => sub {
             my $session = shift;
@@ -77,7 +77,7 @@ sub _build_middleware {
 
 package TestUser;
 
-use base 'Lamework::Base';
+use base 'Turnaround::Base';
 
 sub role { shift->{role} }
 

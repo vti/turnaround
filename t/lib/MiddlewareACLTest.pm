@@ -8,9 +8,9 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Lamework::ACL;
-use Lamework::DispatchedRequest;
-use Lamework::Middleware::ACL;
+use Turnaround::ACL;
+use Turnaround::DispatchedRequest;
+use Turnaround::Middleware::ACL;
 
 sub allow_when_role_is_correct : Test {
     my $self = shift;
@@ -77,12 +77,12 @@ sub prevent_redirect_recursion : Test {
 sub _build_middleware {
     my $self = shift;
 
-    my $acl = Lamework::ACL->new;
+    my $acl = Turnaround::ACL->new;
 
     $acl->add_role('user');
     $acl->allow('user', 'foo');
 
-    return Lamework::Middleware::ACL->new(
+    return Turnaround::Middleware::ACL->new(
         app => sub { [200, [], ['OK']] },
         acl => $acl,
         @_
@@ -98,7 +98,7 @@ sub _build_env {
     my $env = {};
 
     $env->{'lamework.dispatched_request'} =
-      Lamework::DispatchedRequest->new(action => $action);
+      Turnaround::DispatchedRequest->new(action => $action);
 
     foreach my $key (keys %params) {
         $env->{"lamework.$key"} = $params{$key};

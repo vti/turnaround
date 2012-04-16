@@ -9,9 +9,9 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Lamework::Routes;
-use Lamework::Dispatcher::Routes;
-use Lamework::Middleware::RequestDispatcher;
+use Turnaround::Routes;
+use Turnaround::Dispatcher::Routes;
+use Turnaround::Middleware::RequestDispatcher;
 
 sub throw_404_when_nothing_dispatched : Test {
     my $self = shift;
@@ -19,7 +19,7 @@ sub throw_404_when_nothing_dispatched : Test {
     my $mw = $self->_build_middleware;
     my $env = {PATH_INFO => '/', REQUEST_METHOD => 'GET'};
 
-    isa_ok(exception {$mw->call($env)}, 'Lamework::HTTPException');
+    isa_ok(exception {$mw->call($env)}, 'Turnaround::HTTPException');
 }
 
 sub throw_404_when_path_info_is_empty : Test {
@@ -28,7 +28,7 @@ sub throw_404_when_path_info_is_empty : Test {
     my $mw = $self->_build_middleware;
     my $env = {PATH_INFO => '', REQUEST_METHOD => 'GET'};
 
-    isa_ok(exception {$mw->call($env)}, 'Lamework::HTTPException');
+    isa_ok(exception {$mw->call($env)}, 'Turnaround::HTTPException');
 }
 
 sub dispatch_when_path_found : Test {
@@ -48,7 +48,7 @@ sub do_nothing_when_method_is_wrong : Test {
     my $mw = $self->_build_middleware;
     my $env = {REQUEST_METHOD => 'GET', PATH_INFO => '/only_post'};
 
-    isa_ok(exception {$mw->call($env)}, 'Lamework::HTTPException');
+    isa_ok(exception {$mw->call($env)}, 'Turnaround::HTTPException');
 }
 
 sub dispatch_when_path_and_method_are_found : Test {
@@ -79,7 +79,7 @@ sub dispatch_utf_path : Test {
 sub _build_middleware {
     my $self = shift;
 
-    my $routes = Lamework::Routes->new;
+    my $routes = Turnaround::Routes->new;
     $routes->add_route('/foo', defaults => {action => 'foo'});
     $routes->add_route(
         '/only_post',
@@ -88,9 +88,9 @@ sub _build_middleware {
     );
     $routes->add_route('/unicode/:name', name => 'bar');
 
-    return Lamework::Middleware::RequestDispatcher->new(
+    return Turnaround::Middleware::RequestDispatcher->new(
         app => sub { [200, [], ['OK']] },
-        dispatcher => Lamework::Dispatcher::Routes->new(routes => $routes)
+        dispatcher => Turnaround::Dispatcher::Routes->new(routes => $routes)
     );
 }
 

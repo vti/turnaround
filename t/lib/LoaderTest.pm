@@ -11,7 +11,7 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Lamework::Loader;
+use Turnaround::Loader;
 
 use lib 't/lib/LoaderTest';
 
@@ -53,7 +53,7 @@ sub throw_on_unknown_class : Test {
     my $loader = $self->_build_loader;
 
     isa_ok(exception { $loader->load_class('Unknown') },
-        'Lamework::Exception::ClassNotFound');
+        'Turnaround::Exception::ClassNotFound');
 }
 
 sub throw_on_class_with_syntax_errors : Test {
@@ -62,7 +62,7 @@ sub throw_on_class_with_syntax_errors : Test {
     my $loader = $self->_build_loader;
 
     isa_ok(exception { $loader->load_class('WithSyntaxErrors') },
-        'Lamework::Exception::Base');
+        'Turnaround::Exception::Base');
 }
 
 sub throw_on_class_with_syntax_errors2 : Test(2) {
@@ -71,10 +71,10 @@ sub throw_on_class_with_syntax_errors2 : Test(2) {
     my $loader = $self->_build_loader;
 
     my $e = exception { $loader->load_class('WithSyntaxErrors') };
-    isa_ok($e, 'Lamework::Exception::Base');
+    isa_ok($e, 'Turnaround::Exception::Base');
 
     $e = exception { $loader->load_class('WithSyntaxErrors') };
-    isa_ok($e, 'Lamework::Exception::Base');
+    isa_ok($e, 'Turnaround::Exception::Base');
 }
 
 sub is_class_loaded : Test(1) {
@@ -96,7 +96,7 @@ sub not_is_class_loaded : Test(1) {
 sub _build_loader {
     my $self = shift;
 
-    return Lamework::Loader->new(@_);
+    return Turnaround::Loader->new(@_);
 }
 
 1;

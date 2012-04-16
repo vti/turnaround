@@ -8,7 +8,7 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Lamework::ACL;
+use Turnaround::ACL;
 
 sub denied_by_default : Test {
     my $self = shift;
@@ -99,7 +99,7 @@ sub inherit_rules : Test {
 sub _build_acl {
     my $self = shift;
 
-    return Lamework::ACL->new(@_);
+    return Turnaround::ACL->new(@_);
 }
 
 1;

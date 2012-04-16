@@ -8,7 +8,7 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Lamework::Middleware::LanguageDetection;
+use Turnaround::Middleware::LanguageDetection;
 
 sub detect_from_session : Test {
     my $self = shift;
@@ -117,7 +117,7 @@ sub save_to_session : Test {
 sub _build_middleware {
     my $self = shift;
 
-    return Lamework::Middleware::LanguageDetection->new(
+    return Turnaround::Middleware::LanguageDetection->new(
         app => sub { [200, [], ['OK']] },
         @_
     );

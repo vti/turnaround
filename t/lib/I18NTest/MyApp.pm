@@ -3,6 +3,6 @@ package I18NTest::MyApp;
 use strict;
 use warnings;
 
-use base 'Lamework::Base';
+use base 'Turnaround::Base';
 
 1;

@@ -12,7 +12,7 @@ use lib 't/lib/ServiceContainer';
 
 use FooInstance;
 
-use Lamework::ServiceContainer;
+use Turnaround::ServiceContainer;
 
 sub throw_on_getting_unknown_service : Test {
     my $self = shift;
@@ -198,7 +198,7 @@ sub pass_deps_raw : Test {
 sub _build_container {
     my $self = shift;
 
-    return Lamework::ServiceContainer->new(@_);
+    return Turnaround::ServiceContainer->new(@_);
 }
 
 1;

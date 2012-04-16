@@ -8,8 +8,8 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Lamework::Displayer;
-use Lamework::Renderer::Caml;
+use Turnaround::Displayer;
+use Turnaround::Renderer::Caml;
 
 sub render_template : Test {
     my $self = shift;
@@ -31,8 +31,8 @@ sub render_file : Test {
 sub _build_displayer {
     my $self = shift;
 
-    Lamework::Displayer->new(renderer =>
-          Lamework::Renderer::Caml->new(templates_path => 't/displayer'));
+    Turnaround::Displayer->new(renderer =>
+          Turnaround::Renderer::Caml->new(templates_path => 't/displayer'));
 }
 
 1;
