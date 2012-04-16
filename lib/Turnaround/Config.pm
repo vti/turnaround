@@ -18,6 +18,7 @@ sub BUILD {
 
 sub load {
     my $self = shift;
+    $self = $self->new unless ref $self;
     my ($path) = @_;
 
     my $basename = File::Basename::basename($path);
