@@ -23,6 +23,14 @@ sub detect_languages : Test {
     is_deeply([$i18n->get_languages], [qw/en ru/]);
 }
 
+sub detect_languages_names : Test {
+    my $self = shift;
+
+    my $i18n = $self->_build_i18n();
+
+    is_deeply($i18n->get_languages_names, {en => 'English', ru => 'Russian'});
+}
+
 sub default_to_default_language_on_uknown_language : Test {
     my $self = shift;
 

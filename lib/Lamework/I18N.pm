@@ -5,6 +5,7 @@ use warnings;
 
 use base 'Lamework::Base';
 
+use I18N::LangTags::List ();
 use Locale::Maketext;
 use Lamework::Loader;
 use Lamework::I18N::Handle;
@@ -18,6 +19,8 @@ sub BUILD {
 
     $self->{default_language} ||= 'en';
     $self->{languages}        ||= [$self->_detect_languages()];
+    $self->{languages_names} ||= {map { $_ => I18N::LangTags::List::name($_) }
+          @{$self->{languages}}};
 
     my $app_class = $self->{app_class};
 
@@ -70,9 +73,23 @@ sub set_languages {
 
 sub get_languages {
     my $self = shift;
-    my ($languages) = @_;
 
     return @{$self->{languages}};
+}
+
+sub set_languages_names {
+    my $self = shift;
+    my ($value) = @_;
+
+    $self->{languages_names} = $value;
+
+    return $self;
+}
+
+sub get_languages_names {
+    my $self = shift;
+
+    return $self->{languages_names};
 }
 
 sub handle {
