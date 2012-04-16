@@ -6,6 +6,7 @@ use warnings;
 use base 'Lamework::Middleware';
 
 use I18N::AcceptLanguage;
+use I18N::LangTags::List ();
 
 sub new {
     my $self = shift->SUPER::new(@_);
@@ -13,8 +14,7 @@ sub new {
     die 'default_language is required' unless $self->{default_language};
     die 'languages is required'        unless $self->{languages};
 
-    $self->{env_key}     ||= 'lamework.i18n.language';
-    $self->{session_key} ||= 'lamework.i18n.language';
+    $self->{name_prefix} = 'lamework.i18n.';
 
     $self->{use_path}    = 1 unless defined $self->{use_path};
     $self->{use_session} = 1 unless defined $self->{use_session};
@@ -46,10 +46,11 @@ sub _detect_language {
         $lang = $self->{default_language};
     }
 
-    $env->{$self->{env_key}} = $lang;
+    $env->{$self->{name_prefix} . 'language'} = $lang;
+    $env->{$self->{name_prefix} . 'language_name'} = I18N::LangTags::List::name($lang);
 
     if ($self->{use_session}) {
-        $env->{'psgix.session'}->{$self->{session_key}} = $lang;
+        $env->{'psgix.session'}->{$self->{name_prefix} . 'language'} = $lang;
     }
 }
 
@@ -59,7 +60,7 @@ sub _detect_from_session {
 
     return unless my $session = $env->{'psgix.session'};
 
-    return $session->{$self->{session_key}};
+    return $session->{$self->{name_prefix} . 'language'};
 }
 
 sub _detect_from_path {
