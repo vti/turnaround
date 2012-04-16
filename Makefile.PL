@@ -1,46 +1,58 @@
 #!/usr/bin/env perl
 
+use 5.008007;
+
 use strict;
 use warnings;
 
-use inc::Module::Install;
+use ExtUtils::MakeMaker;
 
-name 'Turnaround';
+my ($mm) = $ExtUtils::MakeMaker::VERSION =~ /^([^_]+)/;
 
-version_from 'lib/Turnaround.pm';
-author 'Viacheslav Tykhanovskyi <vti@cpan.org>';
-abstract 'Turnaround';
-license 'artistic_2';
-perl_version '5.008007';
+WriteMakefile(
+    NAME          => 'Turnaround',
+    VERSION_FROM  => 'lib/Turnaround.pm',
+    ABSTRACT_FROM => 'lib/Turnaround.pm',
+    AUTHOR        => 'Viacheslav Tykhanovskyi <vti@cpan.org>',
 
-requires 'Carp'              => '0';
-requires 'Cwd'               => '0';
-requires 'Encode'            => '0';
-requires 'File::Basename'    => '0';
-requires 'File::Spec'        => '0';
-requires 'Locale::Maketext'  => '0';
-requires 'Scalar::Util'      => '0';
+    ($mm < 6.3002 ? () : ('LICENSE' => 'artistic_2')),
 
-requires 'Config::Tiny'      => '0';
-requires 'Plack'             => '0';
-requires 'Routes::Tiny'      => '0';
-requires 'String::CamelCase' => '0';
-requires 'Text::Caml'        => '0';
+    (   $mm < 6.46
+        ? ()
+        : ( META_MERGE => {
+                requires  => {perl => '5.008007'},
+                resources => {
+                    license    => 'http://dev.perl.org/licenses/',
+                    repository => 'http://github.com/vti/turnaround'
+                },
+                no_index => {directory => [qw/t/]}
+            }
+        )
+    ),
 
-test_requires 'Test::Class' => '0';
-test_requires 'Test::Fatal' => '0';
-test_requires 'Test::More'  => '0';
-test_requires 'Test::Spec'  => '0';
+    PREREQ_PM => {
+        'Carp'             => '0',
+        'Cwd'              => '0',
+        'Encode'           => '0',
+        'File::Basename'   => '0',
+        'File::Spec'       => '0',
+        'Locale::Maketext' => '0',
+        'Scalar::Util'     => '0',
 
-tests 't/*.t t/*/*.t t/*/*/*.t t/*/*/*/*.t';
+        'Config::Tiny'      => '0',
+        'YAML::Tiny'        => '0',
+        'Plack'             => '0',
+        'Routes::Tiny'      => '0',
+        'String::CamelCase' => '0',
+        'Text::Caml'        => '0',
 
-no_index directory => 't';
+        'Test::Class' => '0',
+        'Test::Fatal' => '0',
+        'Test::More'  => '0',
+        'Test::Spec'  => '0',
 
-resources
-  bugtracker => 'http://github.com/vti/Turnaround/issues',
-  repository => 'http://github.com/vti/Turnaround/',
-  license    => 'http://dev.perl.org/licenses/';
-
-auto_install;
-
-WriteAll;
+    },
+    dist  => {COMPRESS => 'gzip -9f', SUFFIX => 'gz'},
+    clean => {FILES    => 'Turnaround-*'},
+    test  => {TESTS    => 't/*.t t/*/*.t'}
+);
