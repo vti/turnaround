@@ -1,4 +1,4 @@
-package MyApp::Action::CustomResponse;
+package CustomResponse;
 
 use strict;
 use warnings;

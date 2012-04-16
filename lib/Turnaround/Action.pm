@@ -29,12 +29,10 @@ sub req {
     return $self->{req};
 }
 
-sub res {
+sub new_response {
     my $self = shift;
 
-    $self->{res} ||= $self->req->new_response;
-
-    return $self->{res};
+    return $self->req->new_response(@_);
 }
 
 sub url_for {
@@ -97,24 +95,19 @@ sub not_found {
 
 sub redirect {
     my $self = shift;
+    my ($path) = shift;
 
-    my $url = $self->url_for(@_);
-
-    $self->res->code(302);
-    $self->res->header(Location => $url);
-
-    return $self;
-}
-
-sub response_cb {
-    my $self = shift;
-
-    if (@_) {
-        $self->{response_cb} = $_[0];
-        return $self;
+    my $status = 302;
+    if (@_ % 2 != 0) {
+        $status = pop @_;
     }
 
-    return $self->{response_cb};
+    my $url = $self->url_for($path, @_);
+
+    my $res = $self->new_response($status);
+    $res->header(Location => $url);
+
+    return $res;
 }
 
 1;

@@ -43,17 +43,18 @@ sub _action {
 
         return;
       };
-    return unless defined $action;
 
-    $action->run;
+    my $res = $action->run;
 
-    if ($action->response_cb) {
-        return $action->response_cb;
-    }
+    return unless defined $res;
 
-    if ($action->res->code || defined $action->res->body) {
-        return $action->res->finalize;
-    }
+    return [200, ['Content-Type' => 'text/html'], [$res]] unless ref $res;
+
+    return $res  if ref $res eq 'ARRAY';
+
+    return $res if ref $res eq 'CODE';
+
+    return $res->finalize if $res->isa('Turnaround::Response');
 
     return;
 }
