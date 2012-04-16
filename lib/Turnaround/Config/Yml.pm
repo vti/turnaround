@@ -11,7 +11,8 @@ sub parse {
     my $self = shift;
     my ($config) = @_;
 
-    YAML::Tiny->read_string($config)->[0] or die $YAML::Tiny::errstr;
+    $config = YAML::Tiny->read_string($config) or die $YAML::Tiny::errstr;
+    return $config->[0];
 }
 
 1;

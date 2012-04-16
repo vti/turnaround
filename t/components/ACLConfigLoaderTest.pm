@@ -1,4 +1,4 @@
-package ACLLoaderTest;
+package ACLConfigLoaderTest;
 
 use strict;
 use warnings;
@@ -8,13 +8,13 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Turnaround::ACL::Loader;
+use Turnaround::ACL::ConfigLoader;
 
 sub add_acl : Test(4) {
     my $self = shift;
 
     my $acl =
-      $self->_build_acl->load('t/components/ACLLoaderTest/acl.yml');
+      $self->_build_acl->load('t/components/ACLConfigLoaderTest/acl.yml');
 
     ok($acl->is_allowed('anonymous', 'login'));
     ok(!$acl->is_allowed('anonymous', 'logout'));
@@ -25,7 +25,7 @@ sub add_acl : Test(4) {
 sub _build_acl {
     my $self = shift;
 
-    return Turnaround::ACL::Loader->new(@_);
+    return Turnaround::ACL::ConfigLoader->new(@_);
 }
 
 1;

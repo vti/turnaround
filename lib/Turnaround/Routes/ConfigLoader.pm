@@ -1,28 +1,29 @@
-package Turnaround::Routes::Loader;
+package Turnaround::Routes::ConfigLoader;
 
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
+use base 'Turnaround::Config';
 
-use YAML::Tiny;
 use Turnaround::Routes;
 
 sub BUILD {
     my $self = shift;
+
+    $self->SUPER::BUILD;
 
     $self->{routes} ||= Turnaround::Routes->new;
 }
 
 sub load {
     my $self = shift;
-    my ($config) = @_;
 
     my $routes = $self->{routes};
 
-    my $yaml = YAML::Tiny->read($config) or die $YAML::Tiny::errstr;
+    my $config = $self->SUPER::load(@_);
+    return $routes unless $config && ref $config eq 'ARRAY';
 
-    foreach my $route (@{$yaml->[0]}) {
+    foreach my $route (@{$config}) {
         $routes->add_route(delete $route->{route}, %$route);
     }
 
