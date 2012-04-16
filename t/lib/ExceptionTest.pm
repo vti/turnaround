@@ -8,12 +8,21 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
+use Carp ();
 use Lamework::Exception;
 
 sub raise_objects_from_simple_die : Test {
     my $self = shift;
 
     my $e = exception { die 'hello' };
+
+    isa_ok($e, 'Lamework::Exception::Base');
+}
+
+sub raise_objects_from_carp : Test {
+    my $self = shift;
+
+    my $e = exception { Carp::croak('hello') };
 
     isa_ok($e, 'Lamework::Exception::Base');
 }

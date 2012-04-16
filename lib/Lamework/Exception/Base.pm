@@ -27,6 +27,8 @@ sub new {
     $self->{message} = 'Exception: ' . ref($self)
       unless defined $self->{message} && $self->{message} ne '';
 
+    $self->{message} = ${$self->{message}} if ref $self->{message} eq 'SCALAR';
+
     return $self;
 }
 

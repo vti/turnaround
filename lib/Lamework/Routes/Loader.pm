@@ -18,11 +18,9 @@ sub load {
     my $self = shift;
     my ($config) = @_;
 
-    die 'File not found' unless -f $config;
-
     my $routes = $self->{routes};
 
-    my $yaml = YAML::Tiny->read($config);
+    my $yaml = YAML::Tiny->read($config) or die $YAML::Tiny::errstr;
 
     foreach my $route (@{$yaml->[0]}) {
         $routes->add_route(delete $route->{route}, %$route);

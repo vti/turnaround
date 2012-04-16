@@ -13,7 +13,8 @@ use Lamework::Routes::Loader;
 sub add_routes : Test {
     my $self = shift;
 
-    my $routes = $self->_build_routes->load('t/lib/RoutesLoaderTest/routes.yml');
+    my $routes =
+      $self->_build_routes->load('t/lib/RoutesLoaderTest/routes.yml');
 
     ok($routes->match('/'));
 }
@@ -21,7 +22,8 @@ sub add_routes : Test {
 sub no_route_when_config_empty : Test {
     my $self = shift;
 
-    my $routes = $self->_build_routes->load('t/lib/RoutesLoaderTest/empty.yml');
+    my $routes =
+      $self->_build_routes->load('t/lib/RoutesLoaderTest/empty.yml');
 
     ok(!$routes->match('/'));
 }
@@ -29,13 +31,23 @@ sub no_route_when_config_empty : Test {
 sub throw_when_no_file : Test {
     my $self = shift;
 
-    ok(exception {$self->_build_routes->load('t/lib/RoutesLoaderTest/unknown.yml')});
+    like(
+        exception {
+            $self->_build_routes->load('t/lib/RoutesLoaderTest/unknown.yml');
+        },
+        qr/file '.*?unknown\.yml' does not exist/i
+    );
 }
 
 sub throw_on_wrong_config : Test {
     my $self = shift;
 
-    ok(exception {$self->_build_routes->load('t/lib/RoutesLoaderTest/bad.yml')});
+    like(
+        exception {
+            $self->_build_routes->load('t/lib/RoutesLoaderTest/bad.yml');
+        },
+        qr/YAML::Tiny failed to classify line 'bad file'/
+    );
 }
 
 sub _build_routes {
