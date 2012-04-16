@@ -49,8 +49,6 @@ WriteMakefile(
         'Test::Class' => '0',
         'Test::Fatal' => '0',
         'Test::More'  => '0',
-        'Test::Spec'  => '0',
-
     },
     dist  => {COMPRESS => 'gzip -9f', SUFFIX => 'gz'},
     clean => {FILES    => 'Turnaround-*'},
