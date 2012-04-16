@@ -5,11 +5,11 @@ use warnings;
 
 use inc::Module::Install;
 
-name 'Lamework';
+name 'Turnaround';
 
-version_from 'lib/Lamework.pm';
+version_from 'lib/Turnaround.pm';
 author 'Viacheslav Tykhanovskyi <vti@cpan.org>';
-abstract 'Lamework';
+abstract 'Turnaround';
 license 'artistic_2';
 perl_version '5.008007';
 
@@ -37,8 +37,8 @@ tests 't/*.t t/*/*.t t/*/*/*.t t/*/*/*/*.t';
 no_index directory => 't';
 
 resources
-  bugtracker => 'http://github.com/vti/lamework/issues',
-  repository => 'http://github.com/vti/lamework/',
+  bugtracker => 'http://github.com/vti/Turnaround/issues',
+  repository => 'http://github.com/vti/Turnaround/',
   license    => 'http://dev.perl.org/licenses/';
 
 auto_install;
