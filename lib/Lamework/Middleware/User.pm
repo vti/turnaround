@@ -23,13 +23,13 @@ sub _user {
     my $session = $env->{'psgix.session'};
 
     my $user;
-    if ($session && $session->{user}) {
+    if ($session) {
         my $loader = $self->{user_loader};
 
         $user =
           blessed $loader
-          ? $loader->load($session->{user}, $env)
-          : $loader->($session->{user}, $env);
+          ? $loader->load($session, $env)
+          : $loader->($session, $env);
     }
 
     $user ||= Lamework::Anonymous->new;

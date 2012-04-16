@@ -64,9 +64,9 @@ sub _build_middleware {
     return Lamework::Middleware::User->new(
         app => sub { [200, [], ['OK']] },
         user_loader => sub {
-            my $params = shift;
+            my $session = shift;
 
-            if ($params eq 'user') {
+            if ($session->{user} && $session->{user} eq 'user') {
                 return TestUser->new(role => 'user');
             }
 
