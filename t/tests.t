@@ -2,7 +2,7 @@
 
 use lib 't/lib';
 
-use TestLoader qw(t/lib);
+use TestLoader qw(t/tests);
 
 BEGIN { $ENV{TEST_SUITE} = 1 }
 

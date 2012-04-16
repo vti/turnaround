@@ -13,7 +13,7 @@ use Test::Fatal;
 
 use Turnaround::Loader;
 
-use lib 't/lib/LoaderTest';
+use lib 't/tests/LoaderTest';
 
 sub know_when_class_is_already_loaded : Test {
     my $self = shift;

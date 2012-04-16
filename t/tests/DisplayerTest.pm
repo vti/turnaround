@@ -32,7 +32,7 @@ sub _build_displayer {
     my $self = shift;
 
     Turnaround::Displayer->new(renderer =>
-          Turnaround::Renderer::Caml->new(templates_path => 't/displayer'));
+          Turnaround::Renderer::Caml->new(templates_path => 't/tests/DisplayerTest'));
 }
 
 1;

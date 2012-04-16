@@ -45,7 +45,7 @@ sub record_caller_from_string_exceptions : Test(2) {
         my $e = $@;
 
         is $e->line, __LINE__ - 5;
-        is $e->path, 't/lib/ExceptionTest.pm';
+        is $e->path, 't/tests/ExceptionTest.pm';
     };
 }
 
@@ -59,7 +59,7 @@ sub record_caller_from_object_exceptions : Test(2) {
         my $e = $@;
 
         is $e->line, __LINE__ - 5;
-        is $e->path, 't/lib/ExceptionTest.pm';
+        is $e->path, 't/tests/ExceptionTest.pm';
     };
 }
 

@@ -5,7 +5,7 @@ use warnings;
 
 use base 'TestBase';
 
-use lib 't/lib/FactoryTest';
+use lib 't/tests/FactoryTest';
 
 use Test::More;
 use Test::Fatal;

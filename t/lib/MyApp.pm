@@ -11,7 +11,7 @@ use Turnaround::Routes;
 sub startup {
     my $self = shift;
 
-    $self->{home} = Turnaround::Home->new(path => 't');
+    $self->{home} = Turnaround::Home->new(path => 't/functional_tests');
 
     $self->SUPER::startup;
 }

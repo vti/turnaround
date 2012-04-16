@@ -8,7 +8,7 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use lib 't/lib/ServiceContainer';
+use lib 't/tests/ServiceContainerTest';
 
 use FooInstance;
 
