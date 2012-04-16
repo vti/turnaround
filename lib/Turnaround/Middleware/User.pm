@@ -34,7 +34,7 @@ sub _user {
 
     $user ||= Turnaround::Anonymous->new;
 
-    $env->{'lamework.user'} = $user;
+    $env->{'turnaround.user'} = $user;
 }
 
 package Turnaround::Anonymous;

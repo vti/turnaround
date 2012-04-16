@@ -51,7 +51,7 @@ sub to_app {
         sub {
             my $env = shift;
 
-            $env->{'lamework.services'} = $self->{services};
+            $env->{'turnaround.services'} = $self->{services};
 
             $app->($env);
         }

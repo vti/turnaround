@@ -97,11 +97,11 @@ sub _build_env {
 
     my $env = {};
 
-    $env->{'lamework.dispatched_request'} =
+    $env->{'turnaround.dispatched_request'} =
       Turnaround::DispatchedRequest->new(action => $action);
 
     foreach my $key (keys %params) {
-        $env->{"lamework.$key"} = $params{$key};
+        $env->{"turnaround.$key"} = $params{$key};
     }
 
     return $env;

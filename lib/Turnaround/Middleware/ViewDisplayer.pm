@@ -34,8 +34,8 @@ sub _display {
     my $template = $self->_get_template($env);
     return unless defined $template;
 
-    my $vars   = $env->{'lamework.displayer.vars'};
-    my $layout = $env->{'lamework.displayer.layout'};
+    my $vars   = $env->{'turnaround.displayer.vars'};
+    my $layout = $env->{'turnaround.displayer.layout'};
 
     my $body =
       $self->{displayer}
@@ -61,10 +61,10 @@ sub _get_template {
     my $self = shift;
     my ($env) = @_;
 
-    my $template = $env->{'lamework.displayer.template'};
+    my $template = $env->{'turnaround.displayer.template'};
     return $template if $template;
 
-    my $dispatched_request = $env->{'lamework.dispatched_request'};
+    my $dispatched_request = $env->{'turnaround.dispatched_request'};
     return unless $dispatched_request;
 
     if (my $action = $dispatched_request->get_action) {

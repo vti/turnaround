@@ -27,8 +27,8 @@ sub _detect_language {
 
     $self->SUPER::_detect_language($env);
 
-    my $language = $env->{'lamework.i18n.language'};
-    $env->{'lamework.i18n.maketext'} = $self->{i18n}->handle($language);
+    my $language = $env->{'turnaround.i18n.language'};
+    $env->{'turnaround.i18n.maketext'} = $self->{i18n}->handle($language);
 }
 
 1;

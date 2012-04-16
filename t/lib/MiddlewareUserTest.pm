@@ -19,7 +19,7 @@ sub set_anonymous_when_no_session : Test {
 
     my $res = $mw->call($env);
 
-    is($env->{'lamework.user'}->role, 'anonymous');
+    is($env->{'turnaround.user'}->role, 'anonymous');
 }
 
 sub set_anonymous_when_session_but_no_user : Test {
@@ -31,7 +31,7 @@ sub set_anonymous_when_session_but_no_user : Test {
 
     my $res = $mw->call($env);
 
-    is($env->{'lamework.user'}->role, 'anonymous');
+    is($env->{'turnaround.user'}->role, 'anonymous');
 }
 
 sub set_anonymous_when_user_not_found : Test {
@@ -43,7 +43,7 @@ sub set_anonymous_when_user_not_found : Test {
 
     my $res = $mw->call($env);
 
-    is($env->{'lamework.user'}->role, 'anonymous');
+    is($env->{'turnaround.user'}->role, 'anonymous');
 }
 
 sub set_user : Test {
@@ -55,7 +55,7 @@ sub set_user : Test {
 
     my $res = $mw->call($env);
 
-    is($env->{'lamework.user'}->role, 'user');
+    is($env->{'turnaround.user'}->role, 'user');
 }
 
 sub _build_middleware {

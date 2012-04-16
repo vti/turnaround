@@ -16,7 +16,7 @@ sub parse_tag : Test(2) {
     my $mw =
       $self->_build_middleware('<t><en>English</en><de>Deutsch</de></t>');
 
-    my $env = {'lamework.language' => 'en'};
+    my $env = {'turnaround.language' => 'en'};
 
     my $res = $mw->call($env);
 
@@ -30,7 +30,7 @@ sub parse_second_tag : Test(2) {
     my $mw =
       $self->_build_middleware('<t><en>English</en><de>Deutsch</de></t>');
 
-    my $env = {'lamework.language' => 'de'};
+    my $env = {'turnaround.language' => 'de'};
 
     my $res = $mw->call($env);
 

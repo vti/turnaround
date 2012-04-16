@@ -28,7 +28,7 @@ sub call {
             return unless my $content_type = $h->get('Content-Type');
             return unless $content_type =~ m{text/html};
 
-            my $language = $env->{'lamework.language'};
+            my $language = $env->{'turnaround.language'};
             return unless $language;
 
             my $pattern =

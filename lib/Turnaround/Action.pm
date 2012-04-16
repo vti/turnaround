@@ -12,7 +12,7 @@ sub service {
     my $self = shift;
     my ($name) = @_;
 
-    return $self->{env}->{'lamework.services'}->service($name);
+    return $self->{env}->{'turnaround.services'}->service($name);
 }
 
 sub env {
@@ -53,7 +53,7 @@ sub url_for {
         $url = $_[0];
     }
     else {
-        my $dispatched_request = $self->env->{'lamework.dispatched_request'};
+        my $dispatched_request = $self->env->{'turnaround.dispatched_request'};
 
         my $path = $dispatched_request->build_path(@_);
 
@@ -66,7 +66,7 @@ sub url_for {
     return $url;
 }
 
-sub captures { $_[0]->env->{'lamework.dispatched_request'}->get_captures }
+sub captures { $_[0]->env->{'turnaround.dispatched_request'}->get_captures }
 
 sub set_var {
     my $self = shift;
@@ -75,7 +75,7 @@ sub set_var {
         my $key   = $_[$i];
         my $value = $_[$i + 1];
 
-        $self->env->{'lamework.displayer.vars'}->{$key} = $value;
+        $self->env->{'turnaround.displayer.vars'}->{$key} = $value;
     }
 
     return $self;

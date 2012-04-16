@@ -29,7 +29,7 @@ sub _action {
     my $self = shift;
     my ($env) = @_;
 
-    my $dispatched_request = $env->{'lamework.dispatched_request'};
+    my $dispatched_request = $env->{'turnaround.dispatched_request'};
     return unless $dispatched_request;
 
     my $action = $dispatched_request->get_action;

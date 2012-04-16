@@ -23,7 +23,7 @@ sub _acl {
     my $self = shift;
     my ($env) = @_;
 
-    return $self->_deny($env) unless my $user = $env->{'lamework.user'};
+    return $self->_deny($env) unless my $user = $env->{'turnaround.user'};
 
     my $action = $self->_get_action($env);
 
@@ -38,7 +38,7 @@ sub _get_action {
     my $self = shift;
     my ($env) = @_;
 
-    my $dispatched_request = $env->{'lamework.dispatched_request'};
+    my $dispatched_request = $env->{'turnaround.dispatched_request'};
 
     die 'No DispatchedRequest found' unless $dispatched_request;
 

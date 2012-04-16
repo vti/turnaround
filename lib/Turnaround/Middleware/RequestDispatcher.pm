@@ -42,7 +42,7 @@ sub _dispatch {
       $dispatcher->dispatch($path, method => lc $method);
     raise 'Turnaround::HTTPException', code => 404 unless $dispatched_request;
 
-    $env->{'lamework.dispatched_request'} = $dispatched_request;
+    $env->{'turnaround.dispatched_request'} = $dispatched_request;
 
     return $self;
 }

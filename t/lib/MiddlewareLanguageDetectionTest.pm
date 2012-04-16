@@ -16,11 +16,11 @@ sub detect_from_session : Test {
     my $mw =
       $self->_build_middleware(default_language => 'en', languages => ['ru']);
 
-    my $env = {PATH_INFO => '', 'psgix.session' => {'lamework.i18n.language' => 'ru'}};
+    my $env = {PATH_INFO => '', 'psgix.session' => {'turnaround.i18n.language' => 'ru'}};
 
     $mw->call($env);
 
-    is($env->{'lamework.i18n.language'}, 'ru');
+    is($env->{'turnaround.i18n.language'}, 'ru');
 }
 
 sub add_human_readable_name : Test {
@@ -29,11 +29,11 @@ sub add_human_readable_name : Test {
     my $mw =
       $self->_build_middleware(default_language => 'en', languages => ['ru']);
 
-    my $env = {PATH_INFO => '', 'psgix.session' => {'lamework.i18n.language' => 'ru'}};
+    my $env = {PATH_INFO => '', 'psgix.session' => {'turnaround.i18n.language' => 'ru'}};
 
     $mw->call($env);
 
-    is($env->{'lamework.i18n.language_name'}, 'Russian');
+    is($env->{'turnaround.i18n.language_name'}, 'Russian');
 }
 
 sub detect_from_path : Test {
@@ -46,7 +46,7 @@ sub detect_from_path : Test {
 
     $mw->call($env);
 
-    is($env->{'lamework.i18n.language'}, 'ru');
+    is($env->{'turnaround.i18n.language'}, 'ru');
 }
 
 sub modify_path : Test {
@@ -72,7 +72,7 @@ sub detect_from_headers : Test {
 
     $mw->call($env);
 
-    is($env->{'lamework.i18n.language'}, 'ru');
+    is($env->{'turnaround.i18n.language'}, 'ru');
 }
 
 sub set_default_language_when_unknown_detected : Test {
@@ -81,11 +81,11 @@ sub set_default_language_when_unknown_detected : Test {
     my $mw =
       $self->_build_middleware(default_language => 'en', languages => ['ru']);
 
-    my $env = {PATH_INFO => '', 'psgix.session' => {'lamework.i18n.language' => 'es'}};
+    my $env = {PATH_INFO => '', 'psgix.session' => {'turnaround.i18n.language' => 'es'}};
 
     $mw->call($env);
 
-    is($env->{'lamework.i18n.language'}, 'en');
+    is($env->{'turnaround.i18n.language'}, 'en');
 }
 
 sub set_default_language_when_not_detected : Test {
@@ -98,7 +98,7 @@ sub set_default_language_when_not_detected : Test {
 
     $mw->call($env);
 
-    is($env->{'lamework.i18n.language'}, 'en');
+    is($env->{'turnaround.i18n.language'}, 'en');
 }
 
 sub save_to_session : Test {
@@ -111,7 +111,7 @@ sub save_to_session : Test {
 
     $mw->call($env);
 
-    is($env->{'psgix.session'}->{'lamework.i18n.language'}, 'ru');
+    is($env->{'psgix.session'}->{'turnaround.i18n.language'}, 'ru');
 }
 
 sub _build_middleware {

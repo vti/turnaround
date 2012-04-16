@@ -39,7 +39,7 @@ sub dispatch_when_path_found : Test {
 
     $mw->call($env);
 
-    ok($env->{'lamework.dispatched_request'});
+    ok($env->{'turnaround.dispatched_request'});
 }
 
 sub do_nothing_when_method_is_wrong : Test {
@@ -59,7 +59,7 @@ sub dispatch_when_path_and_method_are_found : Test {
 
     $mw->call($env);
 
-    ok($env->{'lamework.dispatched_request'});
+    ok($env->{'turnaround.dispatched_request'});
 }
 
 sub dispatch_utf_path : Test {
@@ -73,7 +73,7 @@ sub dispatch_utf_path : Test {
 
     $mw->call($env);
 
-    is($env->{'lamework.dispatched_request'}->{captures}->{name}, 'привет');
+    is($env->{'turnaround.dispatched_request'}->{captures}->{name}, 'привет');
 }
 
 sub _build_middleware {
