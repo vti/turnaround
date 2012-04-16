@@ -1,0 +1,5 @@
+---
+- route: /
+  name: index
+- route: /login
+  name: login
