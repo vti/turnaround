@@ -17,9 +17,9 @@ sub load_config_base_on_extension : Test {
 
     my $config = $self->_build_config;
 
-    my $data = $config->load('t/core/ConfigTest/config.ini');
+    my $data = $config->load('t/core/ConfigTest/config.yml');
 
-    is_deeply($data, {main => {foo => 'bar', 'привет' => 'там'}});
+    is_deeply($data, {foo => 'bar', 'привет' => 'там'});
 }
 
 sub _build_config {
