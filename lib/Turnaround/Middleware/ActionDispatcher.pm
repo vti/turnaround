@@ -5,12 +5,15 @@ use warnings;
 
 use base 'Turnaround::Middleware';
 
+use Turnaround::ActionResponseResolver;
 use Turnaround::Exception;
 
 sub new {
     my $self = shift->SUPER::new(@_);
 
     die 'action_factory is required' unless $self->{action_factory};
+
+    $self->{response_resolver} ||= Turnaround::ActionResponseResolver->new;
 
     return $self;
 }
@@ -46,17 +49,7 @@ sub _action {
 
     my $res = $action->run;
 
-    return unless defined $res;
-
-    return [200, ['Content-Type' => 'text/html'], [$res]] unless ref $res;
-
-    return $res  if ref $res eq 'ARRAY';
-
-    return $res if ref $res eq 'CODE';
-
-    return $res->finalize if $res->isa('Turnaround::Response');
-
-    return;
+    return $self->{response_resolver}->resolve($res);
 }
 
 1;
