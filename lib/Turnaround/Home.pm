@@ -31,7 +31,7 @@ sub to_string {
 sub catfile {
     my $self = shift;
 
-    return File::Spec->catfile($self->{path}, @_);
+    return $self->new(path => File::Spec->catfile($self->{path}, @_));
 }
 
 sub _detect {
