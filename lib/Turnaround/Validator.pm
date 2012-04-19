@@ -18,6 +18,21 @@ sub BUILD {
     $self->{messages} ||= {};
 }
 
+sub set_messages {
+    my $self = shift;
+    my $value = @_ == 1 ? $_[0] : {@_};
+
+    $self->{messages} = $value;
+
+    return $self;
+}
+
+sub get_messages {
+    my $self = shift;
+
+    return $self->{messages};
+}
+
 sub field_names {
     my $self = shift;
 
