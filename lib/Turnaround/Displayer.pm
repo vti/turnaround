@@ -11,7 +11,18 @@ sub BUILD {
     die 'renderer required' unless $self->{renderer};
 }
 
-sub render_file {
+sub render {
+    my $self = shift;
+    my ($template) = shift;
+
+    if (ref $template eq 'SCALAR') {
+        return $self->_render_string($$template, @_);
+    }
+
+    return $self->_render_file($template, @_);
+}
+
+sub _render_file {
     my $self = shift;
     my ($template_file, %args) = @_;
 
@@ -29,7 +40,7 @@ sub render_file {
     return $body;
 }
 
-sub render {
+sub _render_string {
     my $self = shift;
     my ($template_string, %args) = @_;
 
@@ -37,7 +48,7 @@ sub render {
 
     my $vars = $args{vars} || {};
 
-    return $renderer->render($template_string, $vars);
+    return $renderer->render_string($template_string, $vars);
 }
 
 1;

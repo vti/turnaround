@@ -32,7 +32,7 @@ sub render_file {
     return $self->{caml}->render_file($template, @rest);
 }
 
-sub render {
+sub render_string {
     my $self = shift;
 
     return $self->{caml}->render(@_);

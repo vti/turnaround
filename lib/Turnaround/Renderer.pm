@@ -7,6 +7,6 @@ use base 'Turnaround::Base';
 
 sub render_file { }
 
-sub render { }
+sub render_string { }
 
 1;

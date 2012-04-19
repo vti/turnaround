@@ -7,8 +7,10 @@ use base 'TestBase';
 
 use Test::More;
 use Test::Fatal;
+use Test::MockObject::Extends;
 
 use Turnaround::Action;
+use Turnaround::Displayer;
 
 sub build_redirect_response : Test(2) {
     my $self = shift;
@@ -51,10 +53,26 @@ sub throw_exception_on_forbidden : Test {
     is($e->code, '403');
 }
 
+sub render_template : Test {
+    my $self = shift;
+
+    my $action = $self->_build_action;
+
+    my $res = $action->render('template');
+
+    is($res, 'template');
+}
+
 sub _build_action {
     my $self = shift;
 
-    my $env = {};
+    my $displayer = Turnaround::Displayer->new(renderer => 1);
+    $displayer = Test::MockObject::Extends->new($displayer);
+    $displayer->mock(render => sub {$_[1]});
+
+    my $env = {
+        'turnaround.displayer' => $displayer
+    };
 
     return Turnaround::Action->new(env => $env, @_);
 }

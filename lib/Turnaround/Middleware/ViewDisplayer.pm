@@ -39,7 +39,7 @@ sub _display {
 
     my $body =
       $self->{displayer}
-      ->render_file($template, vars => $vars, layout => $layout);
+      ->render($template, vars => $vars, layout => $layout);
 
     my $content_type = Plack::MIME->mime_type(".html");
 

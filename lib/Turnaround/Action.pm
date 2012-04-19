@@ -110,4 +110,10 @@ sub redirect {
     return $res;
 }
 
+sub render {
+    my $self = shift;
+
+    return $self->env->{'turnaround.displayer'}->render(@_);
+}
+
 1;

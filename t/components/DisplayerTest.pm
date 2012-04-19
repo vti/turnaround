@@ -16,7 +16,7 @@ sub render_template : Test {
 
     my $d = $self->_build_displayer;
 
-    is($d->render('{{hello}}', vars => {hello => 'there'}) => 'there');
+    is($d->render(\'{{hello}}', vars => {hello => 'there'}) => 'there');
 }
 
 sub render_file : Test {
@@ -24,15 +24,17 @@ sub render_file : Test {
 
     my $d = $self->_build_displayer;
 
-    is($d->render_file('template.caml', vars => {hello => 'there'}) =>
-          'there');
+    is($d->render('template.caml', vars => {hello => 'there'}) => 'there');
 }
 
 sub _build_displayer {
     my $self = shift;
 
-    Turnaround::Displayer->new(renderer =>
-          Turnaround::Renderer::Caml->new(templates_path => 't/components/DisplayerTest'));
+    Turnaround::Displayer->new(
+        renderer => Turnaround::Renderer::Caml->new(
+            templates_path => 't/components/DisplayerTest'
+        )
+    );
 }
 
 1;
