@@ -9,6 +9,7 @@ use Test::More;
 use Test::Fatal;
 use Test::MockObject::Extends;
 
+use Turnaround::ServiceContainer;
 use Turnaround::Action;
 use Turnaround::Displayer;
 
@@ -70,9 +71,10 @@ sub _build_action {
     $displayer = Test::MockObject::Extends->new($displayer);
     $displayer->mock(render => sub {$_[1]});
 
-    my $env = {
-        'turnaround.displayer' => $displayer
-    };
+    my $services = Turnaround::ServiceContainer->new;
+    $services->register(displayer => $displayer);
+
+    my $env = {'turnaround.services' => $services};
 
     return Turnaround::Action->new(env => $env, @_);
 }

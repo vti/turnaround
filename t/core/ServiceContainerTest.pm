@@ -76,19 +76,6 @@ sub create_instance_when_prototype : Test {
     ok(not defined $c->service('foo')->get_bar());
 }
 
-sub clone_when_prototype : Test {
-    my $self = shift;
-
-    my $c = $self->_build_container;
-
-    $c->register(foo => FooInstance->new, lifecycle => 'prototype');
-
-    my $foo = $c->service('foo');
-    $foo->set_bar('bar');
-
-    ok(not defined $c->service('foo')->get_bar());
-}
-
 sub run_sub_when_prototype : Test {
     my $self = shift;
 

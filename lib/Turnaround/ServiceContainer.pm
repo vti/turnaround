@@ -6,7 +6,6 @@ use warnings;
 use base 'Turnaround::Base';
 
 use Scalar::Util ();
-use Storable     ();
 use Turnaround::Loader;
 
 sub BUILD {
@@ -53,9 +52,6 @@ sub service {
         $instance =
           $self->{loader}->load_class($service->{value})
           ->new($self->_resolve_arguments($service));
-    }
-    elsif (Scalar::Util::blessed($service->{value})) {
-        $instance = Storable::dclone($service->{value});
     }
     else {
         $instance = $service->{value};

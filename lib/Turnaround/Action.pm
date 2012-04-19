@@ -113,7 +113,7 @@ sub redirect {
 sub render {
     my $self = shift;
 
-    return $self->env->{'turnaround.displayer'}->render(@_);
+    return $self->service('displayer')->render(@_);
 }
 
 1;
