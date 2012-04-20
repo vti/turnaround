@@ -121,10 +121,10 @@ sub _detect_languages {
     die "Can't detect available languages" unless $path && -d $path;
 
     opendir(my $dh, $path) or die "Can't opendir $path: $!";
-    my @files = grep { /\.pm$/ && -f "$path/$_" } readdir($dh);
+    my @files = grep { /\.p(?:o|m)$/ && -f "$path/$_" } readdir($dh);
     closedir $dh;
 
-    my @languages = map { s{\.pm$}{}; $_ } @files;
+    my @languages = map { s{\.p(?:o|m)$}{}; $_ } @files;
 
     unshift @languages, $self->{default_language}
       unless grep { $_ eq $self->{default_language} } @languages;
