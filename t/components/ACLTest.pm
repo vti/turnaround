@@ -96,6 +96,47 @@ sub inherit_rules : Test {
     ok $acl->is_allowed('admin', 'foo');
 }
 
+sub allow_everyone : Test(2) {
+    my $self = shift;
+
+    my $acl = $self->_build_acl;
+
+    $acl->add_role('user1');
+    $acl->add_role('user2');
+    $acl->allow('*', 'foo');
+
+    ok $acl->is_allowed('user1', 'foo');
+    ok $acl->is_allowed('user2', 'foo');
+}
+
+sub allow_everyone_everything : Test(2) {
+    my $self = shift;
+
+    my $acl = $self->_build_acl;
+
+    $acl->add_role('user1');
+    $acl->add_role('user2');
+    $acl->allow('*', '*');
+
+    ok $acl->is_allowed('user1', 'foo');
+    ok $acl->is_allowed('user2', 'foo');
+}
+
+sub deny_everyone : Test(2) {
+    my $self = shift;
+
+    my $acl = $self->_build_acl;
+
+    $acl->add_role('user1');
+    $acl->add_role('user2');
+    $acl->allow('*', '*');
+
+    $acl->deny('*', 'foo');
+
+    ok !$acl->is_allowed('user1', 'foo');
+    ok !$acl->is_allowed('user2', 'foo');
+}
+
 sub _build_acl {
     my $self = shift;
 

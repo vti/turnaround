@@ -27,18 +27,36 @@ sub allow {
     my $self = shift;
     my ($role, $action) = @_;
 
-    die 'Unknown role' unless exists $self->{roles}->{$role};
+    if ($role eq '*') {
+        foreach my $role (keys %{$self->{roles}}) {
+            $self->allow($role, $action);
+        }
+    }
+    else {
+        die 'Unknown role' unless exists $self->{roles}->{$role};
 
-    push @{$self->{roles}->{$role}->{allow}}, $action;
+        push @{$self->{roles}->{$role}->{allow}}, $action;
+    }
+
+    return $self;
 }
 
 sub deny {
     my $self = shift;
     my ($role, $action) = @_;
 
-    die 'Unknown role' unless exists $self->{roles}->{$role};
+    if ($role eq '*') {
+        foreach my $role (keys %{$self->{roles}}) {
+            $self->deny($role, $action);
+        }
+    }
+    else {
+        die 'Unknown role' unless exists $self->{roles}->{$role};
 
-    push @{$self->{roles}->{$role}->{deny}}, $action;
+        push @{$self->{roles}->{$role}->{deny}}, $action;
+    }
+
+    return $self;
 }
 
 sub is_allowed {
