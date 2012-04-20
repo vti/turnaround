@@ -36,6 +36,22 @@ sub add_human_readable_name : Test {
     is($env->{'turnaround.i18n.language_name'}, 'Russian');
 }
 
+sub detect_from_custom_cb : Test {
+    my $self = shift;
+
+    my $mw = $self->_build_middleware(
+        default_language => 'en',
+        languages        => [qw/ru en/],
+        custom_cb        => sub {'en'}
+    );
+
+    my $env = {PATH_INFO => '/ru/'};
+
+    $mw->call($env);
+
+    is($env->{'turnaround.i18n.language'}, 'en');
+}
+
 sub detect_from_path : Test {
     my $self = shift;
 
