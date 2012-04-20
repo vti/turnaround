@@ -42,7 +42,7 @@ sub _action {
       eval { $self->{action_factory}->build($action, env => $env) } || do {
         my $e = $@;
 
-        $e->rethrow unless $e->does('Turnaround::Exception::ClassNotFound');
+        $e->rethrow unless $e->does('Turnaround::Exception::ActionClassNotFound');
 
         return;
       };

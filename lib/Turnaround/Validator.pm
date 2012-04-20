@@ -16,6 +16,8 @@ sub BUILD {
     $self->{values} = {};
 
     $self->{messages} ||= {};
+
+    $self->{namespaces} ||= ['Turnaround::Validator::'];
 }
 
 sub set_messages {
@@ -229,9 +231,9 @@ sub _build_rule {
     my $self = shift;
     my ($rule_name, @args) = @_;
 
-    my $rule_class = "Turnaround::Validator::" . ucfirst($rule_name);
-
-    Turnaround::Loader->new->load_class($rule_class);
+    my $rule_class =
+      Turnaround::Loader->new(namespaces => $self->{namespaces})
+      ->load_class(ucfirst $rule_name);
 
     return $rule_class->new(@args);
 }
