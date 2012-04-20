@@ -34,12 +34,12 @@ sub _display {
     my $template = $self->_get_template($env);
     return unless defined $template;
 
-    my $vars   = $env->{'turnaround.displayer.vars'};
-    my $layout = $env->{'turnaround.displayer.layout'};
+    my %args;
+    $args{vars}   = $env->{'turnaround.displayer.vars'};
+    $args{layout} = $env->{'turnaround.displayer.layout'}
+      if exists $env->{'turnaround.displayer.layout'};
 
-    my $body =
-      $self->{displayer}
-      ->render($template, vars => $vars, layout => $layout);
+    my $body = $self->{displayer}->render($template, %args);
 
     my $content_type = Plack::MIME->mime_type(".html");
 

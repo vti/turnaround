@@ -32,9 +32,11 @@ sub _render_file {
 
     my $body = $renderer->render_file($template_file, $vars);
 
-    if (defined(my $layout = $args{layout} || $self->{layout})) {
-        $body =
-          $renderer->render_file($layout, {%$vars, content => $body});
+    return $body if exists $args{layout} && !defined $args{layout};
+
+    my $layout = $args{layout} || $self->{layout};
+    if ($layout) {
+        $body = $renderer->render_file($layout, {%$vars, content => $body});
     }
 
     return $body;
