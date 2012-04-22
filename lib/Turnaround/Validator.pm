@@ -199,6 +199,16 @@ sub _prepare_params {
     $params ||= {};
     die 'Must be a hashref' unless ref $params eq 'HASH';
 
+    foreach my $key (keys %$params) {
+        next unless $key =~ m/^(.*?)\[(\d+)\]$/;
+
+        my ($name, $index) = ($1, $2);
+
+        my $value = delete $params->{$key};
+        $params->{$name}->[$index] =
+          ref $value eq 'ARRAY' ? $value->[0] : $value;
+    }
+
   FIELD: foreach my $name (keys %{$self->{fields}}) {
         if ($self->{fields}->{$name}->{multiple}) {
             $params->{$name} = [$params->{$name}]

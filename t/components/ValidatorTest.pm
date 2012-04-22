@@ -140,6 +140,20 @@ sub check_all_values_when_multiple : Test(1) {
     ok(!$validator->validate({foo => [123, 'bar']}));
 }
 
+sub glue_multiple_values : Test(1) {
+    my $self = shift;
+
+    my $validator = $self->_build_validator;
+
+    $validator->add_field('foo', multiple => 1);
+    $validator->add_rule('foo', 'regexp', qr/^\d+$/);
+
+    $validator->validate(
+        {'foo[0]' => '123', 'foo[1]' => '456', 'foo[2]' => [789, 123]});
+
+    is_deeply($validator->validated_params, {foo => [123, 456, 789]});
+}
+
 sub add_only_one_error : Test(1) {
     my $self = shift;
 
