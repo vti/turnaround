@@ -185,16 +185,16 @@ sub _is_field_empty {
     $value = [$value] unless ref $value eq 'ARRAY';
     return 1 unless @$value;
 
-    my $is_empty = 0;
+    my $all_empty = 1;
 
     foreach (@$value) {
-        if (!defined $_ || $_ eq '') {
-            $is_empty = 1;
+        if (defined $_ && $_ ne '') {
+            $all_empty = 0;
             last;
         }
     }
 
-    return $is_empty;
+    return $all_empty;
 }
 
 sub _prepare_params {

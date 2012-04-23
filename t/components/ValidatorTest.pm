@@ -38,6 +38,16 @@ sub require_multiple_fields : Test(1) {
     ok(!$validator->validate({foo => []}));
 }
 
+sub only_one_value_is_required_when_multiple : Test(1) {
+    my $self = shift;
+
+    my $validator = $self->_build_validator;
+
+    $validator->add_field('foo', multiple => 1);
+
+    ok($validator->validate({foo => ['', 2]}));
+}
+
 sub empty_values : Test(1) {
     my $self = shift;
 
