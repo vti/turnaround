@@ -28,6 +28,16 @@ sub require_fields : Test(1) {
     ok(!$validator->validate);
 }
 
+sub require_multiple_fields : Test(1) {
+    my $self = shift;
+
+    my $validator = $self->_build_validator;
+
+    $validator->add_field('foo', multiple => 1);
+
+    ok(!$validator->validate({foo => []}));
+}
+
 sub empty_values : Test(1) {
     my $self = shift;
 
@@ -66,6 +76,18 @@ sub multiple_only_spaces : Test(1) {
     $validator->add_field('foo', multiple => 1);
 
     ok(!$validator->validate({foo => [" 	\n", '   ']}));
+}
+
+sub set_required_error_to_first_value_from_multiple : Test(1) {
+    my $self = shift;
+
+    my $validator = $self->_build_validator;
+
+    $validator->add_field('foo', multiple => 1);
+
+    $validator->validate({foo => []});
+
+    is_deeply($validator->errors, {'foo[0]' => 'REQUIRED', foo => 'REQUIRED'});
 }
 
 sub not_valid_rule : Test(1) {

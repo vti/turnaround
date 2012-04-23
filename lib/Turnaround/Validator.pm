@@ -106,6 +106,10 @@ sub add_error {
         }
     }
 
+    if ($self->{fields}->{$name}->{multiple}) {
+        $self->{errors}->{$name . '[0]'} = $error;
+    }
+
     $self->{errors}->{$name} = $error;
 }
 
@@ -179,6 +183,7 @@ sub _is_field_empty {
     my ($value) = @_;
 
     $value = [$value] unless ref $value eq 'ARRAY';
+    return 1 unless @$value;
 
     my $is_empty = 0;
 
@@ -205,6 +210,8 @@ sub _prepare_params {
         my ($name, $index) = ($1, $2);
 
         my $value = delete $params->{$key};
+        $value = '' unless defined $value;
+
         $params->{$name}->[$index] =
           ref $value eq 'ARRAY' ? $value->[0] : $value;
     }
