@@ -51,7 +51,8 @@ sub url_for {
         $url = $_[0];
     }
     else {
-        my $dispatched_request = $self->env->{'turnaround.dispatched_request'};
+        my $dispatched_request =
+          $self->env->{'turnaround.dispatched_request'};
 
         my $path = $dispatched_request->build_path(@_);
 
@@ -111,9 +112,15 @@ sub redirect {
 }
 
 sub render {
-    my $self = shift;
+    my $self     = shift;
+    my $template = shift;
 
-    return $self->service('displayer')->render(@_);
+    return $self->service('displayer')->render(
+        $template,
+        vars   => $self->{env}->{'turnaround.displayer.vars'},
+        layout => $self->{env}->{'turnaround.displayer.layout'},
+        @_
+    );
 }
 
 1;
