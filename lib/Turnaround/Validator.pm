@@ -22,18 +22,18 @@ sub BUILD {
 
 sub set_messages {
     my $self = shift;
-    my $value = @_ == 1 ? $_[0] : {@_};
+    my $messages = @_ == 1 ? $_[0] : {@_};
 
-    $self->{messages} = $value;
+    $self->{messages} = $messages;
 
     return $self;
 }
 
 sub add_messages {
     my $self = shift;
-    my $value = @_ == 1 ? $_[0] : {@_};
+    my $messages = @_ == 1 ? $_[0] : {@_};
 
-    $self->{messages} = {%{$self->{messages}}, $value};
+    $self->{messages} = {%{$self->{messages}}, %$messages};
 
     return $self;
 }
@@ -42,6 +42,14 @@ sub get_messages {
     my $self = shift;
 
     return $self->{messages};
+}
+
+sub clear_messages {
+    my $self = shift;
+
+    delete $self->{messages};
+
+    return $self;
 }
 
 sub field_names {

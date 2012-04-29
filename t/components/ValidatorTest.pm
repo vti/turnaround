@@ -261,6 +261,19 @@ sub set_global_custom_message : Test(1) {
     is_deeply($validator->errors, {foo => 'Required'});
 }
 
+sub add_global_custom_message : Test(1) {
+    my $self = shift;
+
+    my $validator = $self->_build_validator;
+    $validator->add_messages('REQUIRED' => 'Required');
+
+    $validator->add_field('foo');
+
+    $validator->validate;
+
+    is_deeply($validator->errors, {foo => 'Required'});
+}
+
 sub set_custom_message : Test(1) {
     my $self = shift;
 
