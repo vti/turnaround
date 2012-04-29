@@ -2,11 +2,14 @@ package ActionResponseResolverTest;
 
 use strict;
 use warnings;
+use utf8;
 
 use base 'TestBase';
 
 use Test::More;
 use Test::Fatal;
+
+use Encode;
 
 use Turnaround::Response;
 use Turnaround::ActionResponseResolver;
@@ -17,6 +20,20 @@ sub return_undef_on_undef : Test {
     my $resolver = $self->_build_resolver;
 
     ok(not defined $resolver->resolve);
+}
+
+sub return_arrayref_on_string : Test {
+    my $self = shift;
+
+    my $resolver = $self->_build_resolver;
+
+    is_deeply(
+        $resolver->resolve('привет'),
+        [   200,
+            ['Content-Type' => 'text/html'],
+            [Encode::encode('UTF-8', 'привет')]
+        ]
+    );
 }
 
 sub return_arrayref_on_arrayref : Test {

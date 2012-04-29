@@ -6,6 +6,7 @@ use warnings;
 use base 'Turnaround::Base';
 
 use JSON ();
+use Encode ();
 
 sub resolve {
     my $self = shift;
@@ -13,7 +14,10 @@ sub resolve {
 
     return unless defined $res;
 
-    return [200, ['Content-Type' => 'text/html'], [$res]] unless ref $res;
+    unless (ref $res) {
+        $res = Encode::encode('UTF-8', $res) if Encode::is_utf8($res);
+        return [200, ['Content-Type' => 'text/html'], [$res]];
+    }
 
     return $res if ref $res eq 'ARRAY';
 
