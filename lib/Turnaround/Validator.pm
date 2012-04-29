@@ -29,6 +29,15 @@ sub set_messages {
     return $self;
 }
 
+sub add_messages {
+    my $self = shift;
+    my $value = @_ == 1 ? $_[0] : {@_};
+
+    $self->{messages} = {%{$self->{messages}}, $value};
+
+    return $self;
+}
+
 sub get_messages {
     my $self = shift;
 
