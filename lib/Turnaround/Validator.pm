@@ -98,8 +98,7 @@ sub add_group_rule {
     my ($group_name, $fields_names, $rule_name, @rule_args) = @_;
 
     die "Rule name '$group_name' is not unique"
-      if exists $self->{fields}->{$group_name}
-          || exists $self->{rules}->{$group_name};
+      if exists $self->{rules}->{$group_name};
 
     my $rule = $self->_build_rule(
         $rule_name,
