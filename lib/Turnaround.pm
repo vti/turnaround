@@ -18,7 +18,8 @@ sub BUILD {
     my $self = shift;
 
     $self->{home} ||= Turnaround::Home->new(app_class => ref $self);
-    $self->{builder}  ||= Turnaround::Builder->new;
+    $self->{builder} ||= Turnaround::Builder->new(
+        namespaces => [ref($self) . '::Middleware::']);
     $self->{services} ||= Turnaround::ServiceContainer->new;
 
     $self->startup;

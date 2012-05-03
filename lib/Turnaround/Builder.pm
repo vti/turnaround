@@ -13,6 +13,14 @@ sub BUILD {
     my $self = shift;
 
     $self->{middleware} ||= [];
+    $self->{namespaces} ||= [];
+
+    $self->{loader} ||= Turnaround::Loader->new(
+        namespaces => [
+            @{$self->{namespaces}},
+            qw/Turnaround::Middleware:: Plack::Middleware::/
+        ]
+    );
 }
 
 sub add_middleware {
@@ -26,7 +34,7 @@ sub wrap {
     my $self = shift;
     my ($app) = @_;
 
-    my $loader = $self->_build_loader;
+    my $loader = $self->{loader};
 
     foreach my $middleware (reverse @{$self->{middleware}}) {
         my $instance = $middleware->{name};
@@ -43,13 +51,6 @@ sub wrap {
     }
 
     return $app;
-}
-
-sub _build_loader {
-    my $self = shift;
-
-    return Turnaround::Loader->new(
-        namespaces => [qw/Turnaround::Middleware:: Plack::Middleware::/]);
 }
 
 1;
