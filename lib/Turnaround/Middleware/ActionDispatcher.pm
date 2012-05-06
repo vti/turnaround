@@ -5,6 +5,7 @@ use warnings;
 
 use base 'Turnaround::Middleware';
 
+use Scalar::Util ();
 use Turnaround::ActionResponseResolver;
 use Turnaround::Exception;
 
@@ -54,8 +55,9 @@ sub _build_action {
       eval { $self->{action_factory}->build($action, env => $env) } || do {
         my $e = $@;
 
-        $e->rethrow
-          unless $e->does('Turnaround::Exception::ActionClassNotFound');
+        if (!Scalar::Util::blessed($e) || !$e->does('Turnaround::Exception::ActionClassNotFound')) {
+            die $e;
+        }
 
         return;
       };
