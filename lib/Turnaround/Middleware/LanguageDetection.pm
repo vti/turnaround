@@ -38,10 +38,14 @@ sub _detect_language {
 
     my $lang;
 
-    $lang ||= $self->{custom_cb}->($env)        if $self->{custom_cb};
     $lang ||= $self->_detect_from_path($env)    if $self->{use_path};
     $lang ||= $self->_detect_from_session($env) if $self->{use_session};
     $lang ||= $self->_detect_from_header($env)  if $self->{use_header};
+
+    if ($self->{custom_cb}) {
+        my $custom_lang = $self->{custom_cb}->($env);
+        $lang = $custom_lang if $custom_lang;
+    }
 
     if (!$lang || !$self->_is_allowed($lang)) {
         $lang = $self->{default_language};
