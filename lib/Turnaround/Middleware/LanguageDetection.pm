@@ -43,7 +43,7 @@ sub _detect_language {
     $lang ||= $self->_detect_from_header($env)  if $self->{use_header};
 
     if ($self->{custom_cb}) {
-        my $custom_lang = $self->{custom_cb}->($env);
+        my $custom_lang = $self->{custom_cb}->($env, $lang);
         $lang = $custom_lang if $custom_lang;
     }
 
