@@ -49,16 +49,22 @@ sub record_caller_from_string_exceptions : Test(2) {
     };
 }
 
-sub record_caller_from_object_exceptions : Test(2) {
+sub rethrow : Test(2) {
     my $self = shift;
 
     eval {
-        raise;
-    }
-    or do {
+        eval {
+            raise;
+        }
+        or do {
+            my $e = $@;
+
+            $e->rethrow;
+        }
+    } or do {
         my $e = $@;
 
-        is $e->line, __LINE__ - 5;
+        is $e->line, __LINE__ - 10;
         is $e->path, 't/core/ExceptionTest.pm';
     };
 }
