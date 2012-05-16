@@ -171,19 +171,21 @@ sub validate {
         $self->add_error($rule_name => $rule->get_message);
     }
 
-    return 0 if $self->has_errors;
+    $self->{validated_params} = {};
 
     foreach my $name (keys %{$self->{fields}}) {
+        next if exists $self->{errors}->{$name};
+
         $self->{validated_params}->{$name} = $params->{$name};
     }
+
+    return 0 if $self->has_errors;
 
     return 1;
 }
 
 sub validated_params {
     my $self = shift;
-
-    return {} if $self->has_errors;
 
     return $self->{validated_params};
 }

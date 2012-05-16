@@ -148,6 +148,20 @@ sub return_valid_values : Test(1) {
     is_deeply($validator->validated_params, {foo => 123});
 }
 
+sub return_valid_values_even_when_not_valid : Test(1) {
+    my $self = shift;
+
+    my $validator = $self->_build_validator;
+
+    $validator->add_field('foo');
+    $validator->add_field('bar');
+    $validator->add_rule('foo', 'regexp', qr/^\d+$/);
+
+    $validator->validate({foo => 123});
+
+    is_deeply($validator->validated_params, {foo => 123});
+}
+
 sub take_first_value : Test(1) {
     my $self = shift;
 
