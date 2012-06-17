@@ -7,7 +7,6 @@ use base 'TestBase';
 
 use Test::More;
 use Test::Fatal;
-use Test::MockObject::Extends;
 
 use Turnaround::RESTAction;
 
