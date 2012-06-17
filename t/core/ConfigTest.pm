@@ -2,10 +2,9 @@ package ConfigTest;
 
 use strict;
 use warnings;
+use utf8;
 
 use base 'TestBase';
-
-use utf8;
 
 use Test::More;
 use Test::Fatal;
