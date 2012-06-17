@@ -51,6 +51,7 @@ WriteMakefile(
         'Text::Caml'           => '0',
         'YAML::Tiny'           => '0',
         'MIME::Lite'           => '0',
+        'MIME::Base64'         => '0',
         'JSON'                 => '0',
 
         'Test::Class' => '0',
