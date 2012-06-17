@@ -10,6 +10,10 @@ use Test::Fatal;
 
 use Turnaround::DBHPool;
 
+sub SKIP_CLASS {
+    !eval { require DBD::SQLite; 1 };
+}
+
 sub setup : Test(setup) {
 }
 
