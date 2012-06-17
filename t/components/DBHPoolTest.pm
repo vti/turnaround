@@ -8,8 +8,6 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
-use Turnaround::DBHPool;
-
 sub SKIP_CLASS {
     return 0 if eval { require DBD::SQLite; 1 };
 
@@ -19,9 +17,7 @@ sub SKIP_CLASS {
 }
 
 sub setup : Test(setup) {
-}
-
-sub teardown : Test(teardown) {
+    require Turnaround::DBHPool;
 }
 
 sub return_handle : Test {
