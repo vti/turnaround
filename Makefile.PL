@@ -59,7 +59,7 @@ WriteMakefile(
         'Test::Class'               => '0',
         'Test::Fatal'               => '0',
         'Test::More'                => '0',
-        'Text::MockObject::Extends' => '0',
+        'Test::MockObject::Extends' => '0',
     },
     dist  => {COMPRESS => 'gzip -9f', SUFFIX => 'gz'},
     clean => {FILES    => 'Turnaround-*'},
