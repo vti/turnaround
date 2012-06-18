@@ -28,6 +28,67 @@ sub add_middleware {
     my ($middleware, @args) = @_;
 
     push @{$self->{middleware}}, {name => $middleware, args => [@args]};
+
+    return $self;
+}
+
+sub insert_before_middleware {
+    my $self = shift;
+    my ($before, $middleware, @args) = @_;
+
+    my $i = $self->_find_middleware_index($before);
+
+    splice @{$self->{middleware}}, $i, 0, {name => $middleware, args => [@args]};
+
+    return $self;
+}
+
+sub insert_after_middleware {
+    my $self = shift;
+    my ($before, $middleware, @args) = @_;
+
+    my $i = $self->_find_middleware_index($before);
+
+    splice @{$self->{middleware}}, $i + 1, 0, {name => $middleware, args => [@args]};
+
+    return $self;
+}
+
+sub remove_middleware {
+    my $self = shift;
+    my (@list_of_middleware) = @_;
+
+    for (@list_of_middleware) {
+        my $i = $self->_find_middleware_index($_);
+
+        splice @{$self->{middleware}}, $i, 1;
+    }
+
+    return $self;
+}
+
+sub replace_middleware {
+    my $self = shift;
+    my ($from, $to, @args) = @_;
+
+    my $i = $self->_find_middleware_index($from);
+
+    $self->{middleware}->[$i] = {name => $to, args => [@args]};
+
+    return $self;
+}
+
+sub list_middleware {
+    my $self = shift;
+
+    my $list = [];
+
+    foreach my $middleware (@{$self->{middleware}}) {
+        my $name = $middleware->{name};
+        push @$list, ref $name eq 'CODE' ? '__ANON__' : $name;
+    }
+
+    return $list;
 }
 
 sub wrap {
@@ -51,6 +112,23 @@ sub wrap {
     }
 
     return $app;
+}
+
+sub _find_middleware_index {
+    my $self = shift;
+    my ($middleware) = @_;
+
+    my $i = 0;
+    foreach my $mw (@{$self->{middleware}}) {
+        if ($mw->{name} eq $middleware) {
+            last;
+        }
+        $i++;
+    }
+
+    die 'Unknown middleware' unless $i < @{$self->{middleware}};
+
+    return $i;
 }
 
 1;
