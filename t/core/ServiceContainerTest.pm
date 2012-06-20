@@ -76,6 +76,16 @@ sub create_instance_when_prototype : Test {
     ok(not defined $c->service('foo')->get_bar());
 }
 
+sub create_instance_when_prototype_with_passed_arguments : Test {
+    my $self = shift;
+
+    my $c = $self->_build_container;
+
+    $c->register(foo => 'FooInstance', lifecycle => 'prototype');
+
+    is($c->service('foo', bar => 'baz')->get_bar(), 'baz');
+}
+
 sub run_sub_when_prototype : Test {
     my $self = shift;
 

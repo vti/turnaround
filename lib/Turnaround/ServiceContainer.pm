@@ -32,7 +32,7 @@ sub register {
 
 sub service {
     my $self = shift;
-    my ($name) = @_;
+    my ($name, @args) = @_;
 
     die qq{Unknown service '$name'} unless exists $self->{services}->{$name};
 
@@ -51,7 +51,7 @@ sub service {
     elsif (!ref $service->{value}) {
         $instance =
           $self->{loader}->load_class($service->{value})
-          ->new($self->_resolve_arguments($service));
+          ->new($self->_resolve_arguments($service), @args);
     }
     else {
         $instance = $service->{value};
