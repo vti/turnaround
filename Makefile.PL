@@ -48,7 +48,7 @@ WriteMakefile(
         'I18N::AcceptLanguage' => '0',
         'I18N::LangTags::List' => '0',
         'Plack'                => '0',
-        'Routes::Tiny'         => '0',
+        'Routes::Tiny'         => '0.009014',
         'String::CamelCase'    => '0',
         'Text::Caml'           => '0',
         'YAML::Tiny'           => '0',
