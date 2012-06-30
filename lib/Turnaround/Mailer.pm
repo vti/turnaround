@@ -20,6 +20,10 @@ sub send {
     my $self = shift;
     my (%params) = @_;
 
+    $params{to}      ||= $self->{to};
+    $params{subject} ||= $self->{subject};
+    $params{body}    ||= $self->{body};
+
     die 'to required'      unless $params{to};
     die 'subject required' unless $params{subject};
     die 'body required'    unless $params{body};
