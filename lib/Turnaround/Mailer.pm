@@ -28,6 +28,10 @@ sub send {
     die 'subject required' unless $params{subject};
     die 'body required'    unless $params{body};
 
+    if (my $prefix = $self->{subject_prefix}) {
+        $params{subject} = $prefix . ' ' . $params{subject};
+    }
+
     my $body = $params{body};
     if (my $signature = $self->{signature}) {
         $body .= "\n\n-- \n" . $signature;

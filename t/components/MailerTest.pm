@@ -26,6 +26,27 @@ sub build_message : Test {
     like($message, qr/From: .* To:/xms);
 }
 
+sub build_message_with_defaults : Test(2) {
+    my $self = shift;
+
+    my $mailer = $self->_build_mailer(to => 'foo@bar.com', subject => 'Hello!');
+
+    my $message = $mailer->send(body => 'Привет!');
+
+    like($message, qr/To:\s*foo\@bar\.com/xms);
+    like($message, qr/Subject:\s*Hello!/xms);
+}
+
+sub build_message_with_subject_prefix : Test(2) {
+    my $self = shift;
+
+    my $mailer = $self->_build_mailer(to => 'foo@bar.com', subject => 'Hello!', subject_prefix => '[Turnaround]');
+
+    my $message = $mailer->send(body => 'Привет!');
+
+    like($message, qr/Subject:\s*\[Turnaround\]\s*Hello!/xms);
+}
+
 sub build_message_with_signature : Test {
     my $self = shift;
 
