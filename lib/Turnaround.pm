@@ -43,9 +43,10 @@ sub BUILD {
     return $self;
 }
 
+sub home     { $_[0]->{home} }
 sub services { $_[0]->{services} }
 
-sub startup { $_[0] }
+sub startup  { $_[0] }
 
 sub add_middleware {
     my $self = shift;
