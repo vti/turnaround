@@ -6,22 +6,7 @@ use warnings;
 use base 'Turnaround::Renderer';
 
 use Text::APL;
-use File::Spec ();
-
-sub BUILD {
-    my $self = shift;
-
-    my $templates_path = delete $self->{templates_path} || 'templates';
-    if (!File::Spec->file_name_is_absolute($templates_path) && $self->{home}) {
-        $templates_path = $self->{home}->catfile($templates_path);
-    }
-
-    $self->{templates_path} = $templates_path;
-
-    $self->{apl} = Text::APL->new;
-
-    return $self;
-}
+use File::Spec;
 
 sub render_file {
     my $self = shift;
@@ -39,8 +24,9 @@ sub render_file {
       grep { ref $rest[0]->{$_} ne 'CODE' } keys %{$rest[0]};
 
     my $output = '';
-    $self->{apl}->render(
-        input   => $self->{templates_path}->catfile($template)->to_string,
+    $self->{engine}->render(
+        name    => $template,
+        input   => File::Spec->catfile($self->{templates_path}, $template),
         output  => \$output,
         vars    => \%vars,
         helpers => \%helpers
@@ -54,9 +40,15 @@ sub render_string {
     my ($template, @rest) = @_;
 
     my $output = '';
-    $self->{apl}->render(input => \$template, output => \$output, @rest);
+    $self->{engine}->render(input => \$template, output => \$output, @rest);
 
     return $output;
+}
+
+sub _build_engine {
+    my $self = shift;
+
+    return Text::APL->new(cache => 1, @_);
 }
 
 1;
