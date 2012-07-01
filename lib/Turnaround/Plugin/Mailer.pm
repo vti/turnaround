@@ -3,7 +3,7 @@ package Turnaround::Plugin::Mailer;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
+use base 'Turnaround::Plugin';
 
 use Turnaround::Mailer;
 
