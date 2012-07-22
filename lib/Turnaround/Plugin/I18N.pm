@@ -33,7 +33,7 @@ sub run {
 
     my $i18n = $self->{services}->service('i18n');
     $env->{'turnaround.displayer.vars'}->{'loc'} =
-      sub { shift; $env->{'turnaround.i18n.maketext'}->loc(@_) };
+      sub { $env->{'turnaround.i18n.maketext'}->loc(@_) };
 
     my $languages_names = $i18n->get_languages_names;
     if (keys %$languages_names > 1) {
