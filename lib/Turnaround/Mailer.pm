@@ -50,7 +50,16 @@ sub send {
     $message->delete('X-Mailer');
     $message->add('X-Mailer' => $self->{x_mailer});
 
-    $message->send unless $self->{test};
+    if ($self->{test}) {
+        if ($self->{test} ne 1) {
+            open my $log, '>>', $self->{test}
+              or die "Can't open log '$self->{test}': $!";
+            print $log $message->as_string;
+        }
+    }
+    else {
+        $message->send;
+    }
 
     return $message->as_string;
 }
