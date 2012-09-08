@@ -12,7 +12,7 @@ sub BUILD {
 
     my $templates_path = delete $self->{templates_path} || 'templates';
     if (!File::Spec->file_name_is_absolute($templates_path) && $self->{home}) {
-        $templates_path = $self->{home}->catfile($templates_path);
+        $templates_path = File::Spec->catfile($self->{home}, $templates_path);
     }
     $self->{templates_path} = $templates_path;
 
