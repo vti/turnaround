@@ -9,7 +9,7 @@ sub parse {
     my $self = shift;
     my ($config) = @_;
 
-    return do $config;
+    return eval $config;
 }
 
 1;
