@@ -8,12 +8,16 @@ use base 'Turnaround::Base';
 use Encode ();
 use MIME::Lite;
 
+our %TLSConn;
+
 sub BUILD {
     my $self = shift;
 
     die 'from is required' unless $self->{from};
 
     $self->{x_mailer} ||= __PACKAGE__;
+
+    $self->{send_by} ||= 'sendmail';
 }
 
 sub send {
@@ -58,10 +62,60 @@ sub send {
         }
     }
     else {
-        $message->send;
+        my $method = "send_by_$self->{send_by}";
+        $message->$method(@{$self->{send_args}});
     }
 
     return $message->as_string;
 }
+
+# http://svn.bulknews.net/repos/plagger/trunk/plagger/lib/Plagger/Plugin/Publish/Gmail.pm
+# hack MIME::Lite to support TLS Authentication
+*MIME::Lite::send_by_smtp_tls = sub {
+    my($self, @args) = @_;
+    my $extract_addrs_ref =
+        defined &MIME::Lite::extract_addrs
+        ? \&MIME::Lite::extract_addrs
+        : \&MIME::Lite::extract_full_addrs;
+
+    ### We need the "From:" and "To:" headers to pass to the SMTP mailer:
+    my $hdr   = $self->fields();
+    my($from) = $extract_addrs_ref->( $self->get('From') );
+    my $to    = $self->get('To');
+
+    ### Sanity check:
+    defined($to) or Carp::croak "send_by_smtp_tls: missing 'To:' address\n";
+
+    ### Get the destinations as a simple array of addresses:
+    my @to_all = $extract_addrs_ref->($to);
+    if ($MIME::Lite::AUTO_CC) {
+        foreach my $field (qw(Cc Bcc)) {
+            my $value = $self->get($field);
+            push @to_all, $extract_addrs_ref->($value) if defined($value);
+        }
+    }
+
+    ### Create SMTP TLS client:
+    require Net::SMTP::TLS;
+
+    my $conn_key = join "|", @args;
+    my $smtp;
+    unless ($smtp = $TLSConn{$conn_key}) {
+        $smtp = $TLSConn{$conn_key} = MIME::Lite::SMTP::TLS->new(@args)
+            or Carp::croak("Failed to connect to mail server: $!\n");
+    }
+    $smtp->mail($from);
+    $smtp->to(@to_all);
+    $smtp->data();
+
+    ### MIME::Lite can print() to anything with a print() method:
+    $self->print_for_smtp($smtp);
+    $smtp->dataend();
+
+    1;
+};
+
+@MIME::Lite::SMTP::TLS::ISA = qw( Net::SMTP::TLS );
+sub MIME::Lite::SMTP::TLS::print { shift->datasend(@_) }
 
 1;
