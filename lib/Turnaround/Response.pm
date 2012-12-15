@@ -5,7 +5,7 @@ use warnings;
 
 use base 'Plack::Response';
 
-use Encode ();
+use Encode      ();
 use Plack::Util ();
 
 sub finalize {
@@ -18,6 +18,7 @@ sub finalize {
     my $arrayref = $self->SUPER::finalize;
 
     if (Plack::Util::is_real_fh($arrayref->[2])) {
+
         # TODO
     }
     elsif (ref $arrayref->[2] eq 'ARRAY') {
@@ -26,6 +27,7 @@ sub finalize {
               @{$arrayref->[2]}];
     }
     else {
+
         # TODO
     }
 

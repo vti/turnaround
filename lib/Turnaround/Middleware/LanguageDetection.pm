@@ -52,7 +52,8 @@ sub _detect_language {
     }
 
     $env->{$self->{name_prefix} . 'language'} = $lang;
-    $env->{$self->{name_prefix} . 'language_name'} = I18N::LangTags::List::name($lang);
+    $env->{$self->{name_prefix} . 'language_name'} =
+      I18N::LangTags::List::name($lang);
 
     if ($self->{use_session}) {
         $env->{'psgix.session'}->{$self->{name_prefix} . 'language'} = $lang;
@@ -89,8 +90,7 @@ sub _detect_from_header {
 
     return unless my $accept_header = $env->{HTTP_ACCEPT_LANGUAGE};
 
-    return $self->_build_acceptor->accepts($accept_header,
-        $self->{languages});
+    return $self->_build_acceptor->accepts($accept_header, $self->{languages});
 }
 
 sub _build_acceptor {

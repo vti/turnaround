@@ -7,7 +7,7 @@ use base 'Turnaround::Base';
 
 sub language { $_[0]->{language} }
 
-sub loc {&maketext}
+sub loc { &maketext }
 
 sub maketext {
     my $self = shift;

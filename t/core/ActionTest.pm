@@ -20,7 +20,7 @@ sub build_redirect_response : Test(2) {
 
     my $res = $action->redirect('http://localhost');
 
-    is($res->status, 302);
+    is($res->status,                      302);
     is($res->headers->header('Location'), 'http://localhost');
 }
 
@@ -69,7 +69,7 @@ sub _build_action {
 
     my $displayer = Turnaround::Displayer->new(renderer => 1);
     $displayer = Test::MockObject::Extends->new($displayer);
-    $displayer->mock(render => sub {$_[1]});
+    $displayer->mock(render => sub { $_[1] });
 
     my $services = Turnaround::ServiceContainer->new;
     $services->register(displayer => $displayer);

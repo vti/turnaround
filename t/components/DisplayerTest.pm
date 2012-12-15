@@ -41,7 +41,8 @@ sub skip_global_layout_when_local_undef : Test {
 
     my $d = $self->_build_displayer(layout => 'layout.caml');
 
-    is( $d->render(
+    is(
+        $d->render(
             'template.caml',
             layout => undef,
             vars   => {hello => 'there'}

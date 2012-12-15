@@ -7,7 +7,7 @@ use base 'Turnaround::Base';
 
 use overload
   '""'     => sub { $_[0]->to_string },
-  'bool'   => sub {1},
+  'bool'   => sub { 1 },
   fallback => 1;
 
 use Encode       ();
@@ -55,7 +55,8 @@ sub does {
     return 0;
 }
 
-sub to_string {&as_string}
+sub to_string { &as_string }
+
 sub as_string {
     my $self = shift;
 

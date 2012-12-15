@@ -40,7 +40,11 @@ sub build_message_with_defaults : Test(2) {
 sub build_message_with_subject_prefix : Test(2) {
     my $self = shift;
 
-    my $mailer = $self->_build_mailer(to => 'foo@bar.com', subject => 'Hello!', subject_prefix => '[Turnaround]');
+    my $mailer = $self->_build_mailer(
+        to             => 'foo@bar.com',
+        subject        => 'Hello!',
+        subject_prefix => '[Turnaround]'
+    );
 
     my $message = $mailer->send(body => 'Привет!');
 
@@ -68,8 +72,11 @@ sub build_message_with_signature : Test {
 sub _build_mailer {
     my $self = shift;
 
-    return Turnaround::Mailer->new(test => 1, from => 'root <root@localhost>',
-        @_);
+    return Turnaround::Mailer->new(
+        test => 1,
+        from => 'root <root@localhost>',
+        @_
+    );
 }
 
 1;

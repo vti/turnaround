@@ -87,25 +87,22 @@ sub CHECK {
 sub _get_before_methods {
     my ($package) = @_;
 
-    return
-      map { s/^BEFORE_//; $_ }
-      grep {m/^BEFORE_(.*)$/} _get_methods($package);
+    return map { s/^BEFORE_//; $_ }
+      grep { m/^BEFORE_(.*)$/ } _get_methods($package);
 }
 
 sub _get_after_methods {
     my ($package) = @_;
 
-    return
-      map { s/^AFTER_//; $_ }
-      grep {m/^AFTER_(.*)$/} _get_methods($package);
+    return map { s/^AFTER_//; $_ }
+      grep { m/^AFTER_(.*)$/ } _get_methods($package);
 }
 
 sub _get_around_methods {
     my ($package) = @_;
 
-    return
-      map { s/^AROUND_//; $_ }
-      grep {m/^AROUND_(.*)$/} _get_methods($package);
+    return map { s/^AROUND_//; $_ }
+      grep { m/^AROUND_(.*)$/ } _get_methods($package);
 }
 
 sub _get_public_methods {

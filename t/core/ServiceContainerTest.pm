@@ -57,7 +57,7 @@ sub register_service_via_sub : Test {
 
     my $c = $self->_build_container;
 
-    $c->register(foo => sub {'foo'});
+    $c->register(foo => sub { 'foo' });
 
     is($c->service('foo'), 'foo');
 }

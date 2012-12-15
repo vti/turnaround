@@ -20,7 +20,8 @@ sub throw_correct_isa : Test {
 sub stingify_without_details : Test {
     my $self = shift;
 
-    is( exception {
+    is(
+        exception {
             Turnaround::HTTPException->throw(code => '500', message => 'foo');
         },
         'foo'

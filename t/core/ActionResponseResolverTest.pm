@@ -29,7 +29,8 @@ sub return_arrayref_on_string : Test {
 
     is_deeply(
         $resolver->resolve('привет'),
-        [   200,
+        [
+            200,
             ['Content-Type' => 'text/html'],
             [Encode::encode('UTF-8', 'привет')]
         ]

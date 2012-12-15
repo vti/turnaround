@@ -29,7 +29,8 @@ sub deny_when_unknown_role : Test {
 
     my $mw = $self->_build_middleware;
 
-    ok( exception {
+    ok(
+        exception {
             $mw->call(
                 $self->_build_env(user => {role => 'anon'}, action => 'bar'));
         }
@@ -41,7 +42,8 @@ sub deny_when_denied_action : Test {
 
     my $mw = $self->_build_middleware;
 
-    ok( exception {
+    ok(
+        exception {
             $mw->call(
                 $self->_build_env(user => {role => 'user'}, action => 'bar'));
         }

@@ -17,7 +17,8 @@ sub include_js : Test {
 
     $assets->require('/foo.js');
 
-    is($assets->include, '<script src="/foo.js" type="text/javascript"></script>');
+    is($assets->include,
+        '<script src="/foo.js" type="text/javascript"></script>');
 }
 
 sub not_add_the_same_path : Test {
@@ -28,7 +29,8 @@ sub not_add_the_same_path : Test {
     $assets->require('/foo.js');
     $assets->require('/foo.js');
 
-    is($assets->include, '<script src="/foo.js" type="text/javascript"></script>');
+    is($assets->include,
+        '<script src="/foo.js" type="text/javascript"></script>');
 }
 
 sub _build_assets {

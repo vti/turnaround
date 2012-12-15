@@ -38,8 +38,7 @@ sub _dispatch {
 
     my $dispatcher = $self->{dispatcher} or die 'dispatcher required';
 
-    my $dispatched_request =
-      $dispatcher->dispatch($path, method => lc $method);
+    my $dispatched_request = $dispatcher->dispatch($path, method => lc $method);
     Turnaround::HTTPException->throw(code => 404) unless $dispatched_request;
 
     $env->{'turnaround.dispatched_request'} = $dispatched_request;

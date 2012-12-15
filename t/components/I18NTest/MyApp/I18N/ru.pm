@@ -6,8 +6,6 @@ use utf8;
 
 use base 'I18NTest::MyApp::I18N';
 
-our %Lexicon = (
-    'Hello' => 'Привет'
-);
+our %Lexicon = ('Hello' => 'Привет');
 
 1;

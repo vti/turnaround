@@ -83,10 +83,9 @@ sub _is_check_timeout_elapsed {
 sub _get_dbh {
     my $self = shift;
 
-    my $dbh = DBI->connect(
-        $self->{dsn},      $self->{username},
-        $self->{password}, $self->{params}
-    );
+    my $dbh =
+      DBI->connect($self->{dsn}, $self->{username}, $self->{password},
+        $self->{params});
 
     Turnaround::Exception::DBHPool->throw("Can't connect $DBI::errstr")
       unless $dbh;

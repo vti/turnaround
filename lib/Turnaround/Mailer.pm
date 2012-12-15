@@ -72,16 +72,16 @@ sub send {
 # http://svn.bulknews.net/repos/plagger/trunk/plagger/lib/Plagger/Plugin/Publish/Gmail.pm
 # hack MIME::Lite to support TLS Authentication
 *MIME::Lite::send_by_smtp_tls = sub {
-    my($self, @args) = @_;
+    my ($self, @args) = @_;
     my $extract_addrs_ref =
-        defined &MIME::Lite::extract_addrs
-        ? \&MIME::Lite::extract_addrs
-        : \&MIME::Lite::extract_full_addrs;
+      defined &MIME::Lite::extract_addrs
+      ? \&MIME::Lite::extract_addrs
+      : \&MIME::Lite::extract_full_addrs;
 
     ### We need the "From:" and "To:" headers to pass to the SMTP mailer:
-    my $hdr   = $self->fields();
-    my($from) = $extract_addrs_ref->( $self->get('From') );
-    my $to    = $self->get('To');
+    my $hdr    = $self->fields();
+    my ($from) = $extract_addrs_ref->($self->get('From'));
+    my $to     = $self->get('To');
 
     ### Sanity check:
     defined($to) or Carp::croak "send_by_smtp_tls: missing 'To:' address\n";
@@ -102,7 +102,7 @@ sub send {
     my $smtp;
     unless ($smtp = $TLSConn{$conn_key}) {
         $smtp = $TLSConn{$conn_key} = MIME::Lite::SMTP::TLS->new(@args)
-            or Carp::croak("Failed to connect to mail server: $!\n");
+          or Carp::croak("Failed to connect to mail server: $!\n");
     }
     $smtp->mail($from);
     $smtp->to(@to_all);

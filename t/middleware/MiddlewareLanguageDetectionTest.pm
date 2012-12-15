@@ -16,7 +16,10 @@ sub detect_from_session : Test {
     my $mw =
       $self->_build_middleware(default_language => 'en', languages => ['ru']);
 
-    my $env = {PATH_INFO => '', 'psgix.session' => {'turnaround.i18n.language' => 'ru'}};
+    my $env = {
+        PATH_INFO       => '',
+        'psgix.session' => {'turnaround.i18n.language' => 'ru'}
+    };
 
     $mw->call($env);
 
@@ -29,7 +32,10 @@ sub add_human_readable_name : Test {
     my $mw =
       $self->_build_middleware(default_language => 'en', languages => ['ru']);
 
-    my $env = {PATH_INFO => '', 'psgix.session' => {'turnaround.i18n.language' => 'ru'}};
+    my $env = {
+        PATH_INFO       => '',
+        'psgix.session' => {'turnaround.i18n.language' => 'ru'}
+    };
 
     $mw->call($env);
 
@@ -42,7 +48,7 @@ sub detect_from_custom_cb : Test {
     my $mw = $self->_build_middleware(
         default_language => 'en',
         languages        => [qw/ru en/],
-        custom_cb        => sub {'en'}
+        custom_cb        => sub { 'en' }
     );
 
     my $env = {PATH_INFO => '/ru/'};
@@ -97,7 +103,10 @@ sub set_default_language_when_unknown_detected : Test {
     my $mw =
       $self->_build_middleware(default_language => 'en', languages => ['ru']);
 
-    my $env = {PATH_INFO => '', 'psgix.session' => {'turnaround.i18n.language' => 'es'}};
+    my $env = {
+        PATH_INFO       => '',
+        'psgix.session' => {'turnaround.i18n.language' => 'es'}
+    };
 
     $mw->call($env);
 

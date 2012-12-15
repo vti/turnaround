@@ -5,7 +5,7 @@ use warnings;
 
 use base 'Turnaround::Base';
 
-use JSON ();
+use JSON   ();
 use Encode ();
 
 sub resolve {

@@ -37,7 +37,10 @@ sub throw_on_unknown_class : Test {
 
     my $factory = $self->_build_factory;
 
-    isa_ok(exception { $factory->build('Unknown') }, 'Turnaround::Exception::ClassNotFound');
+    isa_ok(
+        exception { $factory->build('Unknown') },
+        'Turnaround::Exception::ClassNotFound'
+    );
 }
 
 sub throw_on_syntax_errors : Test {
@@ -45,7 +48,8 @@ sub throw_on_syntax_errors : Test {
 
     my $factory = $self->_build_factory;
 
-    ok(exception { $factory->build('WithSyntaxErrors') }, 'Turnaround::Exception::Base');
+    ok(exception { $factory->build('WithSyntaxErrors') },
+        'Turnaround::Exception::Base');
 }
 
 sub throw_during_creation_errors : Test {

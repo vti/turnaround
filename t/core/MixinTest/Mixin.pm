@@ -6,7 +6,7 @@ use warnings;
 use base 'Turnaround::Mixin';
 
 sub public {
-    'public'
+    'public';
 }
 
 sub BEFORE_modified_before {
@@ -23,7 +23,7 @@ sub AROUND_modified_around {
 }
 
 sub _private {
-    'private'
+    'private';
 }
 
 1;

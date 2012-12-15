@@ -23,11 +23,11 @@ sub should_handle_utf_in_query_parameters : Test {
 sub should_handle_utf_in_multi_query_parameters : Test {
     my $self = shift;
 
-    my $req = $self->_build_request(
-        {QUERY_STRING => '%E2%99%A5=%E2%99%A5&%E2%99%A5=b'},
+    my $req =
+      $self->_build_request({QUERY_STRING => '%E2%99%A5=%E2%99%A5&%E2%99%A5=b'},
         encoding => 'UTF-8');
 
-    my @params = $req->param('♥');;
+    my @params = $req->param('♥');
 
     is_deeply(\@params, ['♥', 'b']);
 }
@@ -38,7 +38,8 @@ sub should_handle_utf_in_post_parameters : Test {
     open my $fh, '<', \'♥=♥';
 
     my $req = $self->_build_request(
-        {   REQUEST_METHOD => 'POST',
+        {
+            REQUEST_METHOD => 'POST',
             CONTENT_TYPE   => 'application/x-www-form-urlencoded',
             CONTENT_LENGTH => 7,
             'psgi.input'   => $fh
@@ -55,7 +56,8 @@ sub should_handle_utf_in_multi_post_parameters : Test {
     open my $fh, '<', \'♥=♥&♥=b';
 
     my $req = $self->_build_request(
-        {   REQUEST_METHOD => 'POST',
+        {
+            REQUEST_METHOD => 'POST',
             CONTENT_TYPE   => 'application/x-www-form-urlencoded',
             CONTENT_LENGTH => 13,
             'psgi.input'   => $fh
@@ -63,7 +65,7 @@ sub should_handle_utf_in_multi_post_parameters : Test {
         encoding => 'UTF-8'
     );
 
-    my @params = $req->param('♥');;
+    my @params = $req->param('♥');
 
     is_deeply(\@params, ['♥', 'b']);
 }

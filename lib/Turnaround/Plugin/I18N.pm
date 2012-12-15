@@ -37,14 +37,14 @@ sub run {
 
     my $languages_names = $i18n->get_languages_names;
     if (keys %$languages_names > 1) {
-          $env->{'turnaround.displayer.vars'}->{'languages'} = [
-              map { {code => $_, name => $languages_names->{$_}} }
-                keys %$languages_names
-          ];
+        $env->{'turnaround.displayer.vars'}->{'languages'} = [
+            map { {code => $_, name => $languages_names->{$_}} }
+              keys %$languages_names
+        ];
     }
 
     $env->{'turnaround.displayer.vars'}->{helpers}->register_helper(
-          $self->{helper_name} => 'Turnaround::Plugin::I18N::Helper');
+        $self->{helper_name} => 'Turnaround::Plugin::I18N::Helper');
 }
 
 1;

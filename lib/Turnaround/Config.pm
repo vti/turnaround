@@ -6,7 +6,7 @@ use warnings;
 use base 'Turnaround::Base';
 
 use File::Basename ();
-use Encode ();
+use Encode         ();
 
 use Turnaround::Loader;
 

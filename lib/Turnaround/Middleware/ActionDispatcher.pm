@@ -50,16 +50,17 @@ sub _build_action {
     my $self = shift;
     my ($action, $env) = @_;
 
-    return
-      eval { $self->{action_factory}->build($action, env => $env) } || do {
+    return eval { $self->{action_factory}->build($action, env => $env) } || do {
         my $e = $@;
 
-        if (!Scalar::Util::blessed($e) || !$e->does('Turnaround::Exception::ActionClassNotFound')) {
+        if (   !Scalar::Util::blessed($e)
+            || !$e->does('Turnaround::Exception::ActionClassNotFound'))
+        {
             die $e;
         }
 
         return;
-      };
+    };
 }
 
 1;

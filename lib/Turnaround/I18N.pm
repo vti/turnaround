@@ -15,12 +15,12 @@ sub BUILD {
 
     die 'app_class is required' unless $self->{app_class};
 
-    $self->{loader}           ||= Turnaround::Loader->new;
+    $self->{loader} ||= Turnaround::Loader->new;
 
     $self->{default_language} ||= 'en';
-    $self->{languages}        ||= [$self->_detect_languages()];
-    $self->{languages_names} ||= {map { $_ => I18N::LangTags::List::name($_) }
-          @{$self->{languages}}};
+    $self->{languages} ||= [$self->_detect_languages()];
+    $self->{languages_names} ||=
+      {map { $_ => I18N::LangTags::List::name($_) } @{$self->{languages}}};
 
     my $app_class = $self->{app_class};
 

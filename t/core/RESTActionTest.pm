@@ -74,11 +74,11 @@ sub _build_action {
 package RESTAction;
 use base 'Turnaround::RESTAction';
 
-sub method_PUT {'PUT'}
+sub method_PUT { 'PUT' }
 
 package RESTActionAll;
 use base 'Turnaround::RESTAction';
 
-sub method_ALL {'ALL'}
+sub method_ALL { 'ALL' }
 
 1;

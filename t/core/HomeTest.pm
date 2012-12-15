@@ -23,7 +23,8 @@ sub implement_catfile : Test {
 
     my $home = $self->_build_home(path => '/foo/bar');
 
-    is($home->catfile('hello', 'there') => File::Spec->catfile('/foo/bar/hello/there'));
+    is($home->catfile('hello', 'there') =>
+          File::Spec->catfile('/foo/bar/hello/there'));
 }
 
 sub _build_home {

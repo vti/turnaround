@@ -50,7 +50,8 @@ sub _display {
 
     return [
         200,
-        [   'Content-Length' => length($body),
+        [
+            'Content-Length' => length($body),
             'Content-Type'   => $content_type
         ],
         [$body]

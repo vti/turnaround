@@ -11,7 +11,8 @@ sub BUILD {
     $self->{plugins} = [];
     $self->{namespaces} ||= [];
 
-    $self->{loader} ||= Turnaround::Loader->new(
+    $self->{loader} ||=
+      Turnaround::Loader->new(
         namespaces => [@{$self->{namespaces}}, qw/Turnaround::Plugin::/]);
 }
 

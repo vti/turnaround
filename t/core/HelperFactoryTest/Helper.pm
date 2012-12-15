@@ -5,6 +5,6 @@ use warnings;
 
 use base 'Turnaround::Base';
 
-sub hi {'there'}
+sub hi { 'there' }
 
 1;

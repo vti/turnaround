@@ -105,9 +105,8 @@ sub _build_env {
     my $env = {
         REQUEST_METHOD => $params{REQUEST_METHOD} || 'GET',
         QUERY_STRING   => $params{QUERY_STRING}   || '',
-        'turnaround.dispatched_request' => Turnaround::DispatchedRequest->new(
-            action => delete $params{action}
-        )
+        'turnaround.dispatched_request' =>
+          Turnaround::DispatchedRequest->new(action => delete $params{action})
     };
 
     return $env;

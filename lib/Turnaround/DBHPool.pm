@@ -23,8 +23,8 @@ sub dbh {
     $pid_tid .= '_' . threads->tid
       if exists $INC{'threads.pm'} && $INC{'threads.pm'};
 
-    my $connection = $self->{connections}->{$pid_tid}
-      ||= Turnaround::DBHPool::Connection->new(
+    my $connection = $self->{connections}->{$pid_tid} ||=
+      Turnaround::DBHPool::Connection->new(
         check_timeout => $self->{check_timeout},
         dsn           => $self->{dsn},
         username      => $self->{username},

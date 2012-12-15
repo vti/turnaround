@@ -19,7 +19,7 @@ sub register_helper_as_sub : Test {
 
     my $factory = $self->_build_factory;
 
-    $factory->register_helper('foo' => sub {'bar'});
+    $factory->register_helper('foo' => sub { 'bar' });
 
     my $foo = $factory->create_helper('foo');
 

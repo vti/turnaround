@@ -22,7 +22,8 @@ sub encode_body : Test {
 
     is_deeply(
         $res->finalize,
-        [   200,
+        [
+            200,
             ['Content-Type' => 'text/html'],
             [Encode::encode('UTF-8', 'привет')]
         ]

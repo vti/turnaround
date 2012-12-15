@@ -38,7 +38,8 @@ sub insert_before_middleware {
 
     my $i = $self->_find_middleware_index($before);
 
-    splice @{$self->{middleware}}, $i, 0, {name => $middleware, args => [@args]};
+    splice @{$self->{middleware}}, $i, 0,
+      {name => $middleware, args => [@args]};
 
     return $self;
 }
@@ -49,7 +50,8 @@ sub insert_after_middleware {
 
     my $i = $self->_find_middleware_index($before);
 
-    splice @{$self->{middleware}}, $i + 1, 0, {name => $middleware, args => [@args]};
+    splice @{$self->{middleware}}, $i + 1, 0,
+      {name => $middleware, args => [@args]};
 
     return $self;
 }

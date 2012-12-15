@@ -41,6 +41,6 @@ package Turnaround::Anonymous;
 
 use base 'Turnaround::Base';
 
-sub role {'anonymous'}
+sub role { 'anonymous' }
 
 1;

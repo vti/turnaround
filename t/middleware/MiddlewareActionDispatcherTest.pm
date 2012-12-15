@@ -80,11 +80,9 @@ sub _build_env {
     my $self = shift;
     my (%params) = @_;
 
-    my $env = {
-        'turnaround.dispatched_request' => Turnaround::DispatchedRequest->new(
-            action => delete $params{action}
-        )
-    };
+    my $env =
+      {'turnaround.dispatched_request' =>
+          Turnaround::DispatchedRequest->new(action => delete $params{action})};
 
     foreach my $key (keys %params) {
         $env->{"turnaround.$key"} = $params{$key};

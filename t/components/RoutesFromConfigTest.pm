@@ -22,8 +22,8 @@ sub add_routes : Test {
 sub no_route_when_config_empty : Test {
     my $self = shift;
 
-    my $routes = $self->_build_routes->load(
-        't/components/RoutesFromConfigTest/empty.yml');
+    my $routes =
+      $self->_build_routes->load('t/components/RoutesFromConfigTest/empty.yml');
 
     ok(!$routes->match('/'));
 }

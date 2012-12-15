@@ -9,7 +9,7 @@ sub is_valid {
     my $self = shift;
     my ($value, $in) = @_;
 
-    return !!grep {$value eq $_} @$in;
+    return !!grep { $value eq $_ } @$in;
 }
 
 1;

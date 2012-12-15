@@ -1,5 +1,5 @@
 package LoaderTestFoo;
-sub bar {}
+sub bar { }
 
 package LoaderTest;
 
@@ -52,8 +52,10 @@ sub throw_on_unknown_class : Test {
 
     my $loader = $self->_build_loader;
 
-    isa_ok(exception { $loader->load_class('Unknown') },
-        'Turnaround::Exception::ClassNotFound');
+    isa_ok(
+        exception { $loader->load_class('Unknown') },
+        'Turnaround::Exception::ClassNotFound'
+    );
 }
 
 sub throw_on_class_with_syntax_errors : Test {

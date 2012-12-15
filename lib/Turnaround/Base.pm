@@ -7,7 +7,7 @@ sub new {
     my $class = shift;
     $class = ref $class if ref $class;
 
-    my $self = { $class->BUILD_ARGS(@_) };
+    my $self = {$class->BUILD_ARGS(@_)};
     bless $self, $class;
 
     $self->BUILD;

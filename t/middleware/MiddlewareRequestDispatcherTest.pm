@@ -19,7 +19,7 @@ sub throw_404_when_nothing_dispatched : Test {
     my $mw = $self->_build_middleware;
     my $env = {PATH_INFO => '/', REQUEST_METHOD => 'GET'};
 
-    isa_ok(exception {$mw->call($env)}, 'Turnaround::HTTPException');
+    isa_ok(exception { $mw->call($env) }, 'Turnaround::HTTPException');
 }
 
 sub throw_404_when_path_info_is_empty : Test {
@@ -28,7 +28,7 @@ sub throw_404_when_path_info_is_empty : Test {
     my $mw = $self->_build_middleware;
     my $env = {PATH_INFO => '', REQUEST_METHOD => 'GET'};
 
-    isa_ok(exception {$mw->call($env)}, 'Turnaround::HTTPException');
+    isa_ok(exception { $mw->call($env) }, 'Turnaround::HTTPException');
 }
 
 sub dispatch_when_path_found : Test {
@@ -48,7 +48,7 @@ sub do_nothing_when_method_is_wrong : Test {
     my $mw = $self->_build_middleware;
     my $env = {REQUEST_METHOD => 'GET', PATH_INFO => '/only_post'};
 
-    isa_ok(exception {$mw->call($env)}, 'Turnaround::HTTPException');
+    isa_ok(exception { $mw->call($env) }, 'Turnaround::HTTPException');
 }
 
 sub dispatch_when_path_and_method_are_found : Test {
@@ -65,15 +65,16 @@ sub dispatch_when_path_and_method_are_found : Test {
 sub dispatch_utf_path : Test {
     my $self = shift;
 
-    my $mw = $self->_build_middleware;
+    my $mw  = $self->_build_middleware;
     my $env = {
         REQUEST_METHOD => 'GET',
-        PATH_INFO => '/unicode/' . Encode::encode('UTF-8', 'привет')
+        PATH_INFO      => '/unicode/' . Encode::encode('UTF-8', 'привет')
     };
 
     $mw->call($env);
 
-    is($env->{'turnaround.dispatched_request'}->{captures}->{name}, 'привет');
+    is($env->{'turnaround.dispatched_request'}->{captures}->{name},
+        'привет');
 }
 
 sub _build_middleware {

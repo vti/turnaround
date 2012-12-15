@@ -21,8 +21,8 @@ sub BUILD {
     my $app_class = ref $self;
 
     $self->{home} ||= Turnaround::Home->new(app_class => $app_class);
-    $self->{builder} ||= Turnaround::Builder->new(
-        namespaces => [$app_class . '::Middleware::']);
+    $self->{builder} ||=
+      Turnaround::Builder->new(namespaces => [$app_class . '::Middleware::']);
     $self->{services} ||= Turnaround::ServiceContainer->new;
 
     $self->{services}->register(
@@ -46,7 +46,7 @@ sub BUILD {
 sub home     { $_[0]->{home} }
 sub services { $_[0]->{services} }
 
-sub startup  { $_[0] }
+sub startup { $_[0] }
 
 sub add_middleware {
     my $self = shift;
