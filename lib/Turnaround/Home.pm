@@ -60,9 +60,7 @@ sub _detect {
         }
     }
     else {
-        Carp::croak(
-            'Cannot detect home. Pass it manually or set up $ENV{LAMEWORK_HOME}'
-        );
+        Carp::croak('Cannot detect home. Pass it manually');
     }
 
     return $home;

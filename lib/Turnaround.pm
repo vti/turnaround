@@ -5,6 +5,8 @@ use warnings;
 
 our $VERSION = '0.1';
 
+use Scalar::Util qw(blessed);
+
 use Turnaround::Builder;
 use Turnaround::Home;
 use Turnaround::HTTPException;
@@ -15,9 +17,15 @@ use overload q(&{}) => sub { shift->to_app }, fallback => 1;
 
 sub new {
     my $class = shift;
+    my (%params) = @_;
 
     my $self = {};
     bless $self, $class;
+
+    $self->{home}     = $params{home};
+    $self->{builder}  = $params{builder};
+    $self->{services} = $params{services};
+    $self->{plugins}  = $params{plugins};
 
     my $app_class = ref $self;
 

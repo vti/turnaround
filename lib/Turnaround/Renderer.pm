@@ -12,7 +12,9 @@ sub new {
     my $self = {};
     bless $self, $class;
 
+    $self->{home}           = $params{home};
     $self->{templates_path} = $params{templates_path};
+    $self->{engine_args}    = $params{engine_args};
 
     my $templates_path = delete $self->{templates_path} || 'templates';
     if (!File::Spec->file_name_is_absolute($templates_path) && $self->{home}) {
