@@ -3,18 +3,23 @@ package Turnaround::Factory;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use String::CamelCase ();
 
 use Turnaround::Loader;
 
-sub BUILD {
-    my $self = shift;
+sub new {
+    my $class = shift;
+    my (%params) = @_;
 
+    my $self = {};
+    bless $self, $class;
+
+    $self->{namespace} = $params{namespace};
     $self->{namespace} = '' unless defined $self->{namespace};
 
-    $self->{default_args} ||= {};
+    $self->{default_args} = $params{default_args} || {};
+
+    return $self;
 }
 
 sub build {

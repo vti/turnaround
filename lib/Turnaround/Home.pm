@@ -3,8 +3,6 @@ package Turnaround::Home;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use overload 'bool' => sub { 1 }, fallback => 1;
 use overload '""' => sub { shift->to_string }, fallback => 1;
 
@@ -14,12 +12,21 @@ use Cwd            ();
 use File::Basename ();
 use File::Spec     ();
 
-sub BUILD {
-    my $self = shift;
+sub new {
+    my $class = shift;
+    my (%params) = @_;
+
+    my $self = {};
+    bless $self, $class;
+
+    $self->{app_class} = $params{app_class};
+    $self->{path}      = $params{path};
 
     unless (defined $self->{path}) {
         $self->{path} = $self->_detect;
     }
+
+    return $self;
 }
 
 sub to_string {
@@ -31,7 +38,7 @@ sub to_string {
 sub catfile {
     my $self = shift;
 
-    return $self->new(path => File::Spec->catfile($self->{path}, @_));
+    return ref($self)->new(path => File::Spec->catfile($self->{path}, @_));
 }
 
 sub _detect {
@@ -51,9 +58,6 @@ sub _detect {
         else {
             $home = '.';
         }
-    }
-    elsif (defined $ENV{LAMEWORK_HOME}) {
-        $home = $ENV{LAMEWORK_HOME};
     }
     else {
         Carp::croak(

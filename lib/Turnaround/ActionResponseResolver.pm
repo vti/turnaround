@@ -3,10 +3,17 @@ package Turnaround::ActionResponseResolver;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use JSON   ();
 use Encode ();
+
+sub new {
+    my $class = shift;
+
+    my $self = {};
+    bless $self, $class;
+
+    return $self;
+}
 
 sub resolve {
     my $self = shift;

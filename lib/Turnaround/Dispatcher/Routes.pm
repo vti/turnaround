@@ -7,6 +7,15 @@ use base 'Turnaround::Dispatcher';
 
 use Turnaround::DispatchedRequest::Routes;
 
+sub new {
+    my $self = shift->SUPER::new(@_);
+    my (%params) = @_;
+
+    $self->{routes} = $params{routes};
+
+    return $self;
+}
+
 sub dispatch {
     my $self = shift;
     my ($path, %args) = @_;

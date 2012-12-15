@@ -3,15 +3,25 @@ package Turnaround::DBHPool::Connection;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use DBI;
 use Turnaround::Exception::DBHPool;
 
-sub BUILD {
-    my $self = shift;
+sub new {
+    my $class = shift;
+    my (%params) = @_;
+
+    my $self = {};
+    bless $self, $class;
+
+    $self->{check_timeout} = $params{check_timeout};
+    $self->{dsn}           = $params{dsn};
+    $self->{username}      = $params{username};
+    $self->{password}      = $params{password};
+    $self->{params}        = $params{params};
 
     $self->{check_timeout} = 5 unless defined $self->{check_timeout};
+
+    return $self;
 }
 
 sub dbh {

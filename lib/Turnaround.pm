@@ -3,8 +3,6 @@ package Turnaround;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 our $VERSION = '0.1';
 
 use Turnaround::Builder;
@@ -15,8 +13,11 @@ use Turnaround::ServiceContainer;
 
 use overload q(&{}) => sub { shift->to_app }, fallback => 1;
 
-sub BUILD {
-    my $self = shift;
+sub new {
+    my $class = shift;
+
+    my $self = {};
+    bless $self, $class;
 
     my $app_class = ref $self;
 

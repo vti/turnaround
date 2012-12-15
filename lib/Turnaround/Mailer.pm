@@ -3,21 +3,33 @@ package Turnaround::Mailer;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use Encode ();
 use MIME::Lite;
 
 our %TLSConn;
 
-sub BUILD {
-    my $self = shift;
+sub new {
+    my $class = shift;
+    my (%params) = @_;
 
-    die 'from is required' unless $self->{from};
+    my $self = {};
+    bless $self, $class;
+
+    $self->{from}           = $params{from} || die 'from is required';
+    $self->{to}             = $params{to};
+    $self->{x_mailer}       = $params{x_mailer};
+    $self->{send_by}        = $params{send_by};
+    $self->{send_args}      = $params{send_args};
+    $self->{subject}        = $params{subject};
+    $self->{subject_prefix} = $params{subject_prefix};
+    $self->{body}           = $params{body};
+    $self->{signature}      = $params{signature};
+    $self->{test}           = $params{test};
 
     $self->{x_mailer} ||= __PACKAGE__;
+    $self->{send_by}  ||= 'sendmail';
 
-    $self->{send_by} ||= 'sendmail';
+    return $self;
 }
 
 sub send {

@@ -3,9 +3,19 @@ package Turnaround::Loader;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use Turnaround::Exception::ClassNotFound;
+
+sub new {
+    my $class = shift;
+    my (%params) = @_;
+
+    my $self = {};
+    bless $self, $class;
+
+    $self->{namespaces} = $params{namespaces};
+
+    return $self;
+}
 
 sub load_class {
     my $self = shift;

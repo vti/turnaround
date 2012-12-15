@@ -6,6 +6,7 @@ use warnings;
 use base 'Plack::Request';
 
 use Encode ();
+use Hash::MultiValue;
 
 use Turnaround::Response;
 

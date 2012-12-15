@@ -39,7 +39,14 @@ sub _user {
 
 package Turnaround::Anonymous;
 
-use base 'Turnaround::Base';
+sub new {
+    my $class = shift;
+
+    my $self = {};
+    bless $self, $class;
+
+    return $self;
+}
 
 sub role { 'anonymous' }
 

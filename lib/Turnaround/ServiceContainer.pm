@@ -3,17 +3,22 @@ package Turnaround::ServiceContainer;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use Scalar::Util ();
 use Turnaround::Loader;
 
-sub BUILD {
-    my $self = shift;
+sub new {
+    my $class = shift;
+    my (%params) = @_;
+
+    my $self = {};
+    bless $self, $class;
+
+    $self->{services} = $params{services};
+    $self->{loader}   = $params{loader};
 
     $self->{services} ||= {};
 
-    $self->{loader} = Turnaround::Loader->new;
+    $self->{loader} ||= Turnaround::Loader->new;
 
     return $self;
 }

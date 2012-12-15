@@ -3,17 +3,23 @@ package Turnaround::Config;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use File::Basename ();
 use Encode         ();
 
 use Turnaround::Loader;
 
-sub BUILD {
-    my $self = shift;
+sub new {
+    my $class = shift;
+    my (%params) = @_;
+
+    my $self = {};
+    bless $self, $class;
+
+    $self->{encoding} = $params{encoding};
 
     $self->{encoding} ||= 'UTF-8';
+
+    return $self;
 }
 
 sub load {

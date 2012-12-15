@@ -3,10 +3,14 @@ package Turnaround::Logger;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
+sub new {
+    my $class = shift;
+    my (%params) = @_;
 
-sub BUILD {
-    my $self = shift;
+    my $self = {};
+    bless $self, $class;
+
+    $self->{logger} = $params{logger};
 
     $self->{logger} ||= sub { };
 

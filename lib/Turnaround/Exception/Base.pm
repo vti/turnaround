@@ -3,8 +3,6 @@ package Turnaround::Exception::Base;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use overload
   '""'     => sub { $_[0]->to_string },
   'bool'   => sub { 1 },
@@ -21,8 +19,10 @@ sub new {
         @params{qw/package path line/} = @$caller;
     }
 
-    my $self = {%params};
+    my $self = {};
     bless $self, $class;
+
+    $self->{message} = $params{message};
 
     $self->{message} = 'Exception: ' . ref($self)
       unless defined $self->{message} && $self->{message} ne '';

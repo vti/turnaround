@@ -3,14 +3,20 @@ package Turnaround::Builder;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use Scalar::Util ();
 
 use Turnaround::Loader;
 
-sub BUILD {
-    my $self = shift;
+sub new {
+    my $class = shift;
+    my (%params) = @_;
+
+    my $self = {};
+    bless $self, $class;
+
+    $self->{middleware} = $params{middleware};
+    $self->{namespaces} = $params{namespaces};
+    $self->{namespaces} = $params{namespaces};
 
     $self->{middleware} ||= [];
     $self->{namespaces} ||= [];
@@ -21,6 +27,8 @@ sub BUILD {
             qw/Turnaround::Middleware:: Plack::Middleware::/
         ]
     );
+
+    return $self;
 }
 
 sub add_middleware {

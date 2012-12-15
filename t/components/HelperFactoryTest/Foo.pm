@@ -3,6 +3,13 @@ package Foo;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
+sub new {
+    my $class = shift;
+
+    my $self = {};
+    bless $self, $class;
+
+    return $self;
+}
 
 1;

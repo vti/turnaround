@@ -3,9 +3,20 @@ package Turnaround::DispatchedRequest;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 require Carp;
+
+sub new {
+    my $class = shift;
+    my (%params) = @_;
+
+    my $self = {};
+    bless $self, $class;
+
+    $self->{action}   = $params{action};
+    $self->{captures} = $params{captures};
+
+    return $self;
+}
 
 sub build_path { Carp::croak('Not implemented') }
 

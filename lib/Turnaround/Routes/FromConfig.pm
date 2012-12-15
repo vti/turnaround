@@ -7,12 +7,15 @@ use base 'Turnaround::FromConfig';
 
 use Turnaround::Routes;
 
-sub BUILD {
-    my $self = shift;
+sub new {
+    my $self = shift->SUPER::new(@_);
+    my (%params) = @_;
 
-    $self->SUPER::BUILD;
+    $self->{routes} = $params{routes};
 
     $self->{routes} ||= Turnaround::Routes->new;
+
+    return $self;
 }
 
 sub _from_config {

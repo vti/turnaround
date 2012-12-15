@@ -3,9 +3,16 @@ package Turnaround::Config::Yml;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use YAML::Tiny;
+
+sub new {
+    my $class = shift;
+
+    my $self = {};
+    bless $self, $class;
+
+    return $self;
+}
 
 sub parse {
     my $self = shift;

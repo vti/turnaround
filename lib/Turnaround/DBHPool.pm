@@ -3,12 +3,20 @@ package Turnaround::DBHPool;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use Turnaround::DBHPool::Connection;
 
-sub BUILD {
-    my $self = shift;
+sub new {
+    my $class = shift;
+    my (%params) = @_;
+
+    my $self = {};
+    bless $self, $class;
+
+    $self->{check_timeout} = $params{check_timeout};
+    $self->{dsn}           = $params{dsn};
+    $self->{username}      = $params{username};
+    $self->{password}      = $params{password};
+    $self->{params}        = $params{params};
 
     $self->{connections} = {};
 

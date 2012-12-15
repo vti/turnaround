@@ -3,7 +3,14 @@ package Turnaround::Plugin;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
+sub new {
+    my $class = shift;
+
+    my $self = {};
+    bless $self, $class;
+
+    return $self;
+}
 
 sub startup { }
 

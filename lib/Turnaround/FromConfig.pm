@@ -3,14 +3,20 @@ package Turnaround::FromConfig;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use Turnaround::Config;
 
-sub BUILD {
-    my $self = shift;
+sub new {
+    my $class = shift;
+    my (%params) = @_;
+
+    my $self = {};
+    bless $self, $class;
+
+    $self->{config} = $params{config};
 
     $self->{config} ||= Turnaround::Config->new;
+
+    return $self;
 }
 
 sub load {

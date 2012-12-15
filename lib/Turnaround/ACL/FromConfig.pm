@@ -7,12 +7,15 @@ use base 'Turnaround::FromConfig';
 
 use Turnaround::ACL;
 
-sub BUILD {
-    my $self = shift;
+sub new {
+    my $self = shift->SUPER::new(@_);
+    my (%params) = @_;
 
-    $self->SUPER::BUILD();
+    $self->{acl} = $params{acl};
 
     $self->{acl} ||= Turnaround::ACL->new;
+
+    return $self;
 }
 
 sub _from_config {

@@ -77,7 +77,17 @@ sub _build_middleware {
 
 package TestUser;
 
-use base 'Turnaround::Base';
+sub new {
+    my $class = shift;
+    my (%params) = @_;
+
+    my $self = {};
+    bless $self, $class;
+
+    $self->{role} = $params{role};
+
+    return $self;
+}
 
 sub role { shift->{role} }
 

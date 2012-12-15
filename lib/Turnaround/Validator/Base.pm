@@ -3,7 +3,19 @@ package Turnaround::Validator::Base;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
+sub new {
+    my $class = shift;
+    my (%params) = @_;
+
+    my $self = {};
+    bless $self, $class;
+
+    $self->{message} = $params{message};
+    $self->{fields}  = $params{fields};
+    $self->{args}    = $params{args};
+
+    return $self;
+}
 
 sub set_message {
     my $self = shift;

@@ -3,9 +3,16 @@ package Turnaround::ACL;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use List::Util qw(first);
+
+sub new {
+    my $class = shift;
+
+    my $self = {};
+    bless $self, $class;
+
+    return $self;
+}
 
 sub add_role {
     my $self = shift;

@@ -3,17 +3,23 @@ package Turnaround::I18N;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use I18N::LangTags::List ();
 use Locale::Maketext;
 use Turnaround::Loader;
 use Turnaround::I18N::Handle;
 
-sub BUILD {
-    my $self = shift;
+sub new {
+    my $class = shift;
+    my (%params) = @_;
 
-    die 'app_class is required' unless $self->{app_class};
+    my $self = {};
+    bless $self, $class;
+
+    $self->{app_class} = $params{app_class} || die 'app_class is required';
+    $self->{loader} = $params{loader};
+    $self->{default_language} = $params{default_language};
+    $self->{languages}        = $params{languages};
+    $self->{language_names}   = $params{language_names};
 
     $self->{loader} ||= Turnaround::Loader->new;
 
@@ -44,6 +50,8 @@ sub BUILD {
             1;
 
     }
+
+    return $self;
 }
 
 sub set_default_language {

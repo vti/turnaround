@@ -3,12 +3,18 @@ package Turnaround::AssetsContainer;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
+sub new {
+    my $class = shift;
+    my (%params) = @_;
 
-sub BUILD {
-    my $self = shift;
+    my $self = {};
+    bless $self, $class;
+
+    $self->{paths} = $params{paths};
 
     $self->{paths} = [];
+
+    return $self;
 }
 
 sub require {

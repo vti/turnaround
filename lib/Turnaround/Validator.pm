@@ -3,21 +3,27 @@ package Turnaround::Validator;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use Turnaround::Loader;
 
-sub BUILD {
-    my $self = shift;
+sub new {
+    my $class = shift;
+    my (%params) = @_;
+
+    my $self = {};
+    bless $self, $class;
+
+    $self->{messages}   = $params{messages};
+    $self->{namespaces} = $params{namespaces};
+
+    $self->{messages}   ||= {};
+    $self->{namespaces} ||= ['Turnaround::Validator::'];
 
     $self->{fields} = {};
     $self->{rules}  = {};
     $self->{errors} = {};
     $self->{values} = {};
 
-    $self->{messages} ||= {};
-
-    $self->{namespaces} ||= ['Turnaround::Validator::'];
+    return $self;
 }
 
 sub set_messages {

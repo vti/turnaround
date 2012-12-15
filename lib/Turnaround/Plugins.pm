@@ -3,10 +3,16 @@ package Turnaround::Plugins;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
+sub new {
+    my $class = shift;
+    my (%params) = @_;
 
-sub BUILD {
-    my $self = shift;
+    my $self = {};
+    bless $self, $class;
+
+    $self->{plugins}    = $params{plugins};
+    $self->{namespaces} = $params{namespaces};
+    $self->{loader}     = $params{loader};
 
     $self->{plugins} = [];
     $self->{namespaces} ||= [];
@@ -14,6 +20,8 @@ sub BUILD {
     $self->{loader} ||=
       Turnaround::Loader->new(
         namespaces => [@{$self->{namespaces}}, qw/Turnaround::Plugin::/]);
+
+    return $self;
 }
 
 sub register_plugin {

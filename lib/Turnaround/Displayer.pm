@@ -3,12 +3,17 @@ package Turnaround::Displayer;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
+sub new {
+    my $class = shift;
+    my (%params) = @_;
 
-sub BUILD {
-    my $self = shift;
+    my $self = {};
+    bless $self, $class;
 
-    die 'renderer required' unless $self->{renderer};
+    $self->{renderer} = $params{renderer} || die 'renderer required';
+    $self->{layout} = $params{layout};
+
+    return $self;
 }
 
 sub render {

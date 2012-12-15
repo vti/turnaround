@@ -3,17 +3,26 @@ package Turnaround::Plugin::I18N;
 use strict;
 use warnings;
 
-use base 'Turnaround::Base';
-
 use Turnaround::I18N;
 
-sub BUILD {
-    my $self = shift;
+sub new {
+    my $class = shift;
+    my (%params) = @_;
+
+    my $self = {};
+    bless $self, $class;
+
+    $self->{service_name}             = $params{service_name};
+    $self->{helper_name}              = $params{helper_name};
+    $self->{helper_name}              = $params{helper_name};
+    $self->{insert_before_middleware} = $params{insert_before_middleware};
 
     $self->{service_name}             ||= 'i18n';
     $self->{helper_name}              ||= $self->{service_name};
     $self->{helper_name}              ||= $self->{service_name};
     $self->{insert_before_middleware} ||= 'RequestDispatcher';
+
+    return $self;
 }
 
 sub startup {
