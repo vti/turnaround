@@ -5,7 +5,9 @@ use warnings;
 
 use base 'Turnaround::Factory';
 
-use Turnaround::Exception;
+use Scalar::Util qw(blessed);
+
+use Turnaround::Exception::ActionClassNotFound;
 
 sub _load_class {
     my $self = shift;
@@ -13,11 +15,11 @@ sub _load_class {
     return eval { $self->SUPER::_load_class(@_) } || do {
         my $e = $@;
 
-        if ($e->does('Turnaround::Exception::ClassNotFound')) {
-            raise 'Turnaround::Exception::ActionClassNotFound';
+        if (blessed($e) && $e->does('Turnaround::Exception::ClassNotFound')) {
+            Turnaround::Exception::ActionClassNotFound->throw;
         }
 
-        $e->rethrow;
+        die $e;
     };
 }
 

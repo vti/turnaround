@@ -7,7 +7,6 @@ use base 'Turnaround::Middleware';
 
 use Scalar::Util ();
 use Turnaround::ActionResponseResolver;
-use Turnaround::Exception;
 
 sub new {
     my $self = shift->SUPER::new(@_);

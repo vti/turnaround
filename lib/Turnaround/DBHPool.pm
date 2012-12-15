@@ -41,7 +41,7 @@ use warnings;
 use base 'Turnaround::Base';
 
 use DBI;
-use Turnaround::Exception;
+use Turnaround::Exception::DBHPool;
 
 sub BUILD {
     my $self = shift;
@@ -123,7 +123,7 @@ sub _get_dbh {
         $self->{password}, $self->{params}
     );
 
-    raise 'Turnaround::Exception::DBHPool', "Can't connect $DBI::errstr"
+    Turnaround::Exception::DBHPool->throw("Can't connect $DBI::errstr")
       unless $dbh;
 
     return $dbh;

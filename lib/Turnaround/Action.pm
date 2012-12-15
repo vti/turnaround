@@ -5,7 +5,7 @@ use warnings;
 
 use base 'Turnaround::Base';
 
-use Turnaround::Exception;
+use Turnaround::HTTPException;
 use Turnaround::Request;
 
 sub service {
@@ -84,14 +84,14 @@ sub forbidden {
     my $self = shift;
     my ($message) = @_;
 
-    raise 'Turnaround::HTTPException', code => 403, message => $message;
+    Turnaround::HTTPException->throw(code => 403, message => $message);
 }
 
 sub not_found {
     my $self = shift;
     my ($message) = @_;
 
-    raise 'Turnaround::HTTPException', code => 404, message => $message;
+    Turnaround::HTTPException->throw(code => 404, message => $message);
 }
 
 sub redirect {

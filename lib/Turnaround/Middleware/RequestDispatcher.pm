@@ -6,7 +6,7 @@ use warnings;
 use base 'Turnaround::Middleware';
 
 use Encode ();
-use Turnaround::Exception;
+use Turnaround::HTTPException;
 
 sub new {
     my $self = shift->SUPER::new(@_);
@@ -40,7 +40,7 @@ sub _dispatch {
 
     my $dispatched_request =
       $dispatcher->dispatch($path, method => lc $method);
-    raise 'Turnaround::HTTPException', code => 404 unless $dispatched_request;
+    Turnaround::HTTPException->throw(code => 404) unless $dispatched_request;
 
     $env->{'turnaround.dispatched_request'} = $dispatched_request;
 

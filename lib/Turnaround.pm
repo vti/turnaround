@@ -8,8 +8,8 @@ use base 'Turnaround::Base';
 our $VERSION = '0.1';
 
 use Turnaround::Builder;
-use Turnaround::Exception;
 use Turnaround::Home;
+use Turnaround::HTTPException;
 use Turnaround::Plugins;
 use Turnaround::ServiceContainer;
 
@@ -62,9 +62,10 @@ sub register_plugin {
 
 sub default_app {
     sub {
-        raise 'Turnaround::HTTPException',
-          code    => 404,
-          message => 'Not Found';
+        Turnaround::HTTPException->throw(
+            code    => 404,
+            message => 'Not Found'
+        );
       }
 }
 

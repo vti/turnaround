@@ -52,8 +52,7 @@ sub throw_during_creation_errors : Test {
     my $self = shift;
 
     my $factory = $self->_build_factory;
-    my $e = exception { $factory->build('DieDuringCreation') };
-    isa_ok($e, 'Turnaround::Exception::Base');
+    ok(exception { $factory->build('DieDuringCreation') });
 }
 
 sub _build_factory {
