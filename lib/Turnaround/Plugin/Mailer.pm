@@ -9,7 +9,10 @@ use Turnaround::Mailer;
 
 sub new {
     my $self = shift->SUPER::new(@_);
+    my (%params) = @_;
 
+    $self->{services} = $params{services} || die 'services required';
+    $self->{config}   = $params{config}   || die 'config required';
     $self->{service_name} ||= 'mailer';
 
     return $self;
