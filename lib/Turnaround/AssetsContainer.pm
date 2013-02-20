@@ -32,15 +32,19 @@ sub require {
 
 sub include {
     my $self = shift;
-    my ($type) = @_;
+    my (%params) = @_;
 
     my @html;
     foreach my $asset (@{$self->{paths}}) {
-        next if $type && $asset->{type} ne $type;
+        next if $params{type} && $asset->{type} ne $params{type};
 
         if ($asset->{type} eq 'js') {
             push @html,
               qq|<script src="$asset->{path}" type="text/javascript"></script>|;
+        }
+        elsif ($asset->{type} eq 'css') {
+            push @html,
+qq|<link rel="stylesheet" href="$asset->{path}" type="text/css" media="screen" />|;
         }
     }
 

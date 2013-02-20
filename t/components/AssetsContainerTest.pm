@@ -21,6 +21,18 @@ sub include_js : Test {
         '<script src="/foo.js" type="text/javascript"></script>');
 }
 
+sub include_css : Test {
+    my $self = shift;
+
+    my $assets = $self->_build_assets;
+
+    $assets->require('/foo.css');
+
+    is($assets->include,
+'<link rel="stylesheet" href="/foo.css" type="text/css" media="screen" />'
+    );
+}
+
 sub not_add_the_same_path : Test {
     my $self = shift;
 
