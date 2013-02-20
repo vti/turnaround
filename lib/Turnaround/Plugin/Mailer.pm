@@ -7,10 +7,12 @@ use base 'Turnaround::Plugin';
 
 use Turnaround::Mailer;
 
-sub BUILD {
-    my $self = shift;
+sub new {
+    my $self = shift->SUPER::new(@_);
 
     $self->{service_name} ||= 'mailer';
+
+    return $self;
 }
 
 sub startup {
