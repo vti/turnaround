@@ -5,6 +5,7 @@ use warnings;
 
 use base 'Turnaround::Factory';
 
+require Carp;
 use Scalar::Util ();
 
 our $AUTOLOAD;
@@ -12,6 +13,9 @@ our $AUTOLOAD;
 sub register_helper {
     my $self = shift;
     my ($name, $object) = @_;
+
+    Carp::croak("Helper '$name' already registered")
+      if exists $self->{helpers}->{$name};
 
     $self->{helpers}->{$name} = $object;
 }

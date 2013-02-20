@@ -14,6 +14,16 @@ use lib 't/core/HelperFactoryTest';
 
 use Helper;
 
+sub throw_when_registering_existing_helper : Test {
+    my $self = shift;
+
+    my $factory = $self->_build_factory;
+
+    $factory->register_helper('foo' => sub { 'bar' });
+
+    ok(exception {$factory->register_helper('foo' => sub { 'bar' })});
+}
+
 sub register_helper_as_sub : Test {
     my $self = shift;
 
