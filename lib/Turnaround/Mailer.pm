@@ -69,7 +69,7 @@ sub send {
     $message->add('X-Mailer' => $self->{x_mailer});
 
     foreach my $header (@{$self->{headers}}) {
-        my ($key, $value) = split /\s*:\s*/, $header;
+        my ($key, $value) = split /\s*:\s*/, $header, 2;
         $message->add($key => $value);
     }
 

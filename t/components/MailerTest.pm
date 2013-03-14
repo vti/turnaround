@@ -29,7 +29,7 @@ sub build_message : Test {
 sub build_message_with_custom_headers : Test {
     my $self = shift;
 
-    my $mailer = $self->_build_mailer(headers => ['Foo: bar']);
+    my $mailer = $self->_build_mailer(headers => ['Foo: http://foo.com']);
 
     my $message = $mailer->send(
         to      => 'Петр 1 <foo@bar.com>',
@@ -37,7 +37,7 @@ sub build_message_with_custom_headers : Test {
         body    => 'Привет!',
     );
 
-    like($message, qr/Foo:[ ]bar/xms);
+    like($message, qr{Foo:[ ]http://foo.com}xms);
 }
 
 sub build_message_with_defaults : Test(2) {
