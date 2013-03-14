@@ -26,6 +26,8 @@ sub new {
     $self->{signature}      = $params{signature};
     $self->{test}           = $params{test};
 
+    $self->{headers} = $params{headers} || [];
+
     $self->{x_mailer} ||= __PACKAGE__;
     $self->{send_by}  ||= 'sendmail';
 
@@ -65,6 +67,11 @@ sub send {
 
     $message->delete('X-Mailer');
     $message->add('X-Mailer' => $self->{x_mailer});
+
+    foreach my $header (@{$self->{headers}}) {
+        my ($key, $value) = split /\s*:\s*/, $header;
+        $message->add($key => $value);
+    }
 
     if ($self->{test}) {
         if ($self->{test} ne 1) {

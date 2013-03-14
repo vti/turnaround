@@ -26,6 +26,20 @@ sub build_message : Test {
     like($message, qr/From: .* To:/xms);
 }
 
+sub build_message_with_custom_headers : Test {
+    my $self = shift;
+
+    my $mailer = $self->_build_mailer(headers => ['Foo: bar']);
+
+    my $message = $mailer->send(
+        to      => 'Петр 1 <foo@bar.com>',
+        subject => 'Привет',
+        body    => 'Привет!',
+    );
+
+    like($message, qr/Foo:[ ]bar/xms);
+}
+
 sub build_message_with_defaults : Test(2) {
     my $self = shift;
 
