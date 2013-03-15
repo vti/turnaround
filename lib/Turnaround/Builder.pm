@@ -127,14 +127,12 @@ sub _find_middleware_index {
     my $i = 0;
     foreach my $mw (@{$self->{middleware}}) {
         if ($mw->{name} eq $middleware) {
-            last;
+            return $i;
         }
         $i++;
     }
 
-    die 'Unknown middleware' unless $i < @{$self->{middleware}};
-
-    return $i;
+    die 'Unknown middleware: ' . $middleware;
 }
 
 1;
