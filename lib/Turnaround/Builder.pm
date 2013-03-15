@@ -14,12 +14,8 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->{middleware} = $params{middleware};
-    $self->{namespaces} = $params{namespaces};
-    $self->{namespaces} = $params{namespaces};
-
-    $self->{middleware} ||= [];
-    $self->{namespaces} ||= [];
+    $self->{middleware} = $params{middleware} || [];
+    $self->{namespaces} = $params{namespaces} || [];
 
     $self->{loader} ||= Turnaround::Loader->new(
         namespaces => [
