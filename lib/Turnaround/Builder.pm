@@ -14,12 +14,8 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->{middleware} = $params{middleware};
-    $self->{namespaces} = $params{namespaces};
-    $self->{namespaces} = $params{namespaces};
-
-    $self->{middleware} ||= [];
-    $self->{namespaces} ||= [];
+    $self->{middleware} = $params{middleware} || [];
+    $self->{namespaces} = $params{namespaces} || [];
 
     $self->{loader} ||= Turnaround::Loader->new(
         namespaces => [
@@ -131,14 +127,12 @@ sub _find_middleware_index {
     my $i = 0;
     foreach my $mw (@{$self->{middleware}}) {
         if ($mw->{name} eq $middleware) {
-            last;
+            return $i;
         }
         $i++;
     }
 
-    die 'Unknown middleware' unless $i < @{$self->{middleware}};
-
-    return $i;
+    die 'Unknown middleware: ' . $middleware;
 }
 
 1;
