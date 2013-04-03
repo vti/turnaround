@@ -51,6 +51,24 @@ sub build_message_with_defaults : Test(2) {
     like($message, qr/Subject:\s*Hello!/xms);
 }
 
+sub build_message_with_overriden_defaults : Test {
+    my $self = shift;
+
+    my $mailer = $self->_build_mailer(
+        to        => 'foo@bar.com',
+        subject   => 'Hello!',
+        signature => 'SIGNATURE'
+    );
+
+    my $message = $mailer->send(signature =>'', body => 'Привет!');
+
+    my ($body) = $message =~ m/\n\n(.*)/;
+
+    $body = MIME::Base64::decode_base64($body);
+
+    ok($body !~ qr/SIGNATURE/xms);
+}
+
 sub build_message_with_subject_prefix : Test(2) {
     my $self = shift;
 

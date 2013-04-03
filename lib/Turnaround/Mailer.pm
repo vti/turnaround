@@ -38,9 +38,11 @@ sub send {
     my $self = shift;
     my (%params) = @_;
 
+    $params{from}    ||= $self->{from};
     $params{to}      ||= $self->{to};
     $params{subject} ||= $self->{subject};
     $params{body}    ||= $self->{body};
+    $params{signature} = $self->{signature} unless defined $params{signature};
 
     die 'to required'      unless $params{to};
     die 'subject required' unless $params{subject};
@@ -51,12 +53,12 @@ sub send {
     }
 
     my $body = $params{body};
-    if (my $signature = $self->{signature}) {
+    if (my $signature = $params{signature}) {
         $body .= "\n\n-- \n" . $signature;
     }
 
     my $message = MIME::Lite->new(
-        From     => $self->{from},
+        From     => $params{from},
         To       => Encode::encode('MIME-Header', $params{to}),
         Subject  => Encode::encode('MIME-Header', $params{subject}),
         Data     => Encode::encode('UTF-8', $body),
