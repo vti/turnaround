@@ -32,9 +32,9 @@ sub new {
     return $self;
 }
 
-sub path    { $_[0]->{path} }
-sub line    { $_[0]->{line} }
-sub message { $_[0]->{message} }
+sub path    { $_[0]->{path}    // '' }
+sub line    { $_[0]->{line}    // '' }
+sub message { $_[0]->{message} // '' }
 
 sub throw {
     my $class = shift;
@@ -61,6 +61,7 @@ sub as_string {
     my $self = shift;
 
     my $message = Encode::encode('UTF-8', $self->{message});
+    $message = '' unless defined $message;
 
     return sprintf("%s at %s line %s.\n", $message, $self->path, $self->line);
 }
