@@ -12,6 +12,10 @@ sub new {
     my $self = {};
     bless $self, $class;
 
+    $self->{app_class} = $params{app_class};
+    $self->{services}  = $params{services};
+    $self->{builder}   = $params{builder};
+
     $self->{service_name}             = $params{service_name};
     $self->{helper_name}              = $params{helper_name};
     $self->{helper_name}              = $params{helper_name};

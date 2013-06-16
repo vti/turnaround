@@ -14,8 +14,10 @@ sub new {
     $self->{namespaces} = $params{namespaces};
     $self->{loader}     = $params{loader};
 
-    $self->{services} = $params{services};
-    $self->{home}     = $params{home};
+    $self->{app_class} = $params{app_class};
+    $self->{services}  = $params{services};
+    $self->{builder}   = $params{builder};
+    $self->{home}      = $params{home};
 
     $self->{plugins} = [];
     $self->{namespaces} ||= [];
@@ -37,6 +39,7 @@ sub register_plugin {
         app_class => $self->{app_class},
         home      => $self->{home},
         services  => $self->{services},
+        builder   => $self->{builder},
         @args
     );
 
