@@ -15,6 +15,7 @@ sub new {
     my $self = {};
     bless $self, $class;
 
+    $self->{preprocess} = $params{preprocess} || {};
     $self->{encoding} = $params{encoding};
 
     $self->{encoding} ||= 'UTF-8';
