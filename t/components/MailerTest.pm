@@ -43,7 +43,7 @@ sub build_message_with_simple_body : Test(8) {
 
     my $message = $mailer->build_message(body => 'Hi');
 
-    like($message, qr{Hi});
+    like($message, qr{SGk=});
 }
 
 sub build_message_with_unicode : Test(3) {
@@ -56,12 +56,11 @@ sub build_message_with_unicode : Test(3) {
             To      => 'Петр 1 <foo@bar.com>',
             Subject => 'Привет'
         ],
-        parts => ['Привет!']
+        body => 'Привет!'
     );
 
-    like($message, qr{\QTo: =?UTF-8?B?0J/QtdGC0YAgMSA=?=\E <foo\@bar.com>});
-    like($message,
-        qr{\QSubject: =?UTF-8?B?PT9VVEYtOD9CPzBKL1JnTkM0MExMUXRkR0M/PQ==?=\E});
+    like($message, qr{\QTo: =?UTF-8?B?0J/QtdGC0YAgMQ==?=\E <foo\@bar.com>});
+    like($message, qr{\QSubject: =?UTF-8?B?0J/RgNC40LLQtdGC?=\E});
     like($message, qr{\Q0J/RgNC40LLQtdGCIQ==\E});
 }
 
@@ -113,9 +112,9 @@ sub build_message_with_signature : Test {
 
     my $mailer = $self->_build_mailer(signature => 'hello!');
 
-    my $message = $mailer->build_message(parts => ['Hi!']);
+    my $message = $mailer->build_message(body => 'Hi!');
 
-    like($message, qr/Hi!\n\n-- \nhello!/);
+    like($message, qr/SGkhCgotLSAKaGVsbG8h/);
 }
 
 sub build_message_with_unicode_signature : Test {
@@ -123,7 +122,7 @@ sub build_message_with_unicode_signature : Test {
 
     my $mailer = $self->_build_mailer(signature => 'Привет!');
 
-    my $message = $mailer->build_message(parts => ['Да!']);
+    my $message = $mailer->build_message(body => 'Да!');
 
     like($message, qr/0JTQsCEKCi0tIArQn9GA0LjQstC10YIh/);
 }
@@ -142,7 +141,7 @@ sub send_mail : Test(3) {
     my $message = do { local $/; open my $fh, '<', $file; <$fh> };
     like($message, qr{me});
     like($message, qr{you});
-    like($message, qr{Hi!});
+    like($message, qr{SGkh});
 }
 
 sub _build_mailer {

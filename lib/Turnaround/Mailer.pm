@@ -52,41 +52,33 @@ sub build_message {
     my $self = shift;
     my (%params) = @_;
 
-    my $utf8_detected;
-
-    my $parts = $params{body} ? [$params{body}] : ($params{parts} || []);
-
-    foreach my $part (@$parts) {
-        if (Encode::is_utf8($part)) {
-            $part = Encode::encode('UTF-8', $part);
-            $utf8_detected++;
-        }
+    if (defined(my $signature = $self->{signature}) && $params{body}) {
+        $params{body} .= "\n\n-- \n$signature";
     }
 
-    if (defined(my $signature = $self->{signature})) {
-        $parts->[-1] .= Encode::encode('UTF-8', "\n\n-- \n$signature");
-    }
+    my $parts = $params{body}
+      ? [
+        Email::MIME->create(
+            attributes => {
+                content_type => "text/plain",
+                charset      => 'UTF-8',
+                encoding     => 'base64'
+            },
+            body_str => $params{body}
+        )
+      ]
+      : ($params{parts} || []);
 
     my $message = Email::MIME->create(parts => $parts);
 
     my @headers = (@{$self->{headers}}, @{$params{headers} || []});
 
     while (my ($key, $value) = splice(@headers, 0, 2)) {
-        if (Encode::is_utf8($value)) {
-            $utf8_detected++;
-        }
-
         if ($key eq 'Subject' && (my $prefix = $self->{subject_prefix})) {
             $value = $prefix . ' ' . $value;
         }
 
-        $value = Encode::encode('MIME-Header', $value);
         $message->header_str_set($key => $value);
-    }
-
-    if ($utf8_detected) {
-        $message->charset_set('UTF-8');
-        $message->encoding_set('base64');
     }
 
     return $message->as_string;
