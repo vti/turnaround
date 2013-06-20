@@ -28,19 +28,17 @@ sub send {
     my $message = $self->build_message(%params);
 
     my $transport = $self->{transport};
-    if ($transport->{name} eq 'sendmail') {
-        if ($self->{test}) {
-            open my $mail, '>>', $self->{test} or die "Can't open test file";
-            print $mail $message;
-            close $mail;
-        }
-        else {
-            my $path = "| $transport->{path} -t -oi -oem";
+    if ($transport->{name} eq 'test') {
+        open my $mail, '>>', $self->{path} or die "Can't open test file";
+        print $mail $message;
+        close $mail;
+    }
+    elsif ($transport->{name} eq 'sendmail') {
+        my $path = "| $transport->{path} -t -oi -oem";
 
-            open my $mail, '>', $path or die "Can't start sendmail";
-            print $mail $message;
-            close $mail;
-        }
+        open my $mail, '>', $path or die "Can't start sendmail";
+        print $mail $message;
+        close $mail;
     }
     else {
         die 'Unknown transport';

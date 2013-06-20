@@ -52,8 +52,7 @@ WriteMakefile(
         'String::CamelCase'    => '0',
         'Text::Caml'           => '0',
         'YAML::Tiny'           => '0',
-        'MIME::Lite'           => '0',
-        'MIME::Base64'         => '0',
+        'Email::MIME'          => '0',
         'JSON'                 => '0',
 
         'Test::Class'               => '0',
