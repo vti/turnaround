@@ -64,7 +64,7 @@ sub build_message {
     }
 
     if (defined(my $signature = $self->{signature})) {
-        $parts->[-1] .= "\n\n-- \n$signature";
+        $parts->[-1] .= Encode::encode('UTF-8', "\n\n-- \n$signature");
     }
 
     my $message = Email::MIME->create(parts => $parts);

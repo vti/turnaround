@@ -118,6 +118,16 @@ sub build_message_with_signature : Test {
     like($message, qr/Hi!\n\n-- \nhello!/);
 }
 
+sub build_message_with_unicode_signature : Test {
+    my $self = shift;
+
+    my $mailer = $self->_build_mailer(signature => 'Привет!');
+
+    my $message = $mailer->build_message(parts => ['Да!']);
+
+    like($message, qr/0JTQsCEKCi0tIArQn9GA0LjQstC10YIh/);
+}
+
 sub send_mail : Test(3) {
     my $self = shift;
 
