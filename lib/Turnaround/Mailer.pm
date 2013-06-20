@@ -18,6 +18,9 @@ sub new {
 
     $self->{headers} = $params{headers} || [];
 
+    $self->{transport} = $params{transport};
+    die 'transport required' unless $self->{transport};
+
     return $self;
 }
 
@@ -29,7 +32,7 @@ sub send {
 
     my $transport = $self->{transport};
     if ($transport->{name} eq 'test') {
-        open my $mail, '>>', $self->{path} or die "Can't open test file";
+        open my $mail, '>>', $transport->{path} or die "Can't open test file";
         print $mail $message;
         close $mail;
     }

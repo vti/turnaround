@@ -9,6 +9,7 @@ use base 'TestBase';
 use Test::More;
 use Test::Fatal;
 
+use File::Temp;
 use MIME::Base64;
 use Turnaround::Mailer;
 
@@ -117,12 +118,30 @@ sub build_message_with_signature : Test {
     like($message, qr/Hi!\n\n-- \nhello!/);
 }
 
+sub send_mail : Test(3) {
+    my $self = shift;
+
+    my $file = File::Temp->new;
+
+    my $mailer =
+      $self->_build_mailer(
+        transport => {name => 'test', path => $file->filename});
+
+    $mailer->send(headers => [From => 'me', To => 'you'], body => 'Hi!');
+
+    my $message = do { local $/; open my $fh, '<', $file; <$fh> };
+    like($message, qr{me});
+    like($message, qr{you});
+    like($message, qr{Hi!});
+}
+
 sub _build_mailer {
     my $self = shift;
 
     return Turnaround::Mailer->new(
-        test    => 1,
-        headers => [From => 'root <root@localhost>'],
+        test      => 1,
+        headers   => [From => 'root <root@localhost>'],
+        transport => {name => 'test'},
         @_
     );
 }
