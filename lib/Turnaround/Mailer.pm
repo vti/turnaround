@@ -4,9 +4,7 @@ use strict;
 use warnings;
 
 use Encode ();
-use MIME::Lite;
-
-our %TLSConn;
+use Email::MIME;
 
 sub new {
     my $class = shift;
@@ -15,21 +13,10 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->{from}           = $params{from} || die 'from is required';
-    $self->{to}             = $params{to};
-    $self->{x_mailer}       = $params{x_mailer};
-    $self->{send_by}        = $params{send_by};
-    $self->{send_args}      = $params{send_args};
-    $self->{subject}        = $params{subject};
     $self->{subject_prefix} = $params{subject_prefix};
-    $self->{body}           = $params{body};
     $self->{signature}      = $params{signature};
-    $self->{test}           = $params{test};
 
     $self->{headers} = $params{headers} || [];
-
-    $self->{x_mailer} ||= __PACKAGE__;
-    $self->{send_by}  ||= 'sendmail';
 
     return $self;
 }
@@ -38,105 +25,70 @@ sub send {
     my $self = shift;
     my (%params) = @_;
 
-    $params{from}    ||= $self->{from};
-    $params{to}      ||= $self->{to};
-    $params{subject} ||= $self->{subject};
-    $params{body}    ||= $self->{body};
-    $params{signature} = $self->{signature} unless defined $params{signature};
+    my $message = $self->build_message(%params);
 
-    die 'to required'      unless $params{to};
-    die 'subject required' unless $params{subject};
-    die 'body required'    unless $params{body};
+    my $transport = $self->{transport};
+    if ($transport->{name} eq 'sendmail') {
+        if ($self->{test}) {
+            open my $mail, '>>', $self->{test} or die "Can't open test file";
+            print $mail $message;
+            close $mail;
+        }
+        else {
+            my $path = "| $transport->{path} -t -oi -oem";
 
-    if (my $prefix = $self->{subject_prefix}) {
-        $params{subject} = $prefix . ' ' . $params{subject};
-    }
-
-    my $body = $params{body};
-    if (my $signature = $params{signature}) {
-        $body .= "\n\n-- \n" . $signature;
-    }
-
-    my $message = MIME::Lite->new(
-        From     => $params{from},
-        To       => Encode::encode('MIME-Header', $params{to}),
-        Subject  => Encode::encode('MIME-Header', $params{subject}),
-        Data     => Encode::encode('UTF-8', $body),
-        Encoding => 'base64'
-    );
-
-    $message->attr('content-type' => 'text/plain; charset=utf-8');
-
-    $message->delete('X-Mailer');
-    $message->add('X-Mailer' => $self->{x_mailer});
-
-    foreach my $header (@{$self->{headers}}) {
-        my ($key, $value) = split /\s*:\s*/, $header, 2;
-        $message->add($key => $value);
-    }
-
-    if ($self->{test}) {
-        if ($self->{test} ne 1) {
-            open my $log, '>>', $self->{test}
-              or die "Can't open log '$self->{test}': $!";
-            print $log $message->as_string;
+            open my $mail, '>', $path or die "Can't start sendmail";
+            print $mail $message;
+            close $mail;
         }
     }
     else {
-        my $method = "send_by_$self->{send_by}";
-        $message->$method(@{$self->{send_args}});
+        die 'Unknown transport';
+    }
+}
+
+sub build_message {
+    my $self = shift;
+    my (%params) = @_;
+
+    my $utf8_detected;
+
+    my $parts = $params{body} ? [$params{body}] : ($params{parts} || []);
+
+    foreach my $part (@$parts) {
+        if (Encode::is_utf8($part)) {
+            $part = Encode::encode('UTF-8', $part);
+            $utf8_detected++;
+        }
+    }
+
+    if (defined(my $signature = $self->{signature})) {
+        $parts->[-1] .= "\n\n-- \n$signature";
+    }
+
+    my $message = Email::MIME->create(parts => $parts);
+
+    my @headers = (@{$self->{headers}}, @{$params{headers} || []});
+
+    while (my ($key, $value) = splice(@headers, 0, 2)) {
+        if (Encode::is_utf8($value)) {
+            $utf8_detected++;
+        }
+
+        if ($key eq 'Subject' && (my $prefix = $self->{subject_prefix})) {
+            $value = $prefix . ' ' . $value;
+        }
+
+        $value = Encode::encode('MIME-Header', $value);
+        $message->header_str_set($key => $value);
+    }
+
+    if ($utf8_detected) {
+        $message->charset_set('UTF-8');
+        $message->encoding_set('base64');
     }
 
     return $message->as_string;
 }
-
-# http://svn.bulknews.net/repos/plagger/trunk/plagger/lib/Plagger/Plugin/Publish/Gmail.pm
-# hack MIME::Lite to support TLS Authentication
-*MIME::Lite::send_by_smtp_tls = sub {
-    my ($self, @args) = @_;
-    my $extract_addrs_ref =
-      defined &MIME::Lite::extract_addrs
-      ? \&MIME::Lite::extract_addrs
-      : \&MIME::Lite::extract_full_addrs;
-
-    ### We need the "From:" and "To:" headers to pass to the SMTP mailer:
-    my $hdr    = $self->fields();
-    my ($from) = $extract_addrs_ref->($self->get('From'));
-    my $to     = $self->get('To');
-
-    ### Sanity check:
-    defined($to) or Carp::croak "send_by_smtp_tls: missing 'To:' address\n";
-
-    ### Get the destinations as a simple array of addresses:
-    my @to_all = $extract_addrs_ref->($to);
-    if ($MIME::Lite::AUTO_CC) {
-        foreach my $field (qw(Cc Bcc)) {
-            my $value = $self->get($field);
-            push @to_all, $extract_addrs_ref->($value) if defined($value);
-        }
-    }
-
-    ### Create SMTP TLS client:
-    require Net::SMTP::TLS;
-
-    my $conn_key = join "|", @args;
-    my $smtp;
-    unless ($smtp = $TLSConn{$conn_key}) {
-        $smtp = $TLSConn{$conn_key} = MIME::Lite::SMTP::TLS->new(@args)
-          or Carp::croak("Failed to connect to mail server: $!\n");
-    }
-    $smtp->mail($from);
-    $smtp->to(@to_all);
-    $smtp->data();
-
-    ### MIME::Lite can print() to anything with a print() method:
-    $self->print_for_smtp($smtp);
-    $smtp->dataend();
-
-    1;
-};
-
-@MIME::Lite::SMTP::TLS::ISA = qw( Net::SMTP::TLS );
-sub MIME::Lite::SMTP::TLS::print { shift->datasend(@_) }
 
 1;
