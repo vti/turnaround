@@ -81,6 +81,8 @@ sub build_message {
         $message->header_str_set($key => $value);
     }
 
+    $message->charset_set('UTF-8');
+
     return $message->as_string;
 }
 

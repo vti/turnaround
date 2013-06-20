@@ -30,7 +30,7 @@ sub build_message : Test(8) {
     like($message, qr{Date: });
     like($message, qr{MIME-Version: 1\.0});
     like($message, qr{Content-Transfer-Encoding: 7bit});
-    like($message, qr{Content-Type: text/plain; charset="us-ascii"});
+    like($message, qr{Content-Type: text/plain; charset="UTF-8"});
     like($message, qr{To: Foo <foo\@bar.com>});
     like($message, qr{Subject: Bar});
     like($message, qr{Baz!});
