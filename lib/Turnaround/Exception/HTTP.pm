@@ -1,4 +1,4 @@
-package Turnaround::HTTPException;
+package Turnaround::Exception::HTTP;
 
 use strict;
 use warnings;
@@ -14,8 +14,6 @@ sub new {
     return $self;
 }
 
-sub code { $_[0]->{code} }
-
-sub to_string { $_[0]->message }
+sub code { $_[0]->{code} || 500 }
 
 1;

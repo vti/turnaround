@@ -39,7 +39,7 @@ sub throw_exception_on_not_found : Test {
 
     my $action = $self->_build_action;
 
-    my $e = exception { $action->not_found };
+    my $e = exception { $action->throw_not_found };
 
     is($e->code, '404');
 }
@@ -49,7 +49,7 @@ sub throw_exception_on_forbidden : Test {
 
     my $action = $self->_build_action;
 
-    my $e = exception { $action->forbidden };
+    my $e = exception { $action->throw_forbidden };
 
     is($e->code, '403');
 }

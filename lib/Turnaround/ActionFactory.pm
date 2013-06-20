@@ -15,7 +15,7 @@ sub _load_class {
     return eval { $self->SUPER::_load_class(@_) } || do {
         my $e = $@;
 
-        if (blessed($e) && $e->does('Turnaround::Exception::ClassNotFound')) {
+        if (blessed($e) && $e->isa('Turnaround::Exception::ClassNotFound')) {
             Turnaround::Exception::ActionClassNotFound->throw;
         }
 

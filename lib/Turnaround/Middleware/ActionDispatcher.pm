@@ -54,7 +54,7 @@ sub _build_action {
         my $e = $@;
 
         if (   !Scalar::Util::blessed($e)
-            || !$e->does('Turnaround::Exception::ActionClassNotFound'))
+            || !$e->isa('Turnaround::Exception::ActionClassNotFound'))
         {
             die $e;
         }

@@ -9,7 +9,7 @@ use Scalar::Util qw(blessed);
 
 use Turnaround::Builder;
 use Turnaround::Home;
-use Turnaround::HTTPException;
+use Turnaround::Exception::HTTP;
 use Turnaround::Plugins;
 use Turnaround::ServiceContainer;
 
@@ -70,12 +70,7 @@ sub register_plugin {
 }
 
 sub default_app {
-    sub {
-        Turnaround::HTTPException->throw(
-            code    => 404,
-            message => 'Not Found'
-        );
-      }
+    sub { Turnaround::Exception::HTTP->throw('Not Found', code => 404) }
 }
 
 sub to_app {

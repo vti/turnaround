@@ -3,7 +3,7 @@ package Turnaround::Action;
 use strict;
 use warnings;
 
-use Turnaround::HTTPException;
+use Turnaround::Exception::HTTP;
 use Turnaround::Request;
 
 sub new {
@@ -89,18 +89,25 @@ sub set_var {
     return $self;
 }
 
-sub forbidden {
+sub throw_forbidden {
     my $self = shift;
     my ($message) = @_;
 
-    Turnaround::HTTPException->throw(code => 403, message => $message);
+    $self->throw_error($message, 403);
 }
 
-sub not_found {
+sub throw_not_found {
     my $self = shift;
     my ($message) = @_;
 
-    Turnaround::HTTPException->throw(code => 404, message => $message);
+    $self->throw_error($message, 404);
+}
+
+sub throw_error {
+    my $self = shift;
+    my ($message, $code) = @_;
+
+    Turnaround::Exception::HTTP->throw($message, code => $code || 500);
 }
 
 sub redirect {

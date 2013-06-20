@@ -79,7 +79,7 @@ sub try_load_class {
             %{"$class\::"} = ();
         }
 
-        Turnaround::Exception::Base->throw(message => $e)
+        Turnaround::Exception::Base->throw($e)
           unless $e =~ m{^Can't locate \Q$path\E in \@INC };
 
         return 0;
@@ -99,8 +99,7 @@ sub _throw_not_found {
     my $self = shift;
     my ($class) = @_;
 
-    Turnaround::Exception::ClassNotFound->throw(
-        message => "Class '$class' not found");
+    Turnaround::Exception::ClassNotFound->throw("Class '$class' not found");
 }
 
 1;

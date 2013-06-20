@@ -7,7 +7,7 @@ use base 'Turnaround::Middleware';
 
 use Scalar::Util qw(blessed);
 
-use Turnaround::HTTPException;
+use Turnaround::Exception::HTTP;
 
 sub call {
     my $self = shift;
@@ -54,7 +54,7 @@ sub _deny {
         return [302, ['Location' => $redirect_to], ['']];
     }
 
-    Turnaround::HTTPException->throw(code => 403);
+    Turnaround::Exception->throw('Forbidden', code => 403);
 }
 
 1;

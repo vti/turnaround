@@ -6,7 +6,7 @@ use warnings;
 use base 'Turnaround::Middleware';
 
 use Encode ();
-use Turnaround::HTTPException;
+use Turnaround::Exception::HTTP;
 
 sub new {
     my $self = shift->SUPER::new(@_);
@@ -39,7 +39,8 @@ sub _dispatch {
     my $dispatcher = $self->{dispatcher} or die 'dispatcher required';
 
     my $dispatched_request = $dispatcher->dispatch($path, method => lc $method);
-    Turnaround::HTTPException->throw(code => 404) unless $dispatched_request;
+    Turnaround::Exception::HTTP->throw('Not found', code => 404)
+      unless $dispatched_request;
 
     $env->{'turnaround.dispatched_request'} = $dispatched_request;
 
