@@ -8,7 +8,7 @@ use base 'Turnaround::Action';
 sub run {
     my $self = shift;
 
-    my $method = uc $self->req->method;
+    my $method = uc($self->req->param('_method') || $self->req->method);
     if ($self->can($method)) {
         $self->$method;
     }
@@ -35,7 +35,7 @@ sub throw_bad_request {
     my $self = shift;
     my ($message) = @_;
 
-    $self->throw_error($message, 400);
+    $self->throw_error($message || 'Bad request', 400);
 }
 
 sub throw_validation {
@@ -49,7 +49,7 @@ sub throw_method_not_allowed {
     my $self = shift;
     my ($message) = @_;
 
-    $self->throw_error($message, 405);
+    $self->throw_error($message || 'Method not allowed', 405);
 }
 
 1;

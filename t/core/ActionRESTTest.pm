@@ -30,12 +30,28 @@ sub throw_exception_on_method_not_allowed : Test {
     is($e->code, '405');
 }
 
+sub replace_method_from_param : Test {
+    my $self = shift;
+
+    my $env = {REQUEST_METHOD => 'POST', QUERY_STRING => '_method=PUT'};
+    my $action = $self->_build_action(env => $env);
+
+    is $action->run, 'PUT';
+}
+
 sub _build_action {
     my $self = shift;
 
     my $env = {};
 
-    return Turnaround::Action::REST->new(env => $env, @_);
+    return ActionRESTTest::Action->new(env => $env, @_);
+}
+
+package ActionRESTTest::Action;
+use base 'Turnaround::Action::REST';
+
+sub PUT {
+    return 'PUT';
 }
 
 1;
