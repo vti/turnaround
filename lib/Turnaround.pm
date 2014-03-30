@@ -5,8 +5,6 @@ use warnings;
 
 our $VERSION = '0.1';
 
-use Scalar::Util qw(blessed);
-
 use Turnaround::Builder;
 use Turnaround::Home;
 use Turnaround::Exception::HTTP;
@@ -30,6 +28,10 @@ sub new {
     my $app_class = ref $self;
 
     $self->{home} ||= Turnaround::Home->new(app_class => $app_class);
+    if (!ref $self->{home}) {
+        $self->{home} = Turnaround::Home->new(path => $self->{home})
+    }
+
     $self->{builder} ||=
       Turnaround::Builder->new(namespaces => [$app_class . '::Middleware::']);
     $self->{services} ||= Turnaround::ServiceContainer->new;
