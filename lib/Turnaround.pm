@@ -91,8 +91,8 @@ sub to_app {
             $env->{'turnaround.displayer.vars'}->{'helpers'} =
               $self->{services}->service(
                 'helpers',
-                namespace    => ref($self) . '::Helper::',
-                default_args => {env => $env}
+                namespaces => ref($self) . '::Helper::',
+                env        => $env
               );
 
             $self->{plugins}->run_plugins($env);

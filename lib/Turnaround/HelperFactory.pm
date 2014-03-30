@@ -8,7 +8,14 @@ use base 'Turnaround::Factory';
 require Carp;
 use Scalar::Util ();
 
-our $AUTOLOAD;
+sub new {
+    my $self = shift->SUPER::new(@_);
+    my (%params) = @_;
+
+    $self->{env} = $params{env};
+
+    return $self;
+}
 
 sub register_helper {
     my $self = shift;
@@ -18,6 +25,13 @@ sub register_helper {
       if exists $self->{helpers}->{$name};
 
     $self->{helpers}->{$name} = $object;
+}
+
+sub build {
+    my $self = shift;
+    my ($name, @args) = @_;
+
+    return $self->SUPER::build($name, env => $self->{env}, @args);
 }
 
 sub create_helper {
@@ -38,6 +52,7 @@ sub create_helper {
 
 sub DESTROY { }
 
+our $AUTOLOAD;
 sub AUTOLOAD {
     my $self = shift;
 
