@@ -35,7 +35,8 @@ sub should_handle_utf_in_multi_query_parameters : Test {
 sub should_handle_utf_in_post_parameters : Test {
     my $self = shift;
 
-    open my $fh, '<', \'♥=♥';
+    my $bytes = Encode::encode('UTF-8', '♥=♥');
+    open my $fh, '<', \$bytes;
 
     my $req = $self->_build_request(
         {
@@ -53,7 +54,8 @@ sub should_handle_utf_in_post_parameters : Test {
 sub should_handle_utf_in_multi_post_parameters : Test {
     my $self = shift;
 
-    open my $fh, '<', \'♥=♥&♥=b';
+    my $bytes = Encode::encode('UTF-8', '♥=♥&♥=b');
+    open my $fh, '<', \$bytes;
 
     my $req = $self->_build_request(
         {
