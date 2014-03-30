@@ -71,7 +71,7 @@ sub _build_middleware {
     my (%params) = @_;
 
     return Turnaround::Middleware::ActionDispatcher->new(
-        action_factory => Turnaround::ActionFactory->new(namespace => ''),
+        action_factory => Turnaround::ActionFactory->new(),
         app => sub { [200, [], ['OK']] }
     );
 }

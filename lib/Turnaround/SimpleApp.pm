@@ -28,7 +28,7 @@ sub startup {
     $self->add_middleware(
         'ActionDispatcher',
         action_factory => Turnaround::ActionFactory->new(
-            namespace => ref($self) . '::Action::'
+            namespaces => ref($self) . '::Action::'
         )
     );
 

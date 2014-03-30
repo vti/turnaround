@@ -5,22 +5,12 @@ use warnings;
 
 use base 'Turnaround::Factory';
 
-use Scalar::Util qw(blessed);
+sub new {
+    my $self = shift->SUPER::new(@_);
 
-use Turnaround::Exception::ActionClassNotFound;
+    $self->{try} = 1;
 
-sub _load_class {
-    my $self = shift;
-
-    return eval { $self->SUPER::_load_class(@_) } || do {
-        my $e = $@;
-
-        if (blessed($e) && $e->isa('Turnaround::Exception::ClassNotFound')) {
-            Turnaround::Exception::ActionClassNotFound->throw;
-        }
-
-        die $e;
-    };
+    return $self;
 }
 
 1;

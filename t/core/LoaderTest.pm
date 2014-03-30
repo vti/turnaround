@@ -39,6 +39,14 @@ sub load_existing_class_searching_namespaces : Test {
     is($loader->load_class('Class'), 'Bar::Class');
 }
 
+sub load_class_by_absolute_name : Test {
+    my $self = shift;
+
+    my $loader = $self->_build_loader;
+
+    is($loader->load_class('+Bar::Class'), 'Bar::Class');
+}
+
 sub throw_on_invalid_class_name : Test {
     my $self = shift;
 
@@ -52,10 +60,8 @@ sub throw_on_unknown_class : Test {
 
     my $loader = $self->_build_loader;
 
-    isa_ok(
-        exception { $loader->load_class('Unknown') },
-        'Turnaround::Exception::ClassNotFound'
-    );
+    like exception { $loader->load_class('Unknown') },
+      qr/Can't locate Unknown\.pm in \@INC/;
 }
 
 sub throw_on_class_with_syntax_errors : Test {
@@ -63,20 +69,8 @@ sub throw_on_class_with_syntax_errors : Test {
 
     my $loader = $self->_build_loader;
 
-    isa_ok(exception { $loader->load_class('WithSyntaxErrors') },
-        'Turnaround::Exception::Base');
-}
-
-sub throw_on_class_with_syntax_errors2 : Test(2) {
-    my $self = shift;
-
-    my $loader = $self->_build_loader;
-
-    my $e = exception { $loader->load_class('WithSyntaxErrors') };
-    isa_ok($e, 'Turnaround::Exception::Base');
-
-    $e = exception { $loader->load_class('WithSyntaxErrors') };
-    isa_ok($e, 'Turnaround::Exception::Base');
+    like exception { $loader->load_class('WithSyntaxErrors') },
+      qr/Bareword "w" not allowed while "strict subs" in use/;
 }
 
 sub is_class_loaded : Test(1) {

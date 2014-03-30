@@ -14,10 +14,12 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->{namespace} = $params{namespace};
-    $self->{namespace} = '' unless defined $self->{namespace};
+    $self->{try} = $params{try};
 
-    $self->{default_args} = $params{default_args} || {};
+    $self->{namespaces} = $params{namespaces};
+    $self->{namespaces} = [] unless defined $self->{namespaces};
+    $self->{namespaces} = [$self->{namespaces}]
+      unless ref $self->{namespaces} eq 'ARRAY';
 
     return $self;
 }
@@ -28,25 +30,26 @@ sub build {
 
     my $class = $self->_build_class_name($name);
 
-    $self->_load_class($class);
+    my $loaded_class = $self->_load_class($class);
+    return unless $loaded_class;
 
-    return $self->_build_object($class, %{$self->{default_args}}, @args);
+    return $self->_build_object($loaded_class, @args);
 }
 
 sub _build_class_name {
     my $self = shift;
     my ($action) = @_;
 
-    $action = String::CamelCase::camelize($action);
-
-    return "$self->{namespace}$action";
+    return String::CamelCase::camelize($action);
 }
 
 sub _load_class {
     my $self = shift;
     my ($class) = @_;
 
-    my $loader = Turnaround::Loader->new;
+    my $loader = Turnaround::Loader->new(namespaces => $self->{namespaces});
+
+    return $loader->try_load_class($class) if $self->{try};
 
     $loader->load_class($class);
 }
