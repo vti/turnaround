@@ -19,6 +19,7 @@ sub new {
     bless $self, $class;
 
     $self->{message} = $params{message};
+    $self->{message} = "Exception: $class" unless defined $self->{message};
 
     $self->{file} = $params{caller}->[1];
     $self->{line} = $params{caller}->[2];

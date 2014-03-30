@@ -26,4 +26,12 @@ sub return_message : Test {
     is($e->message, 'hi there');
 }
 
+sub return_exception_class_when_no_message_was_passed : Test {
+    my $self = shift;
+
+    my $e = exception { Turnaround::Exception::Base->throw };
+
+    like($e, qr/Exception: Turnaround::Exception::Base /);
+}
+
 1;
