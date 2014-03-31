@@ -39,6 +39,16 @@ sub action_from_capture : Test {
     is($dispatched->get_action, 'foo');
 }
 
+sub build_path : Test {
+    my $self = shift;
+
+    my $d = $self->_build_dispatcher;
+
+    my $dispatched = $d->dispatch('/foo');
+
+    is($dispatched->build_path('root'), '/');
+}
+
 sub undef_on_not_match : Test {
     my $self = shift;
 
