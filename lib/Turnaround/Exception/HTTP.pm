@@ -16,4 +16,6 @@ sub new {
 
 sub code { $_[0]->{code} || 500 }
 
+sub as_string { $_[0]->{message} }
+
 1;

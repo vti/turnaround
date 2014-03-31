@@ -54,7 +54,7 @@ sub _deny {
         return [302, ['Location' => $redirect_to], ['']];
     }
 
-    Turnaround::Exception->throw('Forbidden', code => 403);
+    Turnaround::Exception::HTTP->throw('Forbidden', code => 403);
 }
 
 1;
