@@ -36,11 +36,6 @@ sub new {
       Turnaround::Builder->new(namespaces => [$app_class . '::Middleware::']);
     $self->{services} ||= Turnaround::ServiceContainer->new;
 
-    $self->{services}->register(
-        helpers   => 'Turnaround::HelperFactory',
-        lifecycle => 'prototype'
-    );
-
     $self->{plugins} ||= Turnaround::Plugins->new(
         namespaces => [$app_class . '::Plugin::'],
         app_class  => $app_class,
@@ -87,13 +82,6 @@ sub to_app {
             my $env = shift;
 
             $env->{'turnaround.services'} = $self->{services};
-
-            $env->{'turnaround.displayer.vars'}->{'helpers'} =
-              $self->{services}->service(
-                'helpers',
-                namespaces => ref($self) . '::Helper::',
-                env        => $env
-              );
 
             $self->{plugins}->run_plugins($env);
 
