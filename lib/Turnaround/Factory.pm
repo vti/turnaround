@@ -40,6 +40,8 @@ sub _build_class_name {
     my $self = shift;
     my ($action) = @_;
 
+    $action =~ s{-}{::}g;
+
     return String::CamelCase::camelize($action);
 }
 
