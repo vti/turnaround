@@ -259,8 +259,15 @@ sub _prepare_params {
             for ($param) {
                 next FIELD unless defined;
 
-                s/^\s*//g;
-                s/\s*$//g;
+                my $trim =
+                  defined $self->{fields}->{$name}->{trim}
+                  ? $self->{fields}->{$name}->{trim}
+                  : 1;
+
+                if ($trim) {
+                    s/^\s*//g;
+                    s/\s*$//g;
+                }
             }
         }
     }

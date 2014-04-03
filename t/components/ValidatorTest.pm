@@ -135,7 +135,7 @@ sub not_return_not_valid_values : Test(1) {
     is_deeply($validator->validated_params, {});
 }
 
-sub return_valid_values : Test(1) {
+sub return_valid_values_trimmed : Test(1) {
     my $self = shift;
 
     my $validator = $self->_build_validator;
@@ -143,9 +143,21 @@ sub return_valid_values : Test(1) {
     $validator->add_field('foo');
     $validator->add_rule('foo', 'regexp', qr/^\d+$/);
 
-    $validator->validate({foo => 123});
+    $validator->validate({foo => ' 123 '});
 
     is_deeply($validator->validated_params, {foo => 123});
+}
+
+sub return_valid_values_not_trimmed : Test(1) {
+    my $self = shift;
+
+    my $validator = $self->_build_validator;
+
+    $validator->add_field('foo', trim => 0);
+
+    $validator->validate({foo => ' 123 '});
+
+    is_deeply($validator->validated_params, {foo => ' 123 '});
 }
 
 sub return_valid_values_even_when_not_valid : Test(1) {
