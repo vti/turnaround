@@ -264,7 +264,7 @@ sub _prepare_params {
                   ? $self->{fields}->{$name}->{trim}
                   : 1;
 
-                if ($trim) {
+                if ($trim && !ref) {
                     s/^\s*//g;
                     s/\s*$//g;
                 }

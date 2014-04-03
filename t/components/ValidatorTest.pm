@@ -160,6 +160,18 @@ sub return_valid_values_not_trimmed : Test(1) {
     is_deeply($validator->validated_params, {foo => ' 123 '});
 }
 
+sub return_valid_values_not_trimmed_when_references : Test(1) {
+    my $self = shift;
+
+    my $validator = $self->_build_validator;
+
+    $validator->add_field('foo');
+
+    $validator->validate({foo => {}});
+
+    is_deeply($validator->validated_params, {foo => {}});
+}
+
 sub return_valid_values_even_when_not_valid : Test(1) {
     my $self = shift;
 
