@@ -13,6 +13,10 @@ sub new {
     my (%params) = @_;
 
     $self->{env} = $params{env};
+    Scalar::Util::weaken($self->{env});
+
+    $self->{req} = $params{req};
+    Scalar::Util::weaken($self->{req});
 
     return $self;
 }
@@ -31,7 +35,12 @@ sub build {
     my $self = shift;
     my ($name, @args) = @_;
 
-    return $self->SUPER::build($name, env => $self->{env}, @args);
+    return $self->SUPER::build(
+        $name,
+        env => $self->{env},
+        req => $self->{req},
+        @args
+    );
 }
 
 sub create_helper {
