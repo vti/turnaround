@@ -36,7 +36,6 @@ sub build {
 
     return $self->SUPER::build(
         $name,
-        helpers  => $self,
         services => $self->{services},
         env      => $self->{env},
         @args

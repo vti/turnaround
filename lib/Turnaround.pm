@@ -86,9 +86,7 @@ sub to_app {
 
             $self->{plugins}->run_plugins($env);
 
-            my $res = $app->($env);
-
-            return $res;
+            $app->($env);
           }
     };
 
