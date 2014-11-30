@@ -20,9 +20,9 @@ requires 'String::CamelCase'    => '0';
 requires 'YAML::Tiny'           => '0';
 
 recommends 'Text::APL';
-recommends 'Text::Caml';
 
 on 'test' => sub {
+    requires 'Text::Caml';
     requires 'Test::Class'               => '0';
     requires 'Test::Fatal'               => '0';
     requires 'Test::More'                => '0';
