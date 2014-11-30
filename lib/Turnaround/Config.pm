@@ -28,6 +28,12 @@ sub load {
     $self = $self->new unless ref $self;
     my ($path) = @_;
 
+    if ((my $mode = $ENV{PLACK_ENV}) && $ENV{PLACK_ENV} ne 'production') {
+        $mode = 'dev' if $mode eq 'development';
+
+        $path =~ s{\.([^\.]+)$}{.$mode.$1};
+    }
+
     my $basename = File::Basename::basename($path);
     my ($ext) = $basename =~ m{\.([^\.]+)$};
 
