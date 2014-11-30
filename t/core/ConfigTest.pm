@@ -24,7 +24,7 @@ sub load_config_based_on_extension : Test {
 sub load_config_based_on_mode : Test {
     my $self = shift;
 
-    my $config = $self->_build_config;
+    my $config = $self->_build_config(mode => 1);
 
     local $ENV{PLACK_ENV} = 'development';
 

@@ -15,8 +15,9 @@ sub new {
     my $self = {};
     bless $self, $class;
 
+    $self->{mode}       = $params{mode};
     $self->{preprocess} = $params{preprocess} || {};
-    $self->{encoding} = $params{encoding};
+    $self->{encoding}   = $params{encoding};
 
     $self->{encoding} ||= 'UTF-8';
 
@@ -28,10 +29,12 @@ sub load {
     $self = $self->new unless ref $self;
     my ($path) = @_;
 
-    if ((my $mode = $ENV{PLACK_ENV}) && $ENV{PLACK_ENV} ne 'production') {
-        $mode = 'dev' if $mode eq 'development';
+    if ($self->{mode}) {
+        if ((my $mode = $ENV{PLACK_ENV}) && $ENV{PLACK_ENV} ne 'production') {
+            $mode = 'dev' if $mode eq 'development';
 
-        $path =~ s{\.([^\.]+)$}{.$mode.$1};
+            $path =~ s{\.([^\.]+)$}{.$mode.$1};
+        }
     }
 
     my $basename = File::Basename::basename($path);
