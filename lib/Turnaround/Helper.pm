@@ -32,6 +32,7 @@ sub req {
     my $self = shift;
 
     $self->{req} ||= Turnaround::Request->new($self->{env});
+    Scalar::Util::weaken($self->{req}->{env}); # WTF?
 
     return $self->{req};
 }
