@@ -29,7 +29,8 @@ sub startup {
 
     $services->register(home => $home);
 
-    my $config_loader = $self->{config_loader} || Turnaround::Config->new;
+    my $config_loader =
+      $self->{config_loader} || Turnaround::Config->new(mode => 1);
     $services->register(config => $config_loader->load('config/config.yml'));
 
     my $routes = Turnaround::Routes::FromConfig->new->load('config/routes.yml');
