@@ -1,4 +1,7 @@
 language: perl
+script: prove -lr t
+install:
+    - cpanm -n -q --skip-satisfied --installdeps .
 perl:
     - "5.14"
     - "5.12"
