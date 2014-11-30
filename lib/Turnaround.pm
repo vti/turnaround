@@ -82,11 +82,11 @@ sub to_app {
         sub {
             my $env = shift;
 
-            $env->{'turnaround.services'} = $self->{services};
-
             $self->{plugins}->run_plugins($env);
 
-            $app->($env);
+            my $res = $app->($env);
+
+            return $res;
           }
     };
 

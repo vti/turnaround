@@ -12,11 +12,10 @@ sub new {
     my $self = shift->SUPER::new(@_);
     my (%params) = @_;
 
+    $self->{services} = $params{services};
+
     $self->{env} = $params{env};
     Scalar::Util::weaken($self->{env});
-
-    $self->{req} = $params{req};
-    Scalar::Util::weaken($self->{req});
 
     return $self;
 }
@@ -37,8 +36,9 @@ sub build {
 
     return $self->SUPER::build(
         $name,
-        env => $self->{env},
-        req => $self->{req},
+        helpers  => $self,
+        services => $self->{services},
+        env      => $self->{env},
         @args
     );
 }
@@ -51,7 +51,7 @@ sub create_helper {
         my $helper = $self->{helpers}->{$name};
 
         return
-            ref $helper eq 'CODE' ? $helper->()
+            ref $helper eq 'CODE'          ? $helper->()
           : Scalar::Util::blessed($helper) ? $helper
           :                                  $self->build($helper);
     }
@@ -62,6 +62,7 @@ sub create_helper {
 sub DESTROY { }
 
 our $AUTOLOAD;
+
 sub AUTOLOAD {
     my $self = shift;
 
