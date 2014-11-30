@@ -3,6 +3,8 @@ package Turnaround::Plugins;
 use strict;
 use warnings;
 
+use Turnaround::Loader;
+
 sub new {
     my $class = shift;
     my (%params) = @_;

@@ -45,8 +45,7 @@ understandable without reading documentation.
 
 =item * Testing
 
-Unit testing via L<Test::Class> and functional testing follow the best TDD
-practices.
+Unit testing and functional testing follow the best TDD practices.
 
 =back
 

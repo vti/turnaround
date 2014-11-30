@@ -23,9 +23,7 @@ recommends 'Text::APL';
 
 on 'test' => sub {
     requires 'Text::Caml';
-    requires 'Test::Class'               => '0';
-    requires 'Test::Fatal'               => '0';
-    requires 'Test::More'                => '0';
-    requires 'Test::MockObject::Extends' => '0';
-    requires 'Test::MonkeyMock'          => '0';
+    requires 'Test::Fatal'      => '0';
+    requires 'Test::More'       => '0';
+    requires 'Test::MonkeyMock' => '0';
 };
