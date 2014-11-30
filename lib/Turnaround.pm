@@ -51,13 +51,16 @@ sub new {
 
 sub home     { $_[0]->{home} }
 sub services { $_[0]->{services} }
+sub service { shift->{services}->service(@_) }
 
 sub startup { $_[0] }
 
 sub add_middleware {
     my $self = shift;
+    my ($name, @args) = @_;
 
-    return $self->{builder}->add_middleware(@_);
+    return $self->{builder}
+      ->add_middleware($name, services => $self->{services}, @args);
 }
 
 sub register_plugin {
@@ -74,8 +77,6 @@ sub to_app {
     my $self = shift;
 
     $self->{psgi_app} ||= do {
-        $self->{plugins}->startup_plugins;
-
         my $app = $self->{builder}->wrap($self->default_app);
 
         sub {

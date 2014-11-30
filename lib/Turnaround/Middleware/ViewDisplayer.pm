@@ -11,8 +11,13 @@ use String::CamelCase ();
 
 sub new {
     my $self = shift->SUPER::new(@_);
+    my (%params) = @_;
 
-    $self->{encoding} ||= 'UTF-8';
+    $self->{encoding} = $params{encoding} || 'UTF-8';
+    $self->{displayer} =
+         $params{displayer}
+      || $self->{services}->service('displayer')
+      || die 'displayer required';
 
     return $self;
 }
@@ -39,7 +44,8 @@ sub _display {
     $args{layout} = $env->{'turnaround.displayer.layout'}
       if exists $env->{'turnaround.displayer.layout'};
 
-    my $body = $self->{displayer}->render($template, %args);
+    my $displayer = $self->{displayer};
+    my $body = $displayer->render($template, %args);
 
     my $content_type = Plack::MIME->mime_type(".html");
 

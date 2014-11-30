@@ -9,8 +9,13 @@ use Turnaround::ActionResponseResolver;
 
 sub new {
     my $self = shift->SUPER::new(@_);
+    my (%params) = @_;
 
-    die 'action_factory is required' unless $self->{action_factory};
+    $self->{action_factory} =
+         $params{action_factory}
+      || $self->{services}->service('action_factory')
+      || die 'action_factory required';
+    $self->{response_resolver} = $params{response_resolver};
 
     $self->{response_resolver} ||= Turnaround::ActionResponseResolver->new;
 
@@ -49,7 +54,9 @@ sub _build_action {
     my $self = shift;
     my ($action, $env) = @_;
 
-    return $self->{action_factory}->build($action, env => $env);
+    my $action_factory = $self->{action_factory};
+
+    return $action_factory->build($action, env => $env);
 }
 
 1;

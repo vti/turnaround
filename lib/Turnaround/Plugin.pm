@@ -11,6 +11,7 @@ sub new {
     bless $self, $class;
 
     $self->{app_class} = $params{app_class};
+    $self->{home}      = $params{home};
     $self->{services}  = $params{services};
     $self->{builder}   = $params{builder};
 

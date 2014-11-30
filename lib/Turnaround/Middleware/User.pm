@@ -7,6 +7,15 @@ use base 'Turnaround::Middleware';
 
 use Scalar::Util qw(blessed);
 
+sub new {
+    my $self = shift->SUPER::new(@_);
+    my (%params) = @_;
+
+    $self->{user_loader} = $params{user_loader};
+
+    return $self;
+}
+
 sub call {
     my $self = shift;
     my ($env) = @_;

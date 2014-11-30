@@ -43,17 +43,11 @@ sub register_plugin {
         @args
     );
 
+    $instance->startup;
+
     push @{$self->{plugins}}, $instance;
 
     return $self;
-}
-
-sub startup_plugins {
-    my $self = shift;
-
-    foreach my $plugin (@{$self->{plugins}}) {
-        $plugin->startup;
-    }
 }
 
 sub run_plugins {

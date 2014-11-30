@@ -12,7 +12,7 @@ sub new {
     my (%params) = @_;
 
     $self->{services} = $params{services} || die 'services required';
-    $self->{config}   = $params{config}   || die 'config required';
+    $self->{config} = $params{config};
     $self->{service_name} ||= 'mailer';
 
     return $self;
@@ -21,7 +21,12 @@ sub new {
 sub startup {
     my $self = shift;
 
-    my $mailer = Turnaround::Mailer->new(%{$self->{config} || {}});
+    my $config =
+         $self->{config}
+      || $self->{services}->service('config')->{$self->{service_name}}
+      || {};
+
+    my $mailer = Turnaround::Mailer->new(%$config);
     $self->{services}->register($self->{service_name} => $mailer);
 }
 
