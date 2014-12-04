@@ -3,7 +3,10 @@ use warnings;
 use utf8;
 
 use Test::More;
+use Test::Requires;
 use Test::Fatal;
+
+BEGIN { test_requires 'Email::MIME' };
 
 use File::Temp;
 use MIME::Base64;

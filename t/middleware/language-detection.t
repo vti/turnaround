@@ -2,7 +2,10 @@ use strict;
 use warnings;
 
 use Test::More;
+use Test::Requires;
 use Test::Fatal;
+
+BEGIN { test_requires 'I18N::AcceptLanguage' };
 
 use Turnaround::Middleware::LanguageDetection;
 

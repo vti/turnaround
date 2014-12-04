@@ -5,7 +5,10 @@ use utf8;
 use lib 't/components';
 
 use Test::More;
+use Test::Requires;
 use Test::Fatal;
+
+BEGIN { test_requires 'I18N::AcceptLanguage' };
 
 use Turnaround::I18N;
 
