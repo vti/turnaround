@@ -50,17 +50,37 @@ subtest 'render_template' => sub {
     is($res, 'template');
 };
 
-sub _build_action {
+subtest 'correctly merge template vars' => sub {
+    my $displayer = _mock_displayer();
+    my $action = _build_action(
+        displayer => $displayer,
+        env       => {'turnaround.displayer.vars' => {old => 'vars'}}
+    );
+
+    my $res = $action->render('template', vars => {foo => 'bar'});
+
+    my ($template, %params) = $displayer->mocked_call_args('render');
+    is_deeply \%params, {vars => {foo => 'bar', old => 'vars'}};
+};
+
+sub _mock_displayer {
     my $displayer = Turnaround::Displayer->new(renderer => 1);
     $displayer = Test::MonkeyMock->new($displayer);
     $displayer->mock(render => sub { $_[1] });
+    return $displayer;
+}
+
+sub _build_action {
+    my (%params) = @_;
+
+    my $displayer = delete $params{displayer} || _mock_displayer();
 
     my $services = Turnaround::ServiceContainer->new;
     $services->register(displayer => $displayer);
 
-    my $env = {'turnaround.services' => $services};
+    my $env = {%{delete $params{env} || {}}, 'turnaround.services' => $services};
 
-    return Turnaround::Action->new(env => $env, @_);
+    return Turnaround::Action->new(env => $env, %params);
 }
 
 done_testing;

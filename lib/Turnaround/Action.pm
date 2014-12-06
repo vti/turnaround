@@ -129,14 +129,17 @@ sub redirect {
 
 sub render {
     my $self = shift;
-    my ($template, @args) = @_;
+    my ($template, %args) = @_;
 
     for (qw/vars layout/) {
         next unless exists $self->{env}->{"turnaround.displayer.$_"};
-        push @args, ($_ => $self->{env}->{"turnaround.displayer.$_"});
+        $args{$_} = {
+            %{$self->{env}->{"turnaround.displayer.$_"} || {}},
+            %{$args{$_} || {}}
+        };
     }
 
-    return $self->service('displayer')->render($template, @args);
+    return $self->service('displayer')->render($template, %args);
 }
 
 1;
