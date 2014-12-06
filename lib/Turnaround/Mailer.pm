@@ -15,6 +15,8 @@ sub new {
 
     $self->{subject_prefix} = $params{subject_prefix};
     $self->{signature}      = $params{signature};
+    $self->{charset}        = $params{charset} || 'UTF-8';
+    $self->{encoding}       = $params{encoding} || 'base64';
 
     $self->{headers} = $params{headers} || [];
 
@@ -56,13 +58,14 @@ sub build_message {
         $params{body} .= "\n\n-- \n$signature";
     }
 
-    my $parts = $params{body}
+    my $parts =
+      $params{body}
       ? [
         Email::MIME->create(
             attributes => {
                 content_type => "text/plain",
-                charset      => 'UTF-8',
-                encoding     => 'base64'
+                charset      => $self->{charset},
+                encoding     => $self->{encoding}
             },
             body_str => $params{body}
         )
@@ -81,7 +84,7 @@ sub build_message {
         $message->header_str_set($key => $value);
     }
 
-    $message->charset_set('UTF-8');
+    $message->charset_set($self->{charset});
 
     return $message->as_string;
 }
