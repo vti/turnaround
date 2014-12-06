@@ -3,6 +3,7 @@ package Turnaround::ServiceContainer;
 use strict;
 use warnings;
 
+require Carp;
 use Scalar::Util ();
 use Turnaround::Loader;
 
@@ -54,6 +55,8 @@ sub service {
         $instance = $service->{value}->();
     }
     elsif (!ref $service->{value}) {
+        Carp::croak('value not set') unless $service->{value};
+
         $instance =
           $self->{loader}->load_class($service->{value})
           ->new($self->_resolve_arguments($service), @args);
