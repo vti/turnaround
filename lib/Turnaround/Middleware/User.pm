@@ -5,6 +5,7 @@ use warnings;
 
 use base 'Turnaround::Middleware';
 
+require Carp;
 use Scalar::Util qw(blessed);
 
 sub new {
@@ -12,6 +13,7 @@ sub new {
     my (%params) = @_;
 
     $self->{user_loader} = $params{user_loader};
+    Carp::croak('user_loader required') unless $self->{user_loader};
 
     return $self;
 }
