@@ -9,6 +9,16 @@ use Scalar::Util qw(blessed);
 
 use Turnaround::Exception::HTTP;
 
+sub new {
+    my $self = shift->SUPER::new(@_);
+    my (%params) = @_;
+
+    $self->{acl} = $params{acl};
+    Carp::croak('acl required') unless $self->{acl};
+
+    return $self;
+}
+
 sub call {
     my $self = shift;
     my ($env) = @_;
