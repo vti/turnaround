@@ -7,6 +7,14 @@ use Test::Fatal;
 
 use Turnaround::Config;
 
+subtest 'return empty hash when empty config' => sub {
+    my $config = _build_config();
+
+    my $data = $config->load('t/core/ConfigTest/empty.yml');
+
+    is_deeply($data, {});
+};
+
 subtest 'load_config_based_on_extension' => sub {
     my $config = _build_config();
 

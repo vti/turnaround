@@ -19,7 +19,7 @@ sub parse {
     my ($config) = @_;
 
     $config = YAML::Tiny->read_string($config) or die $YAML::Tiny::errstr;
-    return $config->[0];
+    return $config->[0] || {};
 }
 
 1;
