@@ -45,6 +45,19 @@ sub send {
         print $mail $message;
         close $mail;
     }
+    elsif ($transport->{name} eq 'smtp+tls') {
+        require Email::Sender::Simple;
+        require Email::Sender::Transport::SMTP::TLS;
+
+        my $sender = Email::Sender::Transport::SMTP::TLS->new(
+            host     => $transport->{host},
+            port     => $transport->{port},
+            username => $transport->{username},
+            password => $transport->{password}
+        );
+
+        Email::Sender::Simple->send($message, {transport => $sender});
+    }
     else {
         die 'Unknown transport';
     }
