@@ -21,6 +21,8 @@ sub is_class_loaded {
     my $self = shift;
     my ($class) = @_;
 
+    Carp::croak('class name is required') unless $class;
+
     my $path = $self->_class_to_path($class);
 
     return 1 if exists $INC{$path} && defined $INC{$path};
@@ -39,6 +41,8 @@ sub try_load_class {
     my $self = shift;
     my ($class) = @_;
 
+    Carp::croak('class name is required') unless $class;
+
     my $class_loaded = $self->_try_load_class_from_namespaces($class);
     return $class_loaded if $class_loaded;
 
@@ -50,6 +54,8 @@ sub try_load_class {
 sub load_class {
     my $self = shift;
     my ($class) = @_;
+
+    Carp::croak('class name is required') unless $class;
 
     my $class_loaded = $self->_try_load_class_from_namespaces($class);
     return $class_loaded if $class_loaded;
