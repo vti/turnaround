@@ -67,7 +67,8 @@ sub AUTOLOAD {
 
     my ($method) = (split /::/, $AUTOLOAD)[-1];
 
-    return if $method =~ /[A-Z]/;
+    return if $method =~ /^[A-Z]/;
+    return if $method =~ /^_/;
 
     return $self->create_helper($method, @_);
 }
