@@ -5,6 +5,7 @@ use warnings;
 
 use base 'Turnaround::Plugin';
 
+require Carp;
 use Turnaround::Mailer;
 
 sub new {
@@ -25,6 +26,8 @@ sub startup {
          $self->{config}
       || $self->{services}->service('config')->{$self->{service_name}}
       || {};
+
+    Carp::croak('mailer not configured') unless %$config;
 
     my $mailer = Turnaround::Mailer->new(%$config);
     $self->{services}->register($self->{service_name} => $mailer);
