@@ -35,7 +35,7 @@ subtest 'set template var params' => sub {
     my $env = $action->env;
 
     is_deeply $env->{'turnaround.displayer.vars'}->{params},
-      {bar => 'bar'};
+      {bar => 'bar', foo => undef};
 };
 
 subtest 'call submit on success' => sub {

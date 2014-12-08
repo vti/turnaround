@@ -36,4 +36,13 @@ sub param {
     return $params->{$key};
 }
 
+sub param_multi {
+    my $self = shift;
+    my ($key) = @_;
+
+    my $params = $self->{env}->{'turnaround.displayer.vars'}->{params} || {};
+    return $params->{$key} if ref $params->{$key} eq 'ARRAY';
+    return [$params->{$key}];
+}
+
 1;

@@ -42,7 +42,7 @@ sub run {
     }
 
     $self->set_var(errors => $self->{validator}->errors);
-    $self->set_var(params => {$self->req->parameters->flatten});
+    $self->set_var(params => $self->{validator}->all_params);
 
     return;
 }
@@ -50,7 +50,8 @@ sub run {
 sub validate {
     my $self = shift;
 
-    return $self->{validator}->validate({$self->req->parameters->flatten});
+    my $params = $self->req->parameters->as_hashref_mixed;
+    return $self->{validator}->validate($params);
 }
 
 sub validated_params {
