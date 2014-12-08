@@ -60,6 +60,7 @@ sub new {
                 _decode  => 1,
                 _preload => 1
             };
+            no warnings 'redefined';
             sub fallback_languages { ('$self->{default_language}') }
 
     }
