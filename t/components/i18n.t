@@ -8,6 +8,8 @@ use Test::More;
 use Test::Requires;
 use Test::Fatal;
 
+use File::Basename ();
+
 BEGIN { test_requires 'I18N::AcceptLanguage' };
 
 use Turnaround::I18N;
@@ -18,12 +20,6 @@ subtest 'detect_languages' => sub {
     my $i18n = _build_i18n();
 
     is_deeply([$i18n->get_languages], [qw/en ru/]);
-};
-
-subtest 'detect_languages_names' => sub {
-    my $i18n = _build_i18n();
-
-    is_deeply($i18n->get_languages_names, {en => 'English', ru => 'Russian'});
 };
 
 subtest 'default_to_default_language_on_uknown_language' => sub {
@@ -47,7 +43,12 @@ subtest 'return_handle' => sub {
 };
 
 sub _build_i18n {
-    return Turnaround::I18N->new(app_class => 'I18NTest::MyApp', @_);
+    return Turnaround::I18N->new(
+        app_class  => 'I18NTest::MyApp',
+        locale_dir => File::Basename::dirname(__FILE__)
+          . '/I18NTest/MyApp/I18N/',
+        @_
+    );
 }
 
 done_testing;
