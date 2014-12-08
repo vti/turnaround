@@ -3,6 +3,8 @@ package Turnaround::Helper;
 use strict;
 use warnings;
 
+use Scalar::Util qw(weaken);
+
 sub new {
     my $class = shift;
     my (%params) = @_;
@@ -12,6 +14,8 @@ sub new {
 
     $self->{env}      = $params{env};
     $self->{services} = $params{services};
+
+    weaken $self->{env};
 
     return $self;
 }
