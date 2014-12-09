@@ -11,8 +11,8 @@ sub new {
 
     die 'i18n is required' unless my $i18n = delete $params{i18n};
 
-    $params{default_language} = $i18n->get_default_language;
-    $params{languages}        = [$i18n->get_languages];
+    $params{default_language} = $i18n->default_language;
+    $params{languages}        = [$i18n->languages];
 
     my $self = $class->SUPER::new(%params);
 
