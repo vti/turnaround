@@ -19,7 +19,7 @@ use I18NTest::MyApp;
 subtest 'detect_languages' => sub {
     my $i18n = _build_i18n();
 
-    is_deeply([$i18n->get_languages], [qw/en ru/]);
+    is_deeply([$i18n->languages], [qw/en ru/]);
 };
 
 subtest 'default_to_default_language_on_uknown_language' => sub {

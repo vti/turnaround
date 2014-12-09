@@ -67,32 +67,14 @@ sub new {
     return $self;
 }
 
-sub set_default_language {
-    my $self = shift;
-    my ($value) = @_;
-
-    $self->{default_language} = $value;
-
-    return $self;
-}
-
-sub get_default_language {
+sub default_language {
     my $self = shift;
     my ($default_language) = @_;
 
     return $self->{default_language};
 }
 
-sub set_languages {
-    my $self = shift;
-    my ($value) = @_;
-
-    $self->{languages} = $value;
-
-    return $self;
-}
-
-sub get_languages {
+sub languages {
     my $self = shift;
 
     return @{$self->{languages}};
