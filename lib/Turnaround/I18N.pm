@@ -57,11 +57,10 @@ sub new {
             use base 'Locale::Maketext';
             use Locale::Maketext::Lexicon {
                 '*'      => [Gettext => "$self->{locale_dir}/*.po"],
+                _auto    => 1,
                 _decode  => 1,
                 _preload => 1
             };
-            no warnings 'redefined';
-            sub fallback_languages { ('$self->{default_language}') }
 
     }
 
