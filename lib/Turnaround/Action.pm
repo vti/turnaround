@@ -74,7 +74,7 @@ sub url_for {
     return $url;
 }
 
-sub captures { $_[0]->env->{'turnaround.dispatched_request'}->get_captures }
+sub captures { $_[0]->env->{'turnaround.dispatched_request'}->captures }
 
 sub set_var {
     my $self = shift;

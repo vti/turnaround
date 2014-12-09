@@ -86,8 +86,8 @@ sub _build_dispatched_request {
 
     my $dr = Turnaround::DispatchedRequest->new;
     $dr = Test::MonkeyMock->new($dr);
-    $dr->mock(build_path   => sub { '' });
-    $dr->mock(get_captures => sub { $params{captures} });
+    $dr->mock(build_path => sub { '' });
+    $dr->mock(captures   => sub { $params{captures} });
 
     return $dr;
 }

@@ -39,7 +39,7 @@ sub _action {
     my $dispatched_request = $env->{'turnaround.dispatched_request'};
     return unless $dispatched_request;
 
-    my $action = $dispatched_request->get_action;
+    my $action = $dispatched_request->action;
     return unless defined $action;
 
     $action = $self->_build_action($action, $env);

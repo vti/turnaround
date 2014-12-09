@@ -74,7 +74,7 @@ sub _get_template {
     my $dispatched_request = $env->{'turnaround.dispatched_request'};
     return unless $dispatched_request;
 
-    if (my $action = $dispatched_request->get_action) {
+    if (my $action = $dispatched_request->action) {
         my $template = String::CamelCase::decamelize($action);
         $template =~ s{::}{_}g;
         return $template;

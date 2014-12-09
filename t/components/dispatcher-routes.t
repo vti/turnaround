@@ -18,7 +18,7 @@ subtest 'action_from_name' => sub {
 
     my $dispatched = $d->dispatch('/');
 
-    is($dispatched->get_action, 'root');
+    is($dispatched->action, 'root');
 };
 
 subtest 'action_from_capture' => sub {
@@ -26,7 +26,7 @@ subtest 'action_from_capture' => sub {
 
     my $dispatched = $d->dispatch('/foo');
 
-    is($dispatched->get_action, 'foo');
+    is($dispatched->action, 'foo');
 };
 
 subtest 'build_path' => sub {
