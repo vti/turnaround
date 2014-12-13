@@ -66,11 +66,6 @@ sub run {
 
     weaken($env);
 
-    $env->{'turnaround.displayer.vars'}->{'var'} = sub {
-        my $var = $env->{'turnaround.displayer.vars'}->{$_[0]};
-        defined $var ? $var : '';
-    };
-
     $env->{'turnaround.displayer.vars'}->{'mode'} =
       $ENV{PLACK_ENV} || 'production';
 
