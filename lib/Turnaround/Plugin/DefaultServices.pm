@@ -17,11 +17,13 @@ sub new {
     my $self = shift->SUPER::new(@_);
     my (%params) = @_;
 
-    $self->{layout}   = $params{layout}   || 'layout.apl';
+    $self->{layout}   = $params{layout}   // 'layout.apl';
     $self->{renderer} = $params{renderer} || do {
         require Turnaround::Renderer::APL;
         Turnaround::Renderer::APL->new(home => $self->{home});
     };
+    $self->{config} = $params{config};
+    $self->{routes} = $params{routes};
 
     return $self;
 }
@@ -34,11 +36,12 @@ sub startup {
 
     $services->register(home => $home);
 
-    my $config_loader =
-      $self->{config_loader} || Turnaround::Config->new(mode => 1);
-    $services->register(config => $config_loader->load('config/config.yml'));
+    $services->register(
+        config => $self->{config}
+          || do { Turnaround::Config->new(mode => 1)->load('config/config.yml') }
+    );
 
-    my $routes = Turnaround::Routes::FromConfig->new->load('config/routes.yml');
+    my $routes = $self->{routes} || Turnaround::Routes::FromConfig->new->load('config/routes.yml');
     $services->register(routes => $routes);
 
     $services->register(

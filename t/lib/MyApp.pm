@@ -3,17 +3,26 @@ package MyApp;
 use strict;
 use warnings;
 
-use base 'Turnaround::SimpleApp';
+use base 'Turnaround';
 
 use Turnaround::Home;
 use Turnaround::Routes;
+use Turnaround::Renderer::Caml;
 
 sub startup {
     my $self = shift;
 
     $self->{home} = Turnaround::Home->new(path => 't/functional_tests');
 
-    $self->SUPER::startup;
+    $self->register_plugin(
+        'DefaultServices',
+        config   => {},
+        routes   => $self->_build_routes,
+        renderer => Turnaround::Renderer::Caml->new(home => $self->{home}),
+        layout   => ''
+    );
+
+    return $self;
 }
 
 sub _build_routes {
