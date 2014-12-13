@@ -46,6 +46,26 @@ subtest 'set_user' => sub {
     is($env->{'turnaround.user'}->role, 'user');
 };
 
+subtest 'register displayer var when user found' => sub {
+    my $mw = _build_middleware();
+
+    my $env = {'psgix.session' => {user => 'user'}};
+
+    my $res = $mw->call($env);
+
+    is_deeply $env->{'turnaround.displayer.vars'}->{user}, {};
+};
+
+subtest 'not register displayer var when user not found' => sub {
+    my $mw = _build_middleware();
+
+    my $env = {'psgix.session' => {}};
+
+    my $res = $mw->call($env);
+
+    ok !$env->{'turnaround.displayer.vars'}->{user};
+};
+
 sub _build_middleware {
     return Turnaround::Middleware::User->new(
         app => sub { [200, [], ['OK']] },
@@ -78,3 +98,5 @@ sub new {
 }
 
 sub role { shift->{role} }
+
+sub to_hash { {} }
