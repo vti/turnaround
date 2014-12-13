@@ -4,6 +4,8 @@ use warnings;
 use Test::More;
 use Test::MonkeyMock;
 
+BEGIN { test_requires 'Plack::Middleware::Session::Cookie' };
+
 use Turnaround::Middleware::Session::Cookie;
 
 subtest 'pass session config' => sub {
