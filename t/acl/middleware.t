@@ -8,6 +8,17 @@ use Turnaround::ACL;
 use Turnaround::DispatchedRequest;
 use Turnaround::Middleware::ACL;
 
+subtest 'throw when no acl' => sub {
+    like exception { _build_middleware(acl => undef) }, qr/acl required/;
+};
+
+subtest 'throw when no dispatched request' => sub {
+    my $mw = _build_middleware();
+
+    my $env = {'turnaround.user' => {role => 'anon'}};
+    like exception { $mw->call($env) }, qr/No DispatchedRequest found/;
+};
+
 subtest 'allow_when_role_is_correct' => sub {
     my $mw = _build_middleware();
 
@@ -58,6 +69,16 @@ subtest 'prevent_redirect_recursion' => sub {
     ok(exception { $mw->call({PATH_INFO => '/login'}) });
 };
 
+subtest 'accept blessed user object' => sub {
+    my $mw = _build_middleware();
+
+    my $env = _build_env(user => Test::User->new, action => 'foo');
+
+    my $res = $mw->call($env);
+
+    ok($res);
+};
+
 sub _build_middleware {
     my $acl = Turnaround::ACL->new;
 
@@ -89,3 +110,14 @@ sub _build_env {
 }
 
 done_testing;
+
+package Test::User;
+sub new {
+    my $class = shift;
+
+    my $self = {};
+    bless $self, $class;
+
+    return $self;
+}
+sub role {'user'}

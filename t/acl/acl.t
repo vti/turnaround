@@ -12,6 +12,12 @@ subtest 'denied_by_default' => sub {
     ok !$acl->is_allowed('admin', 'login');
 };
 
+subtest 'throw when allow unknown role' => sub {
+    my $acl = _build_acl();
+
+    like exception { $acl->allow('admin', 'foo') }, qr/Unknown role/;
+};
+
 subtest 'allow_allowed_action' => sub {
     my $acl = _build_acl();
 
@@ -19,6 +25,12 @@ subtest 'allow_allowed_action' => sub {
     $acl->allow('admin', 'foo');
 
     ok $acl->is_allowed('admin', 'foo');
+};
+
+subtest 'throw when deny unknown role' => sub {
+    my $acl = _build_acl();
+
+    like exception { $acl->deny('admin', 'foo') }, qr/Unknown role/;
 };
 
 subtest 'deny_unknown_role' => sub {

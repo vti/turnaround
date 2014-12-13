@@ -11,9 +11,7 @@ sub new {
     my $self = shift->SUPER::new(@_);
     my (%params) = @_;
 
-    $self->{acl} = $params{acl};
-
-    $self->{acl} ||= Turnaround::ACL->new;
+    $self->{acl} = $params{acl} || Turnaround::ACL->new;
 
     return $self;
 }
@@ -24,7 +22,7 @@ sub _from_config {
 
     my $acl = $self->{acl};
 
-    return $acl unless $config && ref $config eq 'HASH';
+    return $acl unless %$config;
 
     foreach my $role (@{$config->{roles}}) {
         $acl->add_role($role);
