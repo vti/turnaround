@@ -2,6 +2,7 @@ use strict;
 use warnings;
 
 use Test::More;
+use Test::Requires;
 use Test::MonkeyMock;
 
 BEGIN { test_requires 'Plack::Middleware::Session::Cookie' };
