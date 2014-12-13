@@ -3,7 +3,6 @@ package Turnaround::ActionResponseResolver;
 use strict;
 use warnings;
 
-use JSON   ();
 use Encode ();
 
 sub new {
@@ -30,21 +29,9 @@ sub resolve {
 
     return $res if ref $res eq 'CODE';
 
-    return $self->_to_json($res) if ref $res eq 'HASH';
-
     return $res->finalize if $res->isa('Turnaround::Response');
 
     return;
-}
-
-sub _to_json {
-    my $self = shift;
-    my ($json) = @_;
-
-    return [
-        200, ['Content-Type' => 'application/json'],
-        [JSON::encode_json($json)]
-    ];
 }
 
 1;

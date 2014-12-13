@@ -3,6 +3,9 @@ use warnings;
 
 use Test::More;
 use Test::Fatal;
+use Test::Requires;
+
+BEGIN { test_requires 'JSON' }
 
 use Turnaround::Request;
 use Turnaround::Middleware::SerializerJSON;

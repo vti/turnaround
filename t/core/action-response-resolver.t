@@ -3,9 +3,8 @@ use warnings;
 use utf8;
 
 use Test::More;
-use Test::Fatal;
 
-use Encode;
+use Encode ();
 
 use Turnaround::Response;
 use Turnaround::ActionResponseResolver;
@@ -48,13 +47,6 @@ subtest 'return_finalized_object' => sub {
         $resolver->resolve(Turnaround::Response->new(200)),
         [200, ['Content-Type' => 'text/html'], []]
     );
-};
-
-subtest 'return_json_on_hashref' => sub {
-    my $resolver = _build_resolver();
-
-    is_deeply($resolver->resolve({a => 'b'}),
-        [200, ['Content-Type' => 'application/json'], ['{"a":"b"}']]);
 };
 
 sub _build_resolver {
