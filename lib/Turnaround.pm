@@ -53,7 +53,26 @@ sub home     { $_[0]->{home} }
 sub services { $_[0]->{services} }
 sub service { shift->{services}->service(@_) }
 
-sub startup { $_[0] }
+sub startup {
+    my $self = shift;
+
+    $self->add_middleware(
+        'ErrorDocument',
+        403        => '/forbidden',
+        404        => '/not_found',
+        subrequest => 1
+    );
+
+    $self->add_middleware('HTTPExceptions');
+
+    $self->add_middleware('RequestDispatcher');
+    $self->add_middleware('ActionDispatcher');
+    $self->add_middleware('ViewDisplayer');
+
+    $self->register_plugin('DefaultServices');
+
+    return $self;
+}
 
 sub add_middleware {
     my $self = shift;
@@ -61,6 +80,17 @@ sub add_middleware {
 
     return $self->{builder}
       ->add_middleware($name, services => $self->{services}, @args);
+}
+
+sub insert_before_middleware {
+    my $self = shift;
+    my ($before, $name, @args) = @_;
+
+    return $self->{builder}->insert_before_middleware(
+        $before, $name,
+        services => $self->{services},
+        @args
+    );
 }
 
 sub register_plugin {
