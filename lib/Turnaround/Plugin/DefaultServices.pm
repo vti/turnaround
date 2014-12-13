@@ -15,15 +15,6 @@ use Turnaround::Displayer;
 use Turnaround::Renderer::APL;
 use Turnaround::ActionFactory;
 
-sub new {
-    my $self = shift->SUPER::new(@_);
-    my (%params) = @_;
-
-    $self->{config_loader} = $params{config_loader};
-
-    return $self;
-}
-
 sub startup {
     my $self = shift;
 
