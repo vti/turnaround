@@ -52,7 +52,7 @@ subtest 'render_template' => sub {
 
 subtest 'correctly merge template vars' => sub {
     my $displayer = _mock_displayer();
-    my $action = _build_action(
+    my $action    = _build_action(
         displayer => $displayer,
         env       => {'turnaround.displayer.vars' => {old => 'vars'}}
     );
@@ -63,6 +63,25 @@ subtest 'correctly merge template vars' => sub {
     is_deeply \%params, {vars => {foo => 'bar', old => 'vars'}};
 };
 
+subtest 'url_for returns absolute url as is' => sub {
+    my $action = _build_action();
+
+    is $action->url_for('http://foo.com'), 'http://foo.com';
+};
+
+subtest 'url_for returns url starting with slash as is' => sub {
+    my $action = _build_action(
+        env => {PATH_INFO => '/prefix', HTTP_HOST => 'example.com'});
+
+    is $action->url_for('/hello'), 'http://example.com/hello';
+};
+
+subtest 'url_for returns url from build_path' => sub {
+    my $action = _build_action(env => {HTTP_HOST => 'example.com'});
+
+    is $action->url_for('route'), 'http://example.com/path';
+};
+
 sub _mock_displayer {
     my $displayer = Turnaround::Displayer->new(renderer => 1);
     $displayer = Test::MonkeyMock->new($displayer);
@@ -70,15 +89,27 @@ sub _mock_displayer {
     return $displayer;
 }
 
+sub _mock_dispatched_request {
+    my $dr = Test::MonkeyMock->new();
+    $dr->mock(build_path => sub { '/path' });
+    return $dr;
+}
+
 sub _build_action {
     my (%params) = @_;
 
     my $displayer = delete $params{displayer} || _mock_displayer();
+    my $dispatched_request =
+      delete $params{dispatched_request} || _mock_dispatched_request();
 
     my $services = Turnaround::ServiceContainer->new;
     $services->register(displayer => $displayer);
 
-    my $env = {%{delete $params{env} || {}}, 'turnaround.services' => $services};
+    my $env = {
+        %{delete $params{env} || {}},
+        'turnaround.services'           => $services,
+        'turnaround.dispatched_request' => $dispatched_request
+    };
 
     return Turnaround::Action->new(env => $env, %params);
 }
