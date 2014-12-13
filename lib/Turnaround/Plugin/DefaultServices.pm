@@ -12,8 +12,19 @@ use Turnaround::Config;
 use Turnaround::Routes::FromConfig;
 use Turnaround::Dispatcher::Routes;
 use Turnaround::Displayer;
-use Turnaround::Renderer::APL;
 use Turnaround::ActionFactory;
+
+sub new {
+    my $self = shift->SUPER::new(@_);
+    my (%params) = @_;
+
+    $self->{renderer} ||= do {
+        require Turnaround::Renderer::APL;
+        Turnaround::Renderer::APL->new(home => $self->{home});
+    };
+
+    return $self;
+}
 
 sub startup {
     my $self = shift;
@@ -40,7 +51,7 @@ sub startup {
     );
 
     my $displayer = Turnaround::Displayer->new(
-        renderer => Turnaround::Renderer::APL->new(home => $home),
+        renderer => $self->{renderer},
         layout   => 'layout.apl'
     );
     $services->register(displayer => $displayer);
