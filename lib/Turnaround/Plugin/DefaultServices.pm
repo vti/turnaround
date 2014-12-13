@@ -52,7 +52,18 @@ sub startup {
         subrequest => 1
     );
 
-    $self->builder->add_middleware('HTTPExceptions',    services => $services);
+    $self->builder->add_middleware('HTTPExceptions', services => $services);
+
+    my $public_dir = $home->catfile('public');
+    my @dirs =
+      map { s/^$public_dir\/?//; $_ } grep { -d $_ } glob "$public_dir/*";
+    my $re = '^/(?:' . join('|', @dirs) . ')/';
+    $self->builder->add_middleware(
+        'Static',
+        path => qr/$re/,
+        root => $self->{home}->catfile('public')
+    );
+
     $self->builder->add_middleware('RequestDispatcher', services => $services);
     $self->builder->add_middleware('ActionDispatcher',  services => $services);
     $self->builder->add_middleware('ViewDisplayer',     services => $services);
