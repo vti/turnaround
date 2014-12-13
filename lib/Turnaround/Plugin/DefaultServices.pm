@@ -5,7 +5,6 @@ use warnings;
 
 use base 'Turnaround::Plugin';
 
-use Scalar::Util qw(weaken);
 use Turnaround::HelperFactory::Persistent;
 use Turnaround::Request;
 use Turnaround::Config;
@@ -18,7 +17,7 @@ sub new {
     my $self = shift->SUPER::new(@_);
     my (%params) = @_;
 
-    $self->{layout} = $params{layout} || 'layout.apl';
+    $self->{layout}   = $params{layout}   || 'layout.apl';
     $self->{renderer} = $params{renderer} || do {
         require Turnaround::Renderer::APL;
         Turnaround::Renderer::APL->new(home => $self->{home});
@@ -57,7 +56,7 @@ sub startup {
     );
     $services->register(displayer => $displayer);
 
-    $self->{builder}->add_middleware(
+    $self->builder->add_middleware(
         'ErrorDocument',
         403        => '/forbidden',
         404        => '/not_found',
@@ -86,8 +85,6 @@ sub startup {
 sub run {
     my $self = shift;
     my ($env) = @_;
-
-    weaken($env);
 
     $env->{'turnaround.displayer.vars'}->{'mode'} =
       $ENV{PLACK_ENV} || 'production';
