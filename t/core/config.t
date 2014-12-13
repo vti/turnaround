@@ -15,6 +15,13 @@ subtest 'return empty hash when empty config' => sub {
     is_deeply($data, {});
 };
 
+subtest 'rethrow yaml error' => sub {
+    my $config = _build_config();
+
+    like exception { $config->load('t/core/ConfigTest/error.yml') },
+      qr/YAML::Tiny failed to/;
+};
+
 subtest 'load_config_based_on_extension' => sub {
     my $config = _build_config();
 
