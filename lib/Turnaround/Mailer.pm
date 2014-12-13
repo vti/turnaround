@@ -41,7 +41,7 @@ sub send {
     elsif ($transport->{name} eq 'sendmail') {
         my $path = "| $transport->{path} -t -oi -oem";
 
-        open my $mail, $path or die "Can't start sendmail: $!";
+        open my $mail, '>', $path or die "Can't start sendmail: $!";
         print $mail $message;
         close $mail;
     }
