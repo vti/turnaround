@@ -18,6 +18,10 @@ sub new {
     return $self;
 }
 
+sub home     { $_[0]->{home} }
+sub services { $_[0]->{services} }
+sub builder  { $_[0]->{builder} }
+
 sub startup { }
 
 sub run { }

@@ -18,8 +18,8 @@ use Turnaround::ActionFactory;
 sub startup {
     my $self = shift;
 
-    my $home     = $self->{home};
-    my $services = $self->{services};
+    my $home     = $self->home;
+    my $services = $self->services;
 
     $services->register(home => $home);
 
@@ -44,6 +44,18 @@ sub startup {
         layout   => 'layout.apl'
     );
     $services->register(displayer => $displayer);
+
+    $self->{builder}->add_middleware(
+        'ErrorDocument',
+        403        => '/forbidden',
+        404        => '/not_found',
+        subrequest => 1
+    );
+
+    $self->builder->add_middleware('HTTPExceptions',    services => $services);
+    $self->builder->add_middleware('RequestDispatcher', services => $services);
+    $self->builder->add_middleware('ActionDispatcher',  services => $services);
+    $self->builder->add_middleware('ViewDisplayer',     services => $services);
 
     return $self;
 }
