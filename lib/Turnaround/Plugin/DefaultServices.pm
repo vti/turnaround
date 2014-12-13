@@ -18,7 +18,8 @@ sub new {
     my $self = shift->SUPER::new(@_);
     my (%params) = @_;
 
-    $self->{renderer} ||= do {
+    $self->{layout} = $params{layout} || 'layout.apl';
+    $self->{renderer} = $params{renderer} || do {
         require Turnaround::Renderer::APL;
         Turnaround::Renderer::APL->new(home => $self->{home});
     };
@@ -52,7 +53,7 @@ sub startup {
 
     my $displayer = Turnaround::Displayer->new(
         renderer => $self->{renderer},
-        layout   => 'layout.apl'
+        layout   => $self->{layout}
     );
     $services->register(displayer => $displayer);
 
