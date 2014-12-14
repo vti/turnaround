@@ -3,6 +3,8 @@ package Turnaround::AssetsContainer;
 use strict;
 use warnings;
 
+use Carp qw(croak);
+
 sub new {
     my $class = shift;
     my (%params) = @_;
@@ -45,6 +47,9 @@ sub include {
         elsif ($asset->{type} eq 'css') {
             push @html,
 qq|<link rel="stylesheet" href="$asset->{path}" type="text/css" media="screen" />|;
+        }
+        else {
+            croak "unknown asset type '$asset->{type}'";
         }
     }
 

@@ -6,22 +6,22 @@ use Test::Fatal;
 
 use Turnaround::Exception::Base;
 
-subtest 'stringify' => sub {
+subtest 'stringifies' => sub {
     my $e = exception { Turnaround::Exception::Base->throw('hi there') };
 
-    is($e, 'hi there at t/core/exception.t line 10.');
+    is $e, 'hi there at t/exception.t line 10.';
 };
 
-subtest 'return_message' => sub {
+subtest 'returns message' => sub {
     my $e = exception { Turnaround::Exception::Base->throw('hi there') };
 
-    is($e->message, 'hi there');
+    is $e->message, 'hi there';
 };
 
-subtest 'return_exception_class_when_no_message_was_passed' => sub {
+subtest 'returns exception class when no message was passed' => sub {
     my $e = exception { Turnaround::Exception::Base->throw };
 
-    like($e, qr/Exception: Turnaround::Exception::Base /);
+    like $e, qr/Exception: Turnaround::Exception::Base /;
 };
 
 done_testing;

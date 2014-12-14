@@ -5,6 +5,7 @@ use warnings;
 
 use base 'Turnaround::Middleware';
 
+use Carp qw(croak);
 use Turnaround::ActionResponseResolver;
 
 sub new {
@@ -14,7 +15,7 @@ sub new {
     $self->{action_factory} =
          $params{action_factory}
       || $self->{services}->service('action_factory')
-      || die 'action_factory required';
+      || croak 'action_factory required';
     $self->{response_resolver} = $params{response_resolver};
 
     $self->{response_resolver} ||= Turnaround::ActionResponseResolver->new;

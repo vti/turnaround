@@ -10,7 +10,7 @@ use lib 't/helper/HelperFactoryTest';
 
 use Helper;
 
-subtest 'throw_when_registering_existing_helper' => sub {
+subtest 'throws when registering existing helper' => sub {
     my $factory = _build_factory();
 
     $factory->register_helper('foo' => sub { 'bar' });
@@ -20,7 +20,7 @@ subtest 'throw_when_registering_existing_helper' => sub {
     };
 };
 
-subtest 'register_helper_as_sub' => sub {
+subtest 'registers helper as sub' => sub {
     my $factory = _build_factory();
 
     $factory->register_helper('foo' => sub { 'bar' });
@@ -30,7 +30,7 @@ subtest 'register_helper_as_sub' => sub {
     is $foo, 'bar';
 };
 
-subtest 'register_helper_as_class' => sub {
+subtest 'registers helper as class' => sub {
     my $factory = _build_factory();
 
     $factory->register_helper('foo' => 'Helper');
@@ -40,7 +40,7 @@ subtest 'register_helper_as_class' => sub {
     is $foo, 'there';
 };
 
-subtest 'register_helper_as_instance' => sub {
+subtest 'registers helper as instance' => sub {
     my $factory = _build_factory();
 
     $factory->register_helper('foo' => Helper->new);
@@ -50,12 +50,30 @@ subtest 'register_helper_as_instance' => sub {
     is $foo, 'there';
 };
 
-subtest 'autoload_objects' => sub {
+subtest 'autoloads methods' => sub {
     my $factory = _build_factory();
 
     my $foo = $factory->helper;
 
     ok($foo);
+};
+
+subtest 'does not autoload DESTROY method' => sub {
+    my $factory = _build_factory();
+
+    ok !$factory->DESTROY;
+};
+
+subtest 'does not autoload method starting with uppercase' => sub {
+    my $factory = _build_factory();
+
+    ok !$factory->BUILD;
+};
+
+subtest 'does not autoload private methods' => sub {
+    my $factory = _build_factory();
+
+    ok !$factory->_helper;
 };
 
 sub _build_factory {

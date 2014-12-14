@@ -3,6 +3,7 @@ package Turnaround::Builder;
 use strict;
 use warnings;
 
+use Carp qw(croak);
 use Scalar::Util ();
 
 use Turnaround::Loader;
@@ -14,7 +15,7 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->{middleware} = $params{middleware} || [];
+    $self->{middleware} = [];
     $self->{namespaces} = $params{namespaces} || [];
 
     $self->{loader} ||= Turnaround::Loader->new(
@@ -56,30 +57,6 @@ sub insert_after_middleware {
 
     splice @{$self->{middleware}}, $i + 1, 0,
       {name => $middleware, args => [@args]};
-
-    return $self;
-}
-
-sub remove_middleware {
-    my $self = shift;
-    my (@list_of_middleware) = @_;
-
-    for (@list_of_middleware) {
-        my $i = $self->_find_middleware_index($_);
-
-        splice @{$self->{middleware}}, $i, 1;
-    }
-
-    return $self;
-}
-
-sub replace_middleware {
-    my $self = shift;
-    my ($from, $to, @args) = @_;
-
-    my $i = $self->_find_middleware_index($from);
-
-    $self->{middleware}->[$i] = {name => $to, args => [@args]};
 
     return $self;
 }
@@ -132,7 +109,7 @@ sub _find_middleware_index {
         $i++;
     }
 
-    die 'Unknown middleware: ' . $middleware;
+    croak "Unknown middleware '$middleware'";
 }
 
 1;

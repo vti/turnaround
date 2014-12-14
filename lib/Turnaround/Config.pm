@@ -4,9 +4,9 @@ use strict;
 use warnings;
 
 use File::Basename ();
-use Encode         ();
 
 use Turnaround::Loader;
+use Turnaround::Util qw(slurp);
 
 sub new {
     my $class = shift;
@@ -15,18 +15,16 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->{mode}       = $params{mode};
-    $self->{preprocess} = $params{preprocess} || {};
-    $self->{encoding}   = $params{encoding};
+    $self->{mode}     = $params{mode};
+    $self->{encoding} = $params{encoding};
 
-    $self->{encoding} ||= 'UTF-8';
+    $self->{encoding} = 'UTF-8' unless exists $params{encoding};
 
     return $self;
 }
 
 sub load {
     my $self = shift;
-    $self = $self->new unless ref $self;
     my ($path) = @_;
 
     if ($self->{mode}) {
@@ -46,31 +44,9 @@ sub load {
 
     Turnaround::Loader->new->load_class($class);
 
-    my $config = $self->_read_file($path);
-
-    if (my $preprocess = $self->{preprocess}) {
-        foreach my $key (keys %{$preprocess}) {
-            $config =~ s/$key/$preprocess->{$key}/msg;
-        }
-    }
+    my $config = slurp($path, $self->{encoding});
 
     return $class->new->parse($config);
-}
-
-sub _read_file {
-    my $self = shift;
-    my ($path) = @_;
-
-    local $/;
-    open my $fh, '<', $path or die "Can't open $path: $!";
-
-    my $config = <$fh>;
-
-    if (my $encoding = $self->{encoding}) {
-        $config = Encode::decode($encoding, $config);
-    }
-
-    return $config;
 }
 
 1;

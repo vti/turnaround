@@ -1,4 +1,4 @@
-package Turnaround::Dispatcher;
+package TryLoadClass;
 
 use strict;
 use warnings;
@@ -11,7 +11,5 @@ sub new {
 
     return $self;
 }
-
-sub dispatch { ... }
 
 1;

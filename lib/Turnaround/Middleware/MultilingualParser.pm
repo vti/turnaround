@@ -8,8 +8,8 @@ use base 'Turnaround::Middleware';
 sub new {
     my $self = shift->SUPER::new(@_);
 
-    die 'default_language is required' unless $self->{default_language};
-    die 'languages are required'       unless $self->{languages};
+    die 'default_language required' unless $self->{default_language};
+    die 'languages required'       unless $self->{languages};
 
     return $self;
 }

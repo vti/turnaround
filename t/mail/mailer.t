@@ -6,13 +6,18 @@ use Test::More;
 use Test::Requires;
 use Test::Fatal;
 
-BEGIN { test_requires 'Email::MIME' };
+BEGIN { test_requires 'Email::MIME' }
 
 use File::Temp;
 use MIME::Base64;
 use Turnaround::Mailer;
 
-subtest 'build_message' => sub {
+subtest 'throws when no transport' => sub {
+    like exception { _build_mailer(transport => undef) },
+      qr/transport required/;
+};
+
+subtest 'builds message' => sub {
     my $mailer = _build_mailer();
 
     my $message = $mailer->build_message(
@@ -33,15 +38,41 @@ subtest 'build_message' => sub {
     like($message, qr{Baz!});
 };
 
-subtest 'build_message_with_simple_body' => sub {
+subtest 'builds message without headers' => sub {
+    my $mailer = _build_mailer(headers => undef);
+
+    my $message = $mailer->build_message(body => 'Hi');
+
+    like($message, qr{SGk=\s*$});
+};
+
+subtest 'builds message with specified encoding' => sub {
+    my $mailer = _build_mailer(encoding => '8bit');
+
+    my $message = $mailer->build_message(body => 'Hi');
+
+    like($message, qr{Hi$});
+};
+
+subtest 'builds message with specified charset' => sub {
+    my $mailer = _build_mailer(charset => 'koi8-r');
+
+    my $body = 'привет';
+    Encode::from_to(Encode::encode('UTF-8', $body), 'UTF-8', 'koi8-r');
+    my $message = $mailer->build_message(body => $body);
+
+    like($message, qr{0NLJ18XU\s*$});
+};
+
+subtest 'builds message with simple body' => sub {
     my $mailer = _build_mailer();
 
     my $message = $mailer->build_message(body => 'Hi');
 
-    like($message, qr{SGk=});
+    like($message, qr{SGk=\s*$});
 };
 
-subtest 'build_message_with_unicode' => sub {
+subtest 'builds message with unicode' => sub {
     my $mailer = _build_mailer();
 
     my $message = $mailer->build_message(
@@ -57,7 +88,7 @@ subtest 'build_message_with_unicode' => sub {
     like($message, qr{\Q0J/RgNC40LLQtdGCIQ==\E});
 };
 
-subtest 'build_message_with_custom_headers' => sub {
+subtest 'builds message with custom headers' => sub {
     my $mailer = _build_mailer(headers => ['Foo' => 'http://foo.com']);
 
     my $message = $mailer->build_message();
@@ -65,7 +96,7 @@ subtest 'build_message_with_custom_headers' => sub {
     like($message, qr{Foo:[ ]http://foo.com}xms);
 };
 
-subtest 'build_message_with_defaults' => sub {
+subtest 'builds message with defaults' => sub {
     my $mailer =
       _build_mailer(headers => [To => 'foo@bar.com', Subject => 'Hello!']);
 
@@ -75,7 +106,7 @@ subtest 'build_message_with_defaults' => sub {
     like($message, qr/Subject:\s*Hello!/xms);
 };
 
-subtest 'build_message_with_overriden_headers' => sub {
+subtest 'builds message with overriden headers' => sub {
     my $mailer = _build_mailer(headers => [To => 'foo@bar.com'],);
 
     my $message = $mailer->build_message(headers => [To => 'bar@foo.com']);
@@ -84,7 +115,7 @@ subtest 'build_message_with_overriden_headers' => sub {
     unlike($message, qr{foo\@bar.com});
 };
 
-subtest 'build_message_with_subject_prefix' => sub {
+subtest 'builds message with subject prefix' => sub {
     my $mailer = _build_mailer(subject_prefix => '[Turnaround]');
 
     my $message = $mailer->build_message(headers => [Subject => 'Hello!']);
@@ -92,7 +123,15 @@ subtest 'build_message_with_subject_prefix' => sub {
     like($message, qr/Subject:\s*\[Turnaround\]\s*Hello!/xms);
 };
 
-subtest 'build_message_with_signature' => sub {
+subtest 'does not build message with signature but without body' => sub {
+    my $mailer = _build_mailer(signature => 'hello!');
+
+    my $message = $mailer->build_message();
+
+    like $message, qr/\r?\n\r?\n$/;
+};
+
+subtest 'builds message with signature' => sub {
     my $mailer = _build_mailer(signature => 'hello!');
 
     my $message = $mailer->build_message(body => 'Hi!');
@@ -100,7 +139,7 @@ subtest 'build_message_with_signature' => sub {
     like($message, qr/SGkhCgotLSAKaGVsbG8h/);
 };
 
-subtest 'build_message_with_unicode_signature' => sub {
+subtest 'builds message with unicode signature' => sub {
     my $mailer = _build_mailer(signature => 'Привет!');
 
     my $message = $mailer->build_message(body => 'Да!');
@@ -108,7 +147,7 @@ subtest 'build_message_with_unicode_signature' => sub {
     like($message, qr/0JTQsCEKCi0tIArQn9GA0LjQstC10YIh/);
 };
 
-subtest 'send_mail' => sub {
+subtest 'send mail' => sub {
     my $file = File::Temp->new;
 
     my $mailer =

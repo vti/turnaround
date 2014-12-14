@@ -27,8 +27,10 @@ sub new {
     return $self;
 }
 
-sub render_file { }
+sub render_file { ... }
 
-sub render_string { }
+sub render_string { ... }
+
+sub _build_engine { ... }
 
 1;

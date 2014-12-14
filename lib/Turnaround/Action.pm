@@ -131,12 +131,15 @@ sub render {
     my $self = shift;
     my ($template, %args) = @_;
 
-    for (qw/vars layout/) {
-        next unless exists $self->{env}->{"turnaround.displayer.$_"};
-        $args{$_} = {
-            %{$self->{env}->{"turnaround.displayer.$_"} || {}},
-            %{$args{$_} || {}}
-        };
+    $args{vars} = {
+        %{$self->{env}->{"turnaround.displayer.vars"} || {}},
+        %{$args{vars} || {}}
+    };
+
+    if (exists $self->{env}->{"turnaround.displayer.layout"}
+        && !exists $args{layout})
+    {
+        $args{layout} = $self->{env}->{"turnaround.displayer.layout"};
     }
 
     return $self->service('displayer')->render($template, %args);

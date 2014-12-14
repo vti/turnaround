@@ -3,8 +3,6 @@ package Turnaround::DispatchedRequest;
 use strict;
 use warnings;
 
-require Carp;
-
 sub new {
     my $class = shift;
     my (%params) = @_;
@@ -18,7 +16,7 @@ sub new {
     return $self;
 }
 
-sub build_path { Carp::croak('Not implemented') }
+sub build_path { ... }
 
 sub action {
     my $self = shift;

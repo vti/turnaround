@@ -11,8 +11,8 @@ use I18N::LangTags::List ();
 sub new {
     my $self = shift->SUPER::new(@_);
 
-    die 'default_language is required' unless $self->{default_language};
-    die 'languages is required'        unless $self->{languages};
+    die 'default_language required' unless $self->{default_language};
+    die 'languages required'        unless $self->{languages};
 
     $self->{name_prefix} = 'turnaround.i18n.';
 
@@ -36,9 +36,7 @@ sub _detect_language {
     my $self = shift;
     my ($env) = @_;
 
-    my $lang;
-
-    $lang ||= $self->_detect_from_path($env)    if $self->{use_path};
+    my $lang = $self->_detect_from_path($env) if $self->{use_path};
     $lang ||= $self->_detect_from_session($env) if $self->{use_session};
     $lang ||= $self->_detect_from_header($env)  if $self->{use_header};
 

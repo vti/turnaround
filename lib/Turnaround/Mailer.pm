@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Encode ();
+use Carp qw(croak);
 use Email::MIME;
 
 sub new {
@@ -21,7 +22,7 @@ sub new {
     $self->{headers} = $params{headers} || [];
 
     $self->{transport} = $params{transport};
-    die 'transport required' unless $self->{transport};
+    croak 'transport required' unless $self->{transport};
 
     return $self;
 }

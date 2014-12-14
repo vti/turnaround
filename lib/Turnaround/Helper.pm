@@ -48,6 +48,7 @@ sub param_multi {
     my ($key) = @_;
 
     my $params = $self->{env}->{'turnaround.displayer.vars'}->{params} || {};
+    return [] unless exists $params->{$key};
     return $params->{$key} if ref $params->{$key} eq 'ARRAY';
     return [$params->{$key}];
 }

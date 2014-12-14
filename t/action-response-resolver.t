@@ -49,6 +49,12 @@ subtest 'return_finalized_object' => sub {
     );
 };
 
+subtest 'not returns response object when unknown' => sub {
+    my $resolver = _build_resolver();
+
+    ok !$resolver->resolve(TestObject->new);
+};
+
 sub _build_resolver {
     my $self = shift;
     my (%params) = @_;
@@ -57,3 +63,21 @@ sub _build_resolver {
 }
 
 done_testing;
+
+package TestObject;
+
+use strict;
+use warnings;
+
+sub new {
+    my $class = shift;
+
+    my $self = {};
+    bless $self, $class;
+
+    return $self;
+}
+
+
+
+1;

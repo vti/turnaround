@@ -7,13 +7,13 @@ use Test::Fatal;
 use Turnaround::Dispatcher::Routes;
 use Turnaround::Routes;
 
-subtest 'throw_on_unknown_action' => sub {
+subtest 'throws on unknown action' => sub {
     my $d = _build_dispatcher();
 
     like(exception { $d->dispatch('/unknown/action') }, qr/action is unknown/i);
 };
 
-subtest 'action_from_name' => sub {
+subtest 'returns action from name' => sub {
     my $d = _build_dispatcher();
 
     my $dispatched = $d->dispatch('/');
@@ -21,7 +21,7 @@ subtest 'action_from_name' => sub {
     is($dispatched->action, 'root');
 };
 
-subtest 'action_from_capture' => sub {
+subtest 'returns action from capture' => sub {
     my $d = _build_dispatcher();
 
     my $dispatched = $d->dispatch('/foo');
@@ -29,7 +29,15 @@ subtest 'action_from_capture' => sub {
     is($dispatched->action, 'foo');
 };
 
-subtest 'build_path' => sub {
+subtest 'returns captures' => sub {
+    my $d = _build_dispatcher();
+
+    my $dispatched = $d->dispatch('/foo');
+
+    is_deeply $dispatched->captures, {action => 'foo'};
+};
+
+subtest 'builds path' => sub {
     my $d = _build_dispatcher();
 
     my $dispatched = $d->dispatch('/foo');
@@ -37,12 +45,12 @@ subtest 'build_path' => sub {
     is($dispatched->build_path('root'), '/');
 };
 
-subtest 'undef_on_not_match' => sub {
+subtest 'returns undef when not matched' => sub {
     my $d = _build_dispatcher();
 
     my $dispatched = $d->dispatch('/foo/bar/baz');
 
-    ok(!$dispatched);
+    ok !$dispatched;
 };
 
 sub _build_dispatcher {

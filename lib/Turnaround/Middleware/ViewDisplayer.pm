@@ -13,7 +13,9 @@ sub new {
     my $self = shift->SUPER::new(@_);
     my (%params) = @_;
 
-    $self->{encoding} = $params{encoding} || 'UTF-8';
+    $self->{encoding} = $params{encoding};
+    $self->{encoding} = 'UTF-8' unless exists $params{encoding};
+
     $self->{displayer} =
          $params{displayer}
       || $self->{services}->service('displayer')

@@ -60,7 +60,7 @@ sub _detect {
         }
     }
     else {
-        Carp::croak('Cannot detect home. Pass it manually');
+        Carp::croak('cannot detect home, pass it manually');
     }
 
     return $home;

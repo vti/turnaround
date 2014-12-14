@@ -3,7 +3,7 @@ package Turnaround::Loader;
 use strict;
 use warnings;
 
-require Carp;
+use Carp qw(croak);
 
 sub new {
     my $class = shift;
@@ -21,7 +21,7 @@ sub is_class_loaded {
     my $self = shift;
     my ($class) = @_;
 
-    Carp::croak('class name is required') unless $class;
+    croak 'class name required' unless $class;
 
     my $path = $self->_class_to_path($class);
 
@@ -41,7 +41,7 @@ sub try_load_class {
     my $self = shift;
     my ($class) = @_;
 
-    Carp::croak('class name is required') unless $class;
+    croak 'class name required' unless $class;
 
     my $class_loaded = $self->_try_load_class_from_namespaces($class);
     return $class_loaded if $class_loaded;
@@ -55,7 +55,7 @@ sub load_class {
     my $self = shift;
     my ($class) = @_;
 
-    Carp::croak('class name is required') unless $class;
+    croak 'class name required' unless $class;
 
     my $class_loaded = $self->_try_load_class_from_namespaces($class);
     return $class_loaded if $class_loaded;
@@ -85,7 +85,7 @@ sub _try_load_class {
     my $self = shift;
     my ($class, %params) = @_;
 
-    Carp::croak("Invalid class name '$class'") unless $class =~ m/^[a-z0-9:]+$/i;
+    croak "invalid class name '$class'" unless $class =~ m/^[a-z0-9:]+$/i;
 
     my $path = $self->_class_to_path($class);
 
@@ -106,7 +106,7 @@ sub _try_load_class {
             %{"$class\::"} = ();
         }
 
-        Carp::croak($e)
+        croak $e
           if $params{throw} || $e !~ m{^Can't locate \Q$path\E in \@INC };
 
         return 0;

@@ -3,6 +3,7 @@ package Turnaround::I18N;
 use strict;
 use warnings;
 
+use Carp qw(croak);
 use Locale::Maketext;
 use Turnaround::Loader;
 use Turnaround::I18N::Handle;
@@ -14,18 +15,13 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->{locale_dir} = $params{locale_dir} || '';
+    $self->{locale_dir} = $params{locale_dir} || croak 'locale_dir required';
     $self->{lexicon}    = $params{lexicon}    || 'perl';
 
-    $self->{app_class} = $params{app_class} || die 'app_class is required';
-    $self->{loader} = $params{loader};
-    $self->{default_language} = $params{default_language};
-    $self->{languages}        = $params{languages};
-
-    $self->{loader} ||= Turnaround::Loader->new;
-
-    $self->{default_language} ||= 'en';
-    $self->{languages} ||= [$self->_detect_languages()];
+    $self->{app_class} = $params{app_class} || croak 'app_class required';
+    $self->{loader} = $params{loader} || Turnaround::Loader->new;
+    $self->{default_language} = $params{default_language} || 'en';
+    $self->{languages}        = $params{languages} || [$self->_detect_languages()];
 
     if ($self->{lexicon} eq 'perl') {
         my $app_class = $self->{app_class};
@@ -88,8 +84,8 @@ sub handle {
 
     $self->{handles}->{$language} ||= do {
         my $handle = $class->get_handle($language);
-        die qq{Can't get handle for '$language'} unless $handle;
         $handle->fail_with(sub { $_[1] });
+
         Turnaround::I18N::Handle->new(handle => $handle, language => $language);
     };
 
@@ -110,7 +106,7 @@ sub _detect_languages {
     unshift @languages, $self->{default_language}
       unless grep { $_ eq $self->{default_language} } @languages;
 
-    return @languages;
+    return sort @languages;
 }
 
 1;

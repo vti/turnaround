@@ -1,16 +1,26 @@
 use strict;
 use warnings;
 
-use lib 't/middleware/MiddlewareActionDispatcherTest';
+use lib 't/middleware/action_dispatcher';
 
 use Test::More;
 use Test::Fatal;
+use Test::MonkeyMock;
 
 use Turnaround::DispatchedRequest;
 use Turnaround::ActionFactory;
 use Turnaround::Middleware::ActionDispatcher;
 
-subtest 'do_nothing_when_no_action' => sub {
+subtest 'throws when no action_factory' => sub {
+    my $services = Test::MonkeyMock->new;
+    $services->mock(service => sub { });
+
+    like exception {
+        _build_middleware(services => $services, action_factory => undef)
+    }, qr/action_factory required/;
+};
+
+subtest 'does nothing when no action' => sub {
     my $mw = _build_middleware();
 
     my $res = $mw->call(_build_env());
@@ -18,7 +28,7 @@ subtest 'do_nothing_when_no_action' => sub {
     is_deeply($res, [200, [], ['OK']]);
 };
 
-subtest 'do_nothing_when_unknown_action' => sub {
+subtest 'does nothing when unknown action' => sub {
     my $mw = _build_middleware();
 
     my $res = $mw->call(_build_env(action => 'unknown'));
@@ -26,7 +36,15 @@ subtest 'do_nothing_when_unknown_action' => sub {
     is_deeply($res, [200, [], ['OK']]);
 };
 
-subtest 'skip_when_no_response' => sub {
+subtest 'does nothing when no dispatched request' => sub {
+    my $mw = _build_middleware();
+
+    my $res = $mw->call(_build_env('turnaround.dispatched_request' => undef));
+
+    is_deeply($res, [200, [], ['OK']]);
+};
+
+subtest 'skips when no response' => sub {
     my $mw = _build_middleware();
 
     my $res = $mw->call(_build_env(action => 'no_response'));
@@ -34,7 +52,7 @@ subtest 'skip_when_no_response' => sub {
     is_deeply($res, [200, [], ['OK']]);
 };
 
-subtest 'run_action_with_custom_response' => sub {
+subtest 'runs action with custom response' => sub {
     my $mw = _build_middleware();
 
     my $res = $mw->call(_build_env(action => 'custom_response'));
@@ -43,7 +61,7 @@ subtest 'run_action_with_custom_response' => sub {
       [200, ['Content-Type' => 'text/html'], ['Custom response!']];
 };
 
-subtest 'run_action_with_text_response' => sub {
+subtest 'runs action with text response' => sub {
     my $mw = _build_middleware();
 
     my $res = $mw->call(_build_env(action => 'text_response'));
@@ -57,7 +75,8 @@ sub _build_middleware {
 
     return Turnaround::Middleware::ActionDispatcher->new(
         action_factory => Turnaround::ActionFactory->new(),
-        app            => sub { [200, [], ['OK']] }
+        app            => sub { [200, [], ['OK']] },
+        @_
     );
 }
 
@@ -69,7 +88,12 @@ sub _build_env {
           Turnaround::DispatchedRequest->new(action => delete $params{action})};
 
     foreach my $key (keys %params) {
-        $env->{"turnaround.$key"} = $params{$key};
+        if ($key =~ m/^turnaround/) {
+            $env->{$key} = $params{$key};
+        }
+        else {
+            $env->{"turnaround.$key"} = $params{$key};
+        }
     }
 
     return $env;
