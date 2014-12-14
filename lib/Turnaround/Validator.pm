@@ -121,7 +121,23 @@ sub validate {
 
     croak 'must be a hash ref' unless ref $params eq 'HASH';
 
-    $params = $self->{params} = $self->_prepare_params($params);
+    $self->_prepare_params_inplace($params);
+    $self->{params} = $params;
+
+    $self->_validate_required($params);
+
+    $self->_validate_rules($params);
+
+    $self->{validated_params} = $self->_gather_validated_params($params);
+
+    return 0 if $self->has_errors;
+
+    return 1;
+}
+
+sub _validate_required {
+    my $self = shift;
+    my ($params) = @_;
 
     foreach my $name (keys %{$self->{fields}}) {
         my $value = $params->{$name};
@@ -132,6 +148,11 @@ sub validate {
             $self->add_error($name => 'REQUIRED');
         }
     }
+}
+
+sub _validate_rules {
+    my $self = shift;
+    my ($params) = @_;
 
     foreach my $rule_name (keys %{$self->{rules}}) {
         next if exists $self->{errors}->{$rule_name};
@@ -146,18 +167,21 @@ sub validate {
 
         $self->add_error($rule_name => $rule->get_message);
     }
+}
 
-    $self->{validated_params} = {};
+sub _gather_validated_params {
+    my $self = shift;
+    my ($params) = @_;
+
+    my $validated_params = {};
 
     foreach my $name (keys %{$self->{fields}}) {
         next if exists $self->{errors}->{$name};
 
-        $self->{validated_params}->{$name} = $params->{$name};
+        $validated_params->{$name} = $params->{$name};
     }
 
-    return 0 if $self->has_errors;
-
-    return 1;
+    return $validated_params;
 }
 
 sub validated_params {
@@ -191,7 +215,30 @@ sub _is_field_empty {
     return $all_empty;
 }
 
-sub _prepare_params {
+sub _prepare_params_inplace {
+    my $self = shift;
+    my ($params) = @_;
+
+    $self->_prepare_array_like_inplace($params);
+
+    foreach my $name (keys %{$self->{fields}}) {
+        if ($self->{fields}->{$name}->{multiple}) {
+            $params->{$name} = [$params->{$name}]
+              unless ref $params->{$name} eq 'ARRAY';
+        }
+        else {
+            $params->{$name} = $params->{$name}->[0]
+              if ref $params->{$name} eq 'ARRAY';
+        }
+
+        $self->_trim_inplace($name, $params);
+
+    }
+
+    return $self;
+}
+
+sub _prepare_array_like_inplace {
     my $self = shift;
     my ($params) = @_;
 
@@ -205,40 +252,32 @@ sub _prepare_params {
         $params->{$name}->[$index] =
           ref $value eq 'ARRAY' ? $value->[0] : $value;
     }
+}
 
-  FIELD: foreach my $name (keys %{$self->{fields}}) {
-        if ($self->{fields}->{$name}->{multiple}) {
-            $params->{$name} = [$params->{$name}]
-              unless ref $params->{$name} eq 'ARRAY';
-        }
-        else {
-            $params->{$name} = $params->{$name}->[0]
-              if ref $params->{$name} eq 'ARRAY';
-        }
+sub _trim_inplace {
+    my $self = shift;
+    my ($name, $params) = @_;
 
-        foreach my $param (
-            ref $params->{$name} eq 'ARRAY'
-            ? @{$params->{$name}}
-            : $params->{$name}
-          )
-        {
-            for ($param) {
-                next FIELD unless defined;
+    foreach my $param (
+        ref $params->{$name} eq 'ARRAY'
+        ? @{$params->{$name}}
+        : $params->{$name}
+      )
+    {
+        for ($param) {
+            return unless defined;
 
-                my $trim =
-                  defined $self->{fields}->{$name}->{trim}
-                  ? $self->{fields}->{$name}->{trim}
-                  : 1;
+            my $trim =
+              defined $self->{fields}->{$name}->{trim}
+              ? $self->{fields}->{$name}->{trim}
+              : 1;
 
-                if ($trim && !ref) {
-                    s/^\s*//g;
-                    s/\s*$//g;
-                }
+            if ($trim && !ref) {
+                s/^\s*//g;
+                s/\s*$//g;
             }
         }
     }
-
-    return $params;
 }
 
 sub _build_rule {
