@@ -4,7 +4,7 @@ use warnings;
 use Test::More;
 use Test::Fatal;
 
-use lib 't/loader';
+use lib 't/loader_t';
 
 use Turnaround::Loader;
 

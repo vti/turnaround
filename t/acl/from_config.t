@@ -7,7 +7,7 @@ use Turnaround::ACL;
 use Turnaround::ACL::FromConfig;
 
 subtest 'build acl from config' => sub {
-    my $acl = _build_acl()->load('t/acl/acl-from-config/acl.yml');
+    my $acl = _build_acl()->load('t/acl/from_config_t/acl.yml');
 
     ok $acl->is_allowed('anonymous', 'login');
     ok !$acl->is_allowed('anonymous', 'logout');
@@ -16,14 +16,14 @@ subtest 'build acl from config' => sub {
 };
 
 subtest 'do nothing when empty' => sub {
-    my $acl = _build_acl()->load('t/acl/acl-from-config/empty.yml');
+    my $acl = _build_acl()->load('t/acl/from_config_t/empty.yml');
 
     ok !$acl->is_allowed('anonymous', 'login');
 };
 
 subtest 'accept acl from outside' => sub {
     my $acl = _build_acl(acl => Turnaround::ACL->new)
-      ->load('t/acl/acl-from-config/acl.yml');
+      ->load('t/acl/from_config_t/acl.yml');
 
     ok $acl->is_allowed('anonymous', 'login');
 };

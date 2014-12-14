@@ -193,7 +193,7 @@ sub _build_env {
 sub _build_displayer {
     Turnaround::Displayer->new(
         renderer => Turnaround::Renderer::Caml->new(
-            templates_path => 't/middleware/MiddlewareViewDisplayerTest/'
+            templates_path => 't/middleware/view_displayer_t/'
         )
     );
 }

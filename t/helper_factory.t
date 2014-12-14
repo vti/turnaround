@@ -6,7 +6,7 @@ use Test::Fatal;
 
 use Turnaround::HelperFactory;
 
-use lib 't/helper/HelperFactoryTest';
+use lib 't/helper_t';
 
 use Helper;
 

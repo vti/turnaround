@@ -2,11 +2,10 @@ use strict;
 use warnings;
 
 use Test::More;
-use Test::Fatal;
 
 use Turnaround::Plugins;
 
-use lib 't/core/PluginsTest';
+use lib 't/plugins_t';
 
 subtest 'run_plugins' => sub {
     my $plugins = _build_plugins();
@@ -16,11 +15,9 @@ subtest 'run_plugins' => sub {
     my $env = {};
     $plugins->run_plugins($env);
 
-    is($env->{foo}, 'bar');
+    is $env->{foo}, 'bar';
 };
 
-sub _build_plugins {
-    return Turnaround::Plugins->new(@_);
-}
+sub _build_plugins { Turnaround::Plugins->new(@_) }
 
 done_testing;

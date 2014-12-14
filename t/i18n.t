@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use utf8;
 
-use lib 't/i18n';
+use lib 't/i18n_t';
 
 use Test::More;
 use Test::Requires;
@@ -24,7 +24,7 @@ subtest 'throws when no locale_dir' => sub {
 };
 
 subtest 'throws when cannot open locale_dir' => sub {
-    like exception { _build_i18n(locale_dir => 't/i18n/unknown_dir/') },
+    like exception { _build_i18n(locale_dir => 't/i18n_t/unknown_dir/') },
       qr/Can't opendir/;
 };
 
@@ -53,7 +53,7 @@ subtest 'detects languages from perl classes' => sub {
 };
 
 subtest 'detects languages from locale classes' => sub {
-    my $i18n = _build_i18n(lexicon => 'gettext', locale_dir => 't/i18n/locale');
+    my $i18n = _build_i18n(lexicon => 'gettext', locale_dir => 't/i18n_t/locale');
 
     is_deeply([$i18n->languages], [qw/en ru/]);
 };
@@ -98,7 +98,7 @@ subtest 'throws on unknown handle' => sub {
 sub _build_i18n {
     return Turnaround::I18N->new(
         app_class  => 'I18NTest::MyApp',
-        locale_dir => 't/i18n/I18NTest/MyApp/I18N/',
+        locale_dir => 't/i18n_t/I18NTest/MyApp/I18N/',
         @_
     );
 }

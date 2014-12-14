@@ -64,7 +64,7 @@ subtest 'uses local layout' => sub {
 sub _build_displayer {
     Turnaround::Displayer->new(
         renderer => Turnaround::Renderer::Caml->new(
-            templates_path => 't/displayer/templates'
+            templates_path => 't/displayer_t/'
         ),
         @_
     );

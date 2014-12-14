@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use lib 't/core/FactoryTest';
+use lib 't/factory_t';
 
 use Test::More;
 use Test::Fatal;

@@ -10,7 +10,7 @@ use Turnaround::Config;
 subtest 'return empty hash when empty config' => sub {
     my $config = _build_config();
 
-    my $data = $config->load('t/config/configs/empty.yml');
+    my $data = $config->load('t/config_t/empty.yml');
 
     is_deeply($data, {});
 };
@@ -18,14 +18,14 @@ subtest 'return empty hash when empty config' => sub {
 subtest 'rethrow yaml error' => sub {
     my $config = _build_config();
 
-    like exception { $config->load('t/config/configs/error.yml') },
+    like exception { $config->load('t/config_t/error.yml') },
       qr/YAML::Tiny failed to/;
 };
 
 subtest 'loads config based on extension' => sub {
     my $config = _build_config();
 
-    my $data = $config->load('t/config/configs/config.yml');
+    my $data = $config->load('t/config_t/config.yml');
 
     is_deeply($data, {foo => 'bar', 'привет' => 'там'});
 };
@@ -33,14 +33,14 @@ subtest 'loads config based on extension' => sub {
 subtest 'throws when no extension' => sub {
     my $config = _build_config();
 
-    like exception { $config->load('t/config/configs/unknown') },
+    like exception { $config->load('t/config_t/unknown') },
       qr/Can't guess a config format/;
 };
 
 subtest 'loads config without mode' => sub {
     my $config = _build_config(mode => 1);
 
-    my $data = $config->load('t/config/configs/config.yml');
+    my $data = $config->load('t/config_t/config.yml');
 
     is_deeply($data, {foo => 'bar', 'привет' => 'там'});
 };
@@ -50,7 +50,7 @@ subtest 'loads config with production mode' => sub {
 
     local $ENV{PLACK_ENV} = 'production';
 
-    my $data = $config->load('t/config/configs/config.yml');
+    my $data = $config->load('t/config_t/config.yml');
 
     is_deeply($data, {foo => 'bar', 'привет' => 'там'});
 };
@@ -60,7 +60,7 @@ subtest 'loads config based on mode' => sub {
 
     local $ENV{PLACK_ENV} = 'development';
 
-    my $data = $config->load('t/config/configs/config.yml');
+    my $data = $config->load('t/config_t/config.yml');
 
     is_deeply($data, {dev => 1});
 };
@@ -70,7 +70,7 @@ subtest 'loads config based on other mode' => sub {
 
     local $ENV{PLACK_ENV} = 'test';
 
-    my $data = $config->load('t/config/configs/config.yml');
+    my $data = $config->load('t/config_t/config.yml');
 
     is_deeply($data, {test => 'bar'});
 };
@@ -78,7 +78,7 @@ subtest 'loads config based on other mode' => sub {
 subtest 'loads config with specified encoding' => sub {
     my $config = _build_config(encoding => 'koi8-r');
 
-    my $data = $config->load('t/config/configs/koi8.yml');
+    my $data = $config->load('t/config_t/koi8.yml');
 
     my $bytes = Encode::encode('UTF-8', 'там');
     Encode::from_to($bytes, 'UTF-8', 'koi8-r');

@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use lib 't/middleware/action_dispatcher';
+use lib 't/middleware/action_dispatcher_t';
 
 use Test::More;
 use Test::Fatal;
