@@ -12,8 +12,6 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->{paths} = $params{paths};
-
     $self->{paths} = [];
 
     return $self;
@@ -40,20 +38,26 @@ sub include {
     foreach my $asset (@{$self->{paths}}) {
         next if $params{type} && $asset->{type} ne $params{type};
 
-        if ($asset->{type} eq 'js') {
-            push @html,
-              qq|<script src="$asset->{path}" type="text/javascript"></script>|;
-        }
-        elsif ($asset->{type} eq 'css') {
-            push @html,
-qq|<link rel="stylesheet" href="$asset->{path}" type="text/css" media="screen" />|;
-        }
-        else {
-            croak "unknown asset type '$asset->{type}'";
-        }
+        push @html, $self->_include_type($asset->{type}, $asset->{path});
     }
 
     return join "\n", @html;
+}
+
+sub _include_type {
+    my $self = shift;
+    my ($type, $path) = @_;
+
+    if ($type eq 'js') {
+        return qq|<script src="$path" type="text/javascript"></script>|;
+    }
+    elsif ($type eq 'css') {
+        return qq|<link rel="stylesheet" href="$path" |
+          . qq|type="text/css" media="screen" />|;
+    }
+    else {
+        croak "unknown asset type '$type'";
+    }
 }
 
 1;
