@@ -20,18 +20,16 @@ sub resolve {
 
     return unless defined $res;
 
-    if (!ref $res) {
-        $res = Encode::encode('UTF-8', $res) if Encode::is_utf8($res);
-        return [200, ['Content-Type' => 'text/html'], [$res]];
+    if (my $ref = ref $res) {
+        return $res if $ref eq 'ARRAY' || $ref eq 'CODE';
+
+        return $res->finalize if $res->isa('Turnaround::Response');
+
+        return;
     }
 
-    return $res if ref $res eq 'ARRAY';
-
-    return $res if ref $res eq 'CODE';
-
-    return $res->finalize if $res->isa('Turnaround::Response');
-
-    return;
+    $res = Encode::encode('UTF-8', $res) if Encode::is_utf8($res);
+    return [200, ['Content-Type' => 'text/html'], [$res]];
 }
 
 1;

@@ -63,44 +63,56 @@ sub _init_lexicon {
     my $self = shift;
 
     if ($self->{lexicon} eq 'perl') {
-        my $app_class = $self->{app_class};
-
-        my $i18n_class = "$app_class\::I18N";
-        if (!$self->{loader}->try_load_class($i18n_class)) {
-            eval <<"EOC" or croak $@;
-                package $i18n_class;
-                use base 'Locale::Maketext';
-                sub _loaded {1}
-                1;
-EOC
-        }
-
-        my $default_i18n_class = "$i18n_class\::$self->{default_language}";
-        if (!$self->{loader}->try_load_class($default_i18n_class)) {
-            eval <<"EOC" or croak $@;
-                package $default_i18n_class;
-                use base '$i18n_class';
-                our %Lexicon = (_AUTO => 1);
-                sub _loaded {1}
-                1;
-EOC
-        }
+        $self->_init_lexicon_perl;
     }
     elsif ($self->{lexicon} eq 'gettext') {
-        eval <<"EOC" || croak $@;
-            package $self->{app_class}::I18N;
+        $self->_init_lexicon_gettext;
+    }
+
+    return $self;
+}
+
+sub _init_lexicon_perl {
+    my $self = shift;
+
+    my $app_class = $self->{app_class};
+
+    my $i18n_class = "$app_class\::I18N";
+    if (!$self->{loader}->try_load_class($i18n_class)) {
+        eval <<"EOC" or croak $@;
+            package $i18n_class;
             use base 'Locale::Maketext';
-            use Locale::Maketext::Lexicon {
-                '*'      => [Gettext => "$self->{locale_dir}/*.po"],
-                _auto    => 1,
-                _decode  => 1,
-                _preload => 1
-            };
+            sub _loaded {1}
             1;
 EOC
     }
 
-    return $self;
+    my $default_i18n_class = "$i18n_class\::$self->{default_language}";
+    if (!$self->{loader}->try_load_class($default_i18n_class)) {
+        eval <<"EOC" or croak $@;
+            package $default_i18n_class;
+            use base '$i18n_class';
+            our %Lexicon = (_AUTO => 1);
+            sub _loaded {1}
+            1;
+EOC
+    }
+}
+
+sub _init_lexicon_gettext {
+    my $self = shift;
+
+    eval <<"EOC" || croak $@;
+        package $self->{app_class}::I18N;
+        use base 'Locale::Maketext';
+        use Locale::Maketext::Lexicon {
+            '*'      => [Gettext => "$self->{locale_dir}/*.po"],
+            _auto    => 1,
+            _decode  => 1,
+            _preload => 1
+        };
+        1;
+EOC
 }
 
 sub _detect_languages {

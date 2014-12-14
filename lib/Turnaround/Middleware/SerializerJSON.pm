@@ -16,7 +16,7 @@ sub call {
     my ($env) = @_;
 
     my $method = $env->{REQUEST_METHOD};
-    if ($method && ($method eq 'PUT' || $method eq 'POST')) {
+    if ($method eq 'PUT' || $method eq 'POST') {
         my $req = Turnaround::Request->new($env);
 
         my $json = eval { JSON::decode_json($req->content) } || do {
