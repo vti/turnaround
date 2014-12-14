@@ -56,7 +56,7 @@ subtest 'adds human readable name' => sub {
 
     $mw->call($env);
 
-    is($env->{'turnaround.i18n.language_name'}, 'Russian');
+    is $env->{'turnaround.i18n.language_name'}, 'Russian';
 };
 
 subtest 'detects from custom cb' => sub {
@@ -69,7 +69,7 @@ subtest 'detects from custom cb' => sub {
 
     $mw->call($env);
 
-    is($env->{'turnaround.i18n.language'}, 'en');
+    is $env->{'turnaround.i18n.language'}, 'en';
 };
 
 subtest 'defaults when cannot detect from custom_cb' => sub {
@@ -82,7 +82,7 @@ subtest 'defaults when cannot detect from custom_cb' => sub {
 
     $mw->call($env);
 
-    is($env->{'turnaround.i18n.language'}, 'en');
+    is $env->{'turnaround.i18n.language'}, 'en';
 };
 
 subtest 'detects from path' => sub {

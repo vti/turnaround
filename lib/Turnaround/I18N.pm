@@ -23,6 +23,43 @@ sub new {
     $self->{default_language} = $params{default_language} || 'en';
     $self->{languages}        = $params{languages} || [$self->_detect_languages()];
 
+    $self->_init_lexicon;
+
+    return $self;
+}
+
+sub default_language {
+    my $self = shift;
+    my ($default_language) = @_;
+
+    return $self->{default_language};
+}
+
+sub languages {
+    my $self = shift;
+
+    return @{$self->{languages}};
+}
+
+sub handle {
+    my $self = shift;
+    my ($language) = @_;
+
+    my $class = "$self->{app_class}\::I18N";
+
+    $self->{handles}->{$language} ||= do {
+        my $handle = $class->get_handle($language);
+        $handle->fail_with(sub { $_[1] });
+
+        Turnaround::I18N::Handle->new(handle => $handle, language => $language);
+    };
+
+    return $self->{handles}->{$language};
+}
+
+sub _init_lexicon {
+    my $self = shift;
+
     if ($self->{lexicon} eq 'perl') {
         my $app_class = $self->{app_class};
 
@@ -60,36 +97,6 @@ sub new {
 
     }
 
-    return $self;
-}
-
-sub default_language {
-    my $self = shift;
-    my ($default_language) = @_;
-
-    return $self->{default_language};
-}
-
-sub languages {
-    my $self = shift;
-
-    return @{$self->{languages}};
-}
-
-sub handle {
-    my $self = shift;
-    my ($language) = @_;
-
-    my $class = "$self->{app_class}\::I18N";
-
-    $self->{handles}->{$language} ||= do {
-        my $handle = $class->get_handle($language);
-        $handle->fail_with(sub { $_[1] });
-
-        Turnaround::I18N::Handle->new(handle => $handle, language => $language);
-    };
-
-    return $self->{handles}->{$language};
 }
 
 sub _detect_languages {

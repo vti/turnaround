@@ -39,15 +39,9 @@ sub _detect_language {
     my $lang = $self->_detect_from_path($env) if $self->{use_path};
     $lang ||= $self->_detect_from_session($env) if $self->{use_session};
     $lang ||= $self->_detect_from_header($env)  if $self->{use_header};
+    $lang = $self->_detect_from_custom_cb($env, $lang) if $self->{custom_cb};
 
-    if ($self->{custom_cb}) {
-        my $custom_lang = $self->{custom_cb}->($env, $lang);
-        $lang = $custom_lang if $custom_lang;
-    }
-
-    if (!$lang || !$self->_is_allowed($lang)) {
-        $lang = $self->{default_language};
-    }
+    $lang ||= $self->{default_language};
 
     $env->{$self->{name_prefix} . 'language'} = $lang;
     $env->{$self->{name_prefix} . 'language_name'} =
@@ -64,7 +58,11 @@ sub _detect_from_session {
 
     return unless my $session = $env->{'psgix.session'};
 
-    return $session->{$self->{name_prefix} . 'language'};
+    return unless my $lang = $session->{$self->{name_prefix} . 'language'};
+
+    return unless $self->_is_allowed($lang);
+
+    return $lang;
 }
 
 sub _detect_from_path {
@@ -76,7 +74,7 @@ sub _detect_from_path {
     my $languages_re = join '|', @{$self->{languages}};
     if ($path =~ s{^/($languages_re)(?=/|$)}{}) {
         $env->{PATH_INFO} = $path;
-        return $1;
+        return $1 if $self->_is_allowed($1);
     }
 
     return;
@@ -88,7 +86,26 @@ sub _detect_from_header {
 
     return unless my $accept_header = $env->{HTTP_ACCEPT_LANGUAGE};
 
-    return $self->_build_acceptor->accepts($accept_header, $self->{languages});
+    return
+      unless my $lang =
+      $self->_build_acceptor->accepts($accept_header, $self->{languages});
+
+    return unless $self->_is_allowed($lang);
+
+    return $lang;
+}
+
+sub _detect_from_custom_cb {
+    my $self = shift;
+    my ($env, $detected_lang) = @_;
+
+    my $lang = $self->{custom_cb}->($env, $detected_lang);
+
+    return unless $lang;
+
+    return unless $self->_is_allowed($lang);
+
+    return $lang;
 }
 
 sub _build_acceptor {
