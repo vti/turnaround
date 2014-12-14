@@ -3,6 +3,7 @@ package Turnaround::Validator;
 use strict;
 use warnings;
 
+use Carp qw(croak);
 use Turnaround::Loader;
 
 sub new {
@@ -26,49 +27,11 @@ sub new {
     return $self;
 }
 
-sub set_messages {
-    my $self = shift;
-    my $messages = @_ == 1 ? $_[0] : {@_};
-
-    $self->{messages} = $messages;
-
-    return $self;
-}
-
-sub add_messages {
-    my $self = shift;
-    my $messages = @_ == 1 ? $_[0] : {@_};
-
-    $self->{messages} = {%{$self->{messages}}, %$messages};
-
-    return $self;
-}
-
-sub get_messages {
-    my $self = shift;
-
-    return $self->{messages};
-}
-
-sub clear_messages {
-    my $self = shift;
-
-    delete $self->{messages};
-
-    return $self;
-}
-
-sub field_names {
-    my $self = shift;
-
-    return sort keys %{$self->{fields}};
-}
-
 sub add_field {
     my $self = shift;
     my ($field, @args) = @_;
 
-    die "Field name '$field' is not unique"
+    die "field '$field' exists"
       if exists $self->{fields}->{$field};
 
     $self->{fields}->{$field} = {required => 1, @args};
@@ -82,10 +45,10 @@ sub add_rule {
     my $self = shift;
     my ($field_name, $rule_name, @rule_args) = @_;
 
-    die "Unknown field '$field_name'"
+    die "field '$field_name' does not exist"
       unless exists $self->{fields}->{$field_name};
 
-    die "Rule name '$field_name' is not unique"
+    die "rule '$field_name' exists"
       if exists $self->{rules}->{$field_name};
 
     my $rule = $self->_build_rule(
@@ -103,7 +66,12 @@ sub add_group_rule {
     my $self = shift;
     my ($group_name, $fields_names, $rule_name, @rule_args) = @_;
 
-    die "Rule name '$group_name' is not unique"
+    for my $field_name (@$fields_names) {
+        die "field '$field_name' does not exist"
+          unless exists $self->{fields}->{$field_name};
+    }
+
+    die "rule '$group_name' exists"
       if exists $self->{rules}->{$group_name};
 
     my $rule = $self->_build_rule(
@@ -150,6 +118,8 @@ sub has_errors {
 sub validate {
     my $self = shift;
     my ($params) = @_;
+
+    croak 'must be a hash ref' unless ref $params eq 'HASH';
 
     $params = $self->{params} = $self->_prepare_params($params);
 
@@ -223,10 +193,7 @@ sub _is_field_empty {
 
 sub _prepare_params {
     my $self = shift;
-    my ($params) = @_ == 1 ? $_[0] : {@_};
-
-    $params ||= {};
-    die 'Must be a hashref' unless ref $params eq 'HASH';
+    my ($params) = @_;
 
     foreach my $key (keys %$params) {
         next unless $key =~ m/^(.*?)\[(\d+)\]$/;
@@ -234,7 +201,6 @@ sub _prepare_params {
         my ($name, $index) = ($1, $2);
 
         my $value = delete $params->{$key};
-        $value = '' unless defined $value;
 
         $params->{$name}->[$index] =
           ref $value eq 'ARRAY' ? $value->[0] : $value;
