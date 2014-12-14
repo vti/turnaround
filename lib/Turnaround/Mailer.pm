@@ -79,7 +79,7 @@ sub _build_transport {
     my $self = shift;
     my ($options) = @_;
 
-    my $name = delete $options->{name};
+    my $name = $options->{name};
 
     if ($name eq 'test') {
         return Turnaround::Mailer::Test->new(%$options);
