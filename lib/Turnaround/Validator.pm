@@ -34,7 +34,7 @@ sub add_field {
     die "field '$field' exists"
       if exists $self->{fields}->{$field};
 
-    $self->{fields}->{$field} = {required => 1, @args};
+    $self->{fields}->{$field} = {required => 1, trim => 1, @args};
 
     return $self;
 }
@@ -231,8 +231,8 @@ sub _prepare_params_inplace {
               if ref $params->{$name} eq 'ARRAY';
         }
 
-        $self->_trim_inplace($name, $params);
-
+        $params->{$name} = $self->_trim($params->{$name})
+          if $self->{fields}->{$name}->{trim};
     }
 
     return $self;
@@ -254,30 +254,16 @@ sub _prepare_array_like_inplace {
     }
 }
 
-sub _trim_inplace {
+sub _trim {
     my $self = shift;
-    my ($name, $params) = @_;
+    my ($param) = @_;
 
-    foreach my $param (
-        ref $params->{$name} eq 'ARRAY'
-        ? @{$params->{$name}}
-        : $params->{$name}
-      )
-    {
-        for ($param) {
-            return unless defined;
-
-            my $trim =
-              defined $self->{fields}->{$name}->{trim}
-              ? $self->{fields}->{$name}->{trim}
-              : 1;
-
-            if ($trim && !ref) {
-                s/^\s*//g;
-                s/\s*$//g;
-            }
-        }
+    foreach my $param (ref $param eq 'ARRAY' ? @$param : $param) {
+        next unless defined $param && !ref $param;
+        for ($param) { s/^\s*//g; s/\s*$//g; }
     }
+
+    return $param;
 }
 
 sub _build_rule {

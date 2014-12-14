@@ -3,9 +3,12 @@ package Turnaround::Mailer;
 use strict;
 use warnings;
 
-use Encode ();
 use Carp qw(croak);
 use Email::MIME;
+
+use Turnaround::Mailer::Test;
+use Turnaround::Mailer::Sendmail;
+use Turnaround::Mailer::SMTP;
 
 sub new {
     my $class = shift;
@@ -33,35 +36,11 @@ sub send {
 
     my $message = $self->build_message(%params);
 
-    my $transport = $self->{transport};
-    if ($transport->{name} eq 'test') {
-        open my $mail, '>>', $transport->{path} or die "Can't open test file";
-        print $mail $message;
-        close $mail;
-    }
-    elsif ($transport->{name} eq 'sendmail') {
-        my $path = "| $transport->{path} -t -oi -oem";
+    my $transport = $self->_build_transport($self->{transport});
 
-        open my $mail, '>', $path or die "Can't start sendmail: $!";
-        print $mail $message;
-        close $mail;
-    }
-    elsif ($transport->{name} eq 'smtp+tls') {
-        require Email::Sender::Simple;
-        require Email::Sender::Transport::SMTP::TLS;
+    $transport->send($message);
 
-        my $sender = Email::Sender::Transport::SMTP::TLS->new(
-            host     => $transport->{host},
-            port     => $transport->{port},
-            username => $transport->{username},
-            password => $transport->{password}
-        );
-
-        Email::Sender::Simple->send($message, {transport => $sender});
-    }
-    else {
-        die 'Unknown transport';
-    }
+    return $self;
 }
 
 sub build_message {
@@ -89,18 +68,44 @@ sub build_message {
     my $message = Email::MIME->create(parts => $parts);
 
     my @headers = (@{$self->{headers}}, @{$params{headers} || []});
+    $self->_set_headers($message, \@headers);
 
-    while (my ($key, $value) = splice(@headers, 0, 2)) {
+    $message->charset_set($self->{charset});
+
+    return $message->as_string;
+}
+
+sub _build_transport {
+    my $self = shift;
+    my ($options) = @_;
+
+    my $name = delete $options->{name};
+
+    if ($name eq 'test') {
+        return Turnaround::Mailer::Test->new(%$options);
+    }
+    elsif ($name eq 'sendmail') {
+        return Turnaround::Mailer::Sendmail->new(%$options);
+    }
+    elsif ($name eq 'smtp+tls') {
+        return Turnaround::Mailer::SMTP->new(%$options);
+    }
+    else {
+        croak 'Unknown transport';
+    }
+}
+
+sub _set_headers {
+    my $self = shift;
+    my ($message, $headers) = @_;
+
+    while (my ($key, $value) = splice(@$headers, 0, 2)) {
         if ($key eq 'Subject' && (my $prefix = $self->{subject_prefix})) {
             $value = $prefix . ' ' . $value;
         }
 
         $message->header_str_set($key => $value);
     }
-
-    $message->charset_set($self->{charset});
-
-    return $message->as_string;
 }
 
 1;
