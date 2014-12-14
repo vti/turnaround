@@ -22,9 +22,7 @@ sub new {
     $self->{app_class} = $params{app_class};
     $self->{path}      = $params{path};
 
-    unless (defined $self->{path}) {
-        $self->{path} = $self->_detect;
-    }
+    $self->{path} = $self->_detect unless defined $self->{path};
 
     return $self;
 }

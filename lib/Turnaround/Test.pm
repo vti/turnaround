@@ -3,6 +3,7 @@ package Turnaround::Test;
 use strict;
 use warnings;
 
+use Carp qw(croak);
 use Test::MonkeyMock;
 
 use Turnaround::DispatchedRequest;
@@ -67,14 +68,15 @@ qq{Content-Disposition: form-data; name="$name"; filename="$filename"},
     }
 
     if (defined $content) {
-        open my $fh, '<', \$content;
+        open my $fh, '<', \$content ## no critic 'InputOutput::RequireBriefOpen'
+          or croak $!;
 
         $env = {
             %$env,
+            'psgi.input'   => $fh,
             REQUEST_METHOD => 'POST',
             CONTENT_TYPE   => $content_type,
             CONTENT_LENGTH => length($content),
-            'psgi.input'   => $fh,
         };
     }
 

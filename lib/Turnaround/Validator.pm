@@ -31,7 +31,7 @@ sub add_field {
     my $self = shift;
     my ($field, @args) = @_;
 
-    die "field '$field' exists"
+    croak "field '$field' exists"
       if exists $self->{fields}->{$field};
 
     $self->{fields}->{$field} = {required => 1, trim => 1, @args};
@@ -45,10 +45,10 @@ sub add_rule {
     my $self = shift;
     my ($field_name, $rule_name, @rule_args) = @_;
 
-    die "field '$field_name' does not exist"
+    croak "field '$field_name' does not exist"
       unless exists $self->{fields}->{$field_name};
 
-    die "rule '$field_name' exists"
+    croak "rule '$field_name' exists"
       if exists $self->{rules}->{$field_name};
 
     my $rule = $self->_build_rule(
@@ -67,11 +67,11 @@ sub add_group_rule {
     my ($group_name, $fields_names, $rule_name, @rule_args) = @_;
 
     for my $field_name (@$fields_names) {
-        die "field '$field_name' does not exist"
+        croak "field '$field_name' does not exist"
           unless exists $self->{fields}->{$field_name};
     }
 
-    die "rule '$group_name' exists"
+    croak "rule '$group_name' exists"
       if exists $self->{rules}->{$group_name};
 
     my $rule = $self->_build_rule(
@@ -259,7 +259,7 @@ sub _trim {
     my ($param) = @_;
 
     foreach my $param (ref $param eq 'ARRAY' ? @$param : $param) {
-        next unless defined $param && !ref $param;
+        next if !defined $param || ref $param;
         for ($param) { s/^\s*//g; s/\s*$//g; }
     }
 

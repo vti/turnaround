@@ -5,6 +5,7 @@ use warnings;
 
 use base 'Turnaround::Dispatcher';
 
+use Carp qw(croak);
 use Turnaround::DispatchedRequest::Routes;
 
 sub new {
@@ -26,7 +27,7 @@ sub dispatch {
     return unless $m;
 
     my $action = $m->params->{action} || $m->name;
-    die "Action is unknown. Nor 'action' neither ->name was declared"
+    croak q{Action is unknown. Nor 'action' neither ->name was declared}
       unless $action;
 
     return $self->_build_dispatched_request(

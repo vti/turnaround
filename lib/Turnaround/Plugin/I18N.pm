@@ -3,6 +3,7 @@ package Turnaround::Plugin::I18N;
 use strict;
 use warnings;
 
+use Carp qw(croak);
 use Turnaround::I18N;
 
 use base 'Turnaround::Plugin';
@@ -31,7 +32,7 @@ sub startup {
     my $app_class = $self->{app_class};
     $app_class =~ s{::}{/}g;
 
-    my $path = $INC{"$app_class\.pm"};
+    my $path = $INC{"$app_class.pm"};
     $path =~ s{\.pm$}{/I18N};
 
     my $locale_dir;
@@ -45,7 +46,7 @@ sub startup {
         $lexicon    = 'gettext';
     }
     else {
-        Carp::croak('Cannot detect locale_dir');
+        croak 'Cannot detect locale_dir';
     }
 
     my $i18n = Turnaround::I18N->new(

@@ -5,11 +5,14 @@ use warnings;
 
 use base 'Turnaround::Middleware';
 
+use Carp qw(croak);
+use Plack::Util ();
+
 sub new {
     my $self = shift->SUPER::new(@_);
 
-    die 'default_language required' unless $self->{default_language};
-    die 'languages required'       unless $self->{languages};
+    croak 'default_language required' unless $self->{default_language};
+    croak 'languages required'        unless $self->{languages};
 
     return $self;
 }
@@ -18,10 +21,10 @@ sub call {
     my $self = shift;
     my ($env) = @_;
 
-    my $res = $self->app->(@_);
+    my $old_res = $self->app->(@_);
 
     return $self->response_cb(
-        $res => sub {
+        $old_res => sub {
             my $res = shift;
             my $h   = Plack::Util::headers($res->[1]);
 

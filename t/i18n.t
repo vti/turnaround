@@ -96,7 +96,7 @@ subtest 'throws on unknown handle' => sub {
 };
 
 sub _build_i18n {
-    return Turnaround::I18N->new(
+    Turnaround::I18N->new(
         app_class  => 'I18NTest::MyApp',
         locale_dir => 't/i18n_t/I18NTest/MyApp/I18N/',
         @_

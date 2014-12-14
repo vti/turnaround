@@ -132,14 +132,14 @@ sub render {
     my ($template, %args) = @_;
 
     $args{vars} = {
-        %{$self->{env}->{"turnaround.displayer.vars"} || {}},
+        %{$self->{env}->{'turnaround.displayer.vars'} || {}},
         %{$args{vars} || {}}
     };
 
-    if (exists $self->{env}->{"turnaround.displayer.layout"}
+    if (exists $self->{env}->{'turnaround.displayer.layout'}
         && !exists $args{layout})
     {
-        $args{layout} = $self->{env}->{"turnaround.displayer.layout"};
+        $args{layout} = $self->{env}->{'turnaround.displayer.layout'};
     }
 
     return $self->service('displayer')->render($template, %args);

@@ -3,6 +3,7 @@ package Turnaround::ACL;
 use strict;
 use warnings;
 
+use Carp qw(croak);
 use List::Util qw(first);
 
 sub new {
@@ -40,7 +41,7 @@ sub allow {
         }
     }
     else {
-        die 'Unknown role' unless exists $self->{roles}->{$role};
+        croak 'Unknown role' unless exists $self->{roles}->{$role};
 
         push @{$self->{roles}->{$role}->{allow}}, $action;
     }
@@ -58,7 +59,7 @@ sub deny {
         }
     }
     else {
-        die 'Unknown role' unless exists $self->{roles}->{$role};
+        croak 'Unknown role' unless exists $self->{roles}->{$role};
 
         push @{$self->{roles}->{$role}->{deny}}, $action;
     }
@@ -76,7 +77,7 @@ sub is_allowed {
 
     return 1
       if first { $_ eq $action || $_ eq '*' }
-        @{$self->{roles}->{$role}->{allow}};
+    @{$self->{roles}->{$role}->{allow}};
 
     return 0;
 }

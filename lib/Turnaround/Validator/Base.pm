@@ -62,6 +62,6 @@ sub validate {
     return 1;
 }
 
-sub is_valid { die 'Not implemented' }
+sub is_valid { ... }
 
 1;

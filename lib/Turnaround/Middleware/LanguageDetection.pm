@@ -5,14 +5,16 @@ use warnings;
 
 use base 'Turnaround::Middleware';
 
+use Carp qw(croak);
+use List::Util qw(first);
 use I18N::AcceptLanguage;
 use I18N::LangTags::List ();
 
 sub new {
     my $self = shift->SUPER::new(@_);
 
-    die 'default_language required' unless $self->{default_language};
-    die 'languages required'        unless $self->{languages};
+    croak 'default_language required' unless $self->{default_language};
+    croak 'languages required'        unless $self->{languages};
 
     $self->{name_prefix} = 'turnaround.i18n.';
 
@@ -36,7 +38,8 @@ sub _detect_language {
     my $self = shift;
     my ($env) = @_;
 
-    my $lang = $self->_detect_from_path($env) if $self->{use_path};
+    my $lang;
+    $lang = $self->_detect_from_path($env) if $self->{use_path};
     $lang ||= $self->_detect_from_session($env) if $self->{use_session};
     $lang ||= $self->_detect_from_header($env)  if $self->{use_header};
     $lang = $self->_detect_from_custom_cb($env, $lang) if $self->{custom_cb};
@@ -118,7 +121,7 @@ sub _is_allowed {
     my $self = shift;
     my ($lang) = @_;
 
-    return !!grep { $lang eq $_ } $self->{default_language},
+    return !!first { $lang eq $_ } $self->{default_language},
       @{$self->{languages}};
 }
 

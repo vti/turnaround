@@ -18,7 +18,7 @@ sub new {
     return $self;
 }
 
-sub send {
+sub send_message {
     my $self = shift;
     my ($message) = @_;
 

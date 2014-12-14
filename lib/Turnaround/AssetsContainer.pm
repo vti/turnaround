@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Carp qw(croak);
+use List::Util qw(first);
 
 sub new {
     my $class = shift;
@@ -21,7 +22,7 @@ sub require {
     my $self = shift;
     my ($path, $type) = @_;
 
-    return $self if grep { $path eq $_->{path} } @{$self->{paths}};
+    return $self if first { $path eq $_->{path} } @{$self->{paths}};
 
     ($type) = $path =~ m/\.([^\.]+)$/ unless $type;
 
@@ -53,7 +54,7 @@ sub _include_type {
     }
     elsif ($type eq 'css') {
         return qq|<link rel="stylesheet" href="$path" |
-          . qq|type="text/css" media="screen" />|;
+          . q|type="text/css" media="screen" />|;
     }
     else {
         croak "unknown asset type '$type'";

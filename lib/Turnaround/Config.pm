@@ -3,6 +3,7 @@ package Turnaround::Config;
 use strict;
 use warnings;
 
+use Carp qw(croak);
 use File::Basename ();
 
 use Turnaround::Loader;
@@ -56,7 +57,7 @@ sub _detect_type {
     my $basename = File::Basename::basename($path);
     my ($ext) = $basename =~ m{\.([^\.]+)$};
 
-    die "Can't guess a config format" unless $ext;
+    croak q{Can't guess a config format} unless $ext;
 
     my $class = __PACKAGE__ . '::' . ucfirst($ext);
 

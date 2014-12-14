@@ -5,6 +5,7 @@ use warnings;
 
 use base 'Turnaround::Middleware';
 
+use Carp qw(croak);
 use Encode ();
 use Plack::MIME;
 use String::CamelCase ();
@@ -19,7 +20,7 @@ sub new {
     $self->{displayer} =
          $params{displayer}
       || $self->{services}->service('displayer')
-      || die 'displayer required';
+      || croak 'displayer required';
 
     return $self;
 }
@@ -49,7 +50,7 @@ sub _display {
     my $displayer = $self->{displayer};
     my $body = $displayer->render($template, %args);
 
-    my $content_type = Plack::MIME->mime_type(".html");
+    my $content_type = Plack::MIME->mime_type('.html');
 
     if (my $encoding = $self->{encoding}) {
         $body = Encode::encode($encoding, $body);
@@ -77,9 +78,9 @@ sub _get_template {
     return unless $dispatched_request;
 
     if (my $action = $dispatched_request->action) {
-        my $template = String::CamelCase::decamelize($action);
-        $template =~ s{::}{_}g;
-        return $template;
+        my $template_from_action = String::CamelCase::decamelize($action);
+        $template_from_action =~ s{::}{_}g;
+        return $template_from_action;
     }
 
     return;

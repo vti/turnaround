@@ -17,7 +17,7 @@ sub new {
     my $self = shift->SUPER::new(@_);
     my (%params) = @_;
 
-    $self->{layout}   = $params{layout}   // 'layout.apl';
+    $self->{layout} = $params{layout} // 'layout.apl';
     $self->{renderer} = $params{renderer} || do {
         require Turnaround::Renderer::APL;
         Turnaround::Renderer::APL->new(home => $self->{home});
@@ -41,7 +41,8 @@ sub startup {
           || do { Turnaround::Config->new(mode => 1)->load('config/config.yml') }
     );
 
-    my $routes = $self->{routes} || Turnaround::Routes::FromConfig->new->load('config/routes.yml');
+    my $routes = $self->{routes}
+      || Turnaround::Routes::FromConfig->new->load('config/routes.yml');
     $services->register(routes => $routes);
 
     $services->register(
@@ -69,8 +70,10 @@ sub startup {
     $self->builder->add_middleware('HTTPExceptions', services => $services);
 
     my $public_dir = $home->catfile('public');
-    my @dirs =
-      map { s/^$public_dir\/?//; $_ } grep { -d $_ } glob "$public_dir/*";
+
+    my @dirs = grep { -d } glob "$public_dir/*";
+    s/^$public_dir\/?// for @dirs;
+
     my $re = '^/(?:' . join('|', @dirs) . ')/';
     $self->builder->add_middleware(
         'Static',

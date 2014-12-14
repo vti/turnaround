@@ -5,6 +5,7 @@ use warnings;
 
 use base 'Turnaround::Middleware';
 
+use Carp qw(croak);
 use Scalar::Util qw(blessed);
 
 use Turnaround::Exception::HTTP;
@@ -14,7 +15,7 @@ sub new {
     my (%params) = @_;
 
     $self->{acl} = $params{acl};
-    Carp::croak('acl required') unless $self->{acl};
+    croak 'acl required' unless $self->{acl};
 
     return $self;
 }
@@ -50,7 +51,7 @@ sub _get_action {
 
     my $dispatched_request = $env->{'turnaround.dispatched_request'};
 
-    die 'No DispatchedRequest found' unless $dispatched_request;
+    croak 'No DispatchedRequest found' unless $dispatched_request;
 
     return $dispatched_request->action;
 }

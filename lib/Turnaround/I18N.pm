@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Carp qw(croak);
+use List::Util qw(first);
 use Locale::Maketext;
 use Turnaround::Loader;
 use Turnaround::I18N::Handle;
@@ -19,9 +20,10 @@ sub new {
     $self->{lexicon}    = $params{lexicon}    || 'perl';
 
     $self->{app_class} = $params{app_class} || croak 'app_class required';
-    $self->{loader} = $params{loader} || Turnaround::Loader->new;
+    $self->{loader}    = $params{loader}    || Turnaround::Loader->new;
     $self->{default_language} = $params{default_language} || 'en';
-    $self->{languages}        = $params{languages} || [$self->_detect_languages()];
+    $self->{languages} =
+      $params{languages} || [sort $self->_detect_languages()];
 
     $self->_init_lexicon;
 
@@ -65,27 +67,27 @@ sub _init_lexicon {
 
         my $i18n_class = "$app_class\::I18N";
         if (!$self->{loader}->try_load_class($i18n_class)) {
-            eval <<"";
+            eval <<"EOC" or croak $@;
                 package $i18n_class;
                 use base 'Locale::Maketext';
                 sub _loaded {1}
                 1;
-
+EOC
         }
 
         my $default_i18n_class = "$i18n_class\::$self->{default_language}";
         if (!$self->{loader}->try_load_class($default_i18n_class)) {
-            eval <<"";
+            eval <<"EOC" or croak $@;
                 package $default_i18n_class;
                 use base '$i18n_class';
                 our %Lexicon = (_AUTO => 1);
                 sub _loaded {1}
                 1;
-
+EOC
         }
     }
     elsif ($self->{lexicon} eq 'gettext') {
-        eval <<"";
+        eval <<"EOC" || croak $@;
             package $self->{app_class}::I18N;
             use base 'Locale::Maketext';
             use Locale::Maketext::Lexicon {
@@ -94,9 +96,11 @@ sub _init_lexicon {
                 _decode  => 1,
                 _preload => 1
             };
-
+            1;
+EOC
     }
 
+    return $self;
 }
 
 sub _detect_languages {
@@ -104,16 +108,17 @@ sub _detect_languages {
 
     my $path = $self->{locale_dir};
 
-    opendir(my $dh, $path) or die "Can't opendir $path: $!";
-    my @files = grep { /\.p(?:o|m)$/ && -f "$path/$_" } readdir($dh);
+    opendir(my $dh, $path) or croak "Can't opendir $path: $!";
+    my @files = grep { /\.p[om]$/ && -e "$path/$_" } readdir($dh);
     closedir $dh;
 
-    my @languages = map { s{\.p(?:o|m)$}{}; $_ } @files;
+    my @languages = @files;
+    s{\.p[om]$}{} for @languages;
 
     unshift @languages, $self->{default_language}
-      unless grep { $_ eq $self->{default_language} } @languages;
+      unless first { $_ eq $self->{default_language} } @languages;
 
-    return sort @languages;
+    return @languages;
 }
 
 1;

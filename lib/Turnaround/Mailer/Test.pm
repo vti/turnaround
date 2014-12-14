@@ -3,6 +3,8 @@ package Turnaround::Mailer::Test;
 use strict;
 use warnings;
 
+use Carp qw(croak);
+
 sub new {
     my $class = shift;
     my (%params) = @_;
@@ -15,11 +17,11 @@ sub new {
     return $self;
 }
 
-sub send {
+sub send_message {
     my $self = shift;
     my ($message) = @_;
 
-    open my $mail, '>>', $self->{path} or die "Can't open test file";
+    open my $mail, '>>', $self->{path} or croak "Can't open test file: $!";
     print $mail $message;
     close $mail;
 

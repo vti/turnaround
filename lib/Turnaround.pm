@@ -29,7 +29,7 @@ sub new {
 
     $self->{home} ||= Turnaround::Home->new(app_class => $app_class);
     if (!ref $self->{home}) {
-        $self->{home} = Turnaround::Home->new(path => $self->{home})
+        $self->{home} = Turnaround::Home->new(path => $self->{home});
     }
 
     $self->{builder} ||=
@@ -51,7 +51,7 @@ sub new {
 
 sub home     { $_[0]->{home} }
 sub services { $_[0]->{services} }
-sub service { shift->{services}->service(@_) }
+sub service  { shift->{services}->service(@_) }
 
 sub startup { $_[0] }
 

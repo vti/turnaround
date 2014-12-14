@@ -38,7 +38,7 @@ sub send {
 
     my $transport = $self->_build_transport($self->{transport});
 
-    $transport->send($message);
+    $transport->send_message($message);
 
     return $self;
 }
@@ -56,7 +56,7 @@ sub build_message {
       ? [
         Email::MIME->create(
             attributes => {
-                content_type => "text/plain",
+                content_type => 'text/plain',
                 charset      => $self->{charset},
                 encoding     => $self->{encoding}
             },

@@ -22,12 +22,12 @@ sub new {
 
 sub register_helper {
     my $self = shift;
-    my ($name, $object) = @_;
+    my ($name, $instance) = @_;
 
     Carp::croak("Helper '$name' already registered")
       if exists $self->{helpers}->{$name};
 
-    $self->{helpers}->{$name} = $object;
+    $self->{helpers}->{$name} = $instance;
 }
 
 sub build {

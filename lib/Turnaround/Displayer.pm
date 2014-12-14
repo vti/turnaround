@@ -3,6 +3,8 @@ package Turnaround::Displayer;
 use strict;
 use warnings;
 
+use Carp qw(croak);
+
 sub new {
     my $class = shift;
     my (%params) = @_;
@@ -10,7 +12,7 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->{renderer} = $params{renderer} || die 'renderer required';
+    $self->{renderer} = $params{renderer} || croak 'renderer required';
     $self->{layout} = $params{layout};
 
     return $self;

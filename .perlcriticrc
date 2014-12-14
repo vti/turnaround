@@ -1,0 +1,48 @@
+severity        = 1
+color           = 1
+
+# Perl::Critic::Dynamic
+[Dynamic::ValidateAgainstSymbolTable]
+
+# Perl::Critic::StricterSubs
+[Modules::RequireExplicitInclusion]
+[-Subroutines::ProhibitCallsToUnexportedSubs]
+
+# Perl::Critic::Bangs
+[Bangs::ProhibitVagueNames]
+
+# Useless
+
+[-CodeLayout::ProhibitParensWithBuiltins]
+[-ControlStructures::ProhibitCStyleForLoops]
+[-ControlStructures::ProhibitPostfixControls]
+[-Modules::ProhibitMultiplePackages]
+[-Modules::RequireVersionVar]
+[-References::ProhibitDoubleSigils]
+[-RegularExpressions::ProhibitEscapedMetacharacters]
+[-RegularExpressions::RequireDotMatchAnything]
+[-RegularExpressions::RequireExtendedFormatting]
+[-RegularExpressions::RequireLineBoundaryMatching]
+[-Subroutines::ProhibitAmpersandSigils]
+[-Subroutines::RequireArgUnpacking]
+[-Subroutines::RequireFinalReturn]
+[-ValuesAndExpressions::ProhibitEmptyQuotes]
+[-ValuesAndExpressions::ProhibitMagicNumbers]
+[-ValuesAndExpressions::RequireInterpolationOfMetachars]
+[-InputOutput::RequireBracedFileHandleWithPrint]
+[-Variables::ProhibitPunctuationVars]
+[-TestingAndDebugging::ProhibitNoStrict]
+[-BuiltinFunctions::ProhibitStringyEval]
+[-ValuesAndExpressions::ProhibitEscapedCharacters]
+[-ClassHierarchies::ProhibitAutoloading]
+[-RegularExpressions::ProhibitEnumeratedClasses]
+[-Variables::ProhibitPackageVars]
+[-Modules::ProhibitAutomaticExportation]
+[-InputOutput::RequireCheckedClose]
+[-InputOutput::RequireCheckedSyscalls]
+
+# Not so sure
+
+[-Subroutines::ProhibitUnusedPrivateSubroutines]
+[-ValuesAndExpressions::ProhibitNoisyQuotes]
+[-Subroutines::ProhibitBuiltinHomonyms]

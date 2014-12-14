@@ -20,7 +20,7 @@ sub resolve {
 
     return unless defined $res;
 
-    unless (ref $res) {
+    if (!ref $res) {
         $res = Encode::encode('UTF-8', $res) if Encode::is_utf8($res);
         return [200, ['Content-Type' => 'text/html'], [$res]];
     }

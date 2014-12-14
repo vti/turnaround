@@ -5,11 +5,13 @@ use warnings;
 
 use base 'Turnaround::Middleware::LanguageDetection';
 
+use Carp qw(croak);
+
 sub new {
     my $class = shift;
     my (%params) = @_;
 
-    die 'i18n is required' unless my $i18n = delete $params{i18n};
+    croak 'i18n is required' unless my $i18n = delete $params{i18n};
 
     $params{default_language} = $i18n->default_language;
     $params{languages}        = [$i18n->languages];

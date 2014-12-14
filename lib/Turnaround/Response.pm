@@ -11,9 +11,7 @@ use Plack::Util ();
 sub finalize {
     my $self = shift;
 
-    unless ($self->content_type) {
-        $self->content_type('text/html');
-    }
+    $self->content_type('text/html') unless $self->content_type;
 
     my $arrayref = $self->SUPER::finalize;
 

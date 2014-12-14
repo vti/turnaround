@@ -43,7 +43,7 @@ sub to_string { &as_string }
 sub as_string {
     my $self = shift;
 
-    return sprintf("%s at %s line %s.",
+    return sprintf('%s at %s line %s.',
         $self->{message}, $self->{file}, $self->{line});
 }
 
